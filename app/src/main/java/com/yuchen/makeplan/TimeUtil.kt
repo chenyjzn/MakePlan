@@ -22,7 +22,7 @@ object TimeUtil {
     }
 
     fun millisToYearMonth(time: Long): String {
-        val simpleDateFormat = SimpleDateFormat("yyyy/MM")
+        val simpleDateFormat = SimpleDateFormat("yyyy/MMM")
         return simpleDateFormat.format(Date(time))
     }
 
@@ -37,7 +37,7 @@ object TimeUtil {
     }
 
     fun millisToMonth(time: Long): String {
-        val simpleDateFormat = SimpleDateFormat("MM")
+        val simpleDateFormat = SimpleDateFormat("MMM")
         return simpleDateFormat.format(Date(time))
     }
 

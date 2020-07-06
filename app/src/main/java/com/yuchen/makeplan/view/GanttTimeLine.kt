@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.TimeUtil
@@ -14,6 +15,7 @@ import com.yuchen.makeplan.TimeUtil.millisToDay
 import com.yuchen.makeplan.TimeUtil.millisToMonth
 import com.yuchen.makeplan.TimeUtil.millisToYear
 import com.yuchen.makeplan.TimeUtil.millisToYearMonth
+import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
 import java.util.*
 
@@ -70,8 +72,21 @@ class GanttTimeLine : View{
         endDay= calendar.get(Calendar.DAY_OF_MONTH)
     }
 
-    fun setTimeLineScale(){
+    fun calScale(Scale : Long) : Float{
+        return ((Scale.toFloat()/(endDate - startDate).toFloat())*width.toFloat()).toDp()
+    }
 
+    fun setTimeLineScale(){
+        if (calScale(DAY_MILLIS)>=25.0f){
+            timeLineType = 0
+        } else if(calScale(7 * DAY_MILLIS)>=25.0f){
+            timeLineType = 1
+        }else if(calScale(28 * DAY_MILLIS)>=25.0f){
+            timeLineType = 3
+        }else{
+            timeLineType = 4
+        }
+        Log.d("chenyjzn", " Scale = ${calScale(DAY_MILLIS)}, type = $timeLineType")
     }
 
     private fun drawFrame(canvas: Canvas){
@@ -236,13 +251,33 @@ class GanttTimeLine : View{
         }
     }
 
+
+
     fun interpolation(startTime : Long, endTime : Long, actualTime : Long) : Float{
         return (actualTime-startTime).toFloat()/(endTime - startTime).toFloat()
     }
 
     override fun onDraw(canvas: Canvas) {
         drawFrame(canvas)
-        drawPrimaryTimeLineByMonth(canvas)
-        drawSecondaryTimeLineByDay(canvas)
+        setTimeLineScale()
+        when(timeLineType){
+            0 -> {
+                drawPrimaryTimeLineByMonth(canvas)
+                drawSecondaryTimeLineByDay(canvas)
+            }
+            1 -> {
+                drawPrimaryTimeLineByMonth(canvas)
+                drawSecondaryTimeLineByWeek(canvas)
+            }
+            2 -> {
+                drawPrimaryTimeLineByYear(canvas)
+                drawSecondaryTimeLineByMonth(canvas)
+            }
+            else -> {
+                drawPrimaryTimeLineByYear(canvas)
+                drawSecondaryTimeLineByMonth(canvas)
+            }
+        }
+
     }
 }

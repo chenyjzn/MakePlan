@@ -2,32 +2,21 @@ package com.yuchen.makeplan.gantt
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yuchen.makeplan.data.Task
+import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.ItemGanttTaskBinding
 
-class GanttTaskAdapter(viewModel:GanttViewModel) : ListAdapter<Task, GanttTaskAdapter.GanttTaskHolder>(DiffCallback) {
+class GanttTaskAdapter() : RecyclerView.Adapter<GanttTaskAdapter.GanttTaskHolder>() {
 
-    var projectStartTimeMillis = 0L
-    var projectEndTimeMillis = 0L
+    private var project: Project? = null
 
-    class GanttTaskHolder(var binding: ItemGanttTaskBinding):
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(task: Task) {
-            binding.task = task
+    class GanttTaskHolder(var binding: ItemGanttTaskBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(project: Project,pos: Int) {
+            binding.task = project.taskList[pos]
+            binding.ganttTaskTimeLine.setRange(project.startTimeMillis,project.endTimeMillis)
+            binding.ganttTaskBar.setRange(project.startTimeMillis,project.endTimeMillis,project.taskList[pos].startTimeMillis,project.taskList[pos].endTimeMillis)
+            binding.ganttTaskBar.taskName = project.taskList[pos].name
             binding.executePendingBindings()
-        }
-    }
-
-    companion object DiffCallback : DiffUtil.ItemCallback<Task>() {
-        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
-            return oldItem === newItem
-        }
-
-        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
-            return oldItem == newItem
         }
     }
 
@@ -36,14 +25,17 @@ class GanttTaskAdapter(viewModel:GanttViewModel) : ListAdapter<Task, GanttTaskAd
     }
 
     override fun onBindViewHolder(holder: GanttTaskHolder, position: Int) {
-        val task = getItem(position)
-        holder.bind(task)
-        if (projectStartTimeMillis!=projectEndTimeMillis){
-            holder.binding.ganttTaskTimeLine.setRange(projectStartTimeMillis,projectEndTimeMillis)
-            holder.binding.ganttTaskTimeLine.invalidate()
-            holder.binding.ganttTaskBar.setRange(projectStartTimeMillis,projectEndTimeMillis,task.startTimeMillis,task.endTimeMillis)
-            holder.binding.ganttTaskBar.taskName = task.name
-            holder.binding.ganttTaskBar.invalidate()
+        project?.let {
+            holder.bind(it,position)
         }
+    }
+
+    override fun getItemCount(): Int {
+        return project?.let {it.taskList.size}?:0
+    }
+
+    fun submitProject(project: Project) {
+        this.project = project
+        notifyDataSetChanged()
     }
 }

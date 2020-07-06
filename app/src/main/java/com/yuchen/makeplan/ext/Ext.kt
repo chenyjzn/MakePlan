@@ -5,6 +5,9 @@ import android.util.Log
 import kotlin.math.roundToInt
 
 fun Int.toPx(): Int {
-    //Log.d("chenyjzn","${Resources.getSystem().displayMetrics.density }")
     return (Resources.getSystem().displayMetrics.density * this).roundToInt()
+}
+
+fun Float.toDp(): Float {
+    return (this/Resources.getSystem().displayMetrics.density)
 }

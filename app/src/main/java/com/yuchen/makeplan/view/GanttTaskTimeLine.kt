@@ -5,9 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.TimeUtil
+import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
 import java.util.*
 
@@ -54,10 +56,6 @@ class GanttTaskTimeLine : View {
         endYear = calendar.get(Calendar.YEAR)
         endMonth = calendar.get(Calendar.MONTH)
         endDay= calendar.get(Calendar.DAY_OF_MONTH)
-    }
-
-    fun setTimeLineScale(){
-
     }
 
     private fun drawFrame(canvas: Canvas){
@@ -138,12 +136,43 @@ class GanttTaskTimeLine : View {
         }
     }
 
+    fun calScale(Scale : Long) : Float{
+        return ((Scale.toFloat()/(endDate - startDate).toFloat())*width.toFloat()).toDp()
+    }
+
+    fun setTimeLineScale(){
+        if (calScale(DAY_MILLIS)>=25.0f){
+            timeLineType = 0
+        } else if(calScale(7 * DAY_MILLIS)>=25.0f){
+            timeLineType = 1
+        }else if(calScale(28 * DAY_MILLIS)>=25.0f){
+            timeLineType = 3
+        }else{
+            timeLineType = 4
+        }
+        Log.d("chenyjzn", " Scale = ${calScale(DAY_MILLIS)}, type = $timeLineType")
+    }
+
     fun interpolation(startTime : Long, endTime : Long, actualTime : Long) : Float{
         return (actualTime-startTime).toFloat()/(endTime - startTime).toFloat()
     }
 
     override fun onDraw(canvas: Canvas) {
         drawFrame(canvas)
-        drawSecondaryTimeLineByDay(canvas)
+        setTimeLineScale()
+        when(timeLineType){
+            0 -> {
+                drawSecondaryTimeLineByDay(canvas)
+            }
+            1 -> {
+                drawSecondaryTimeLineByWeek(canvas)
+            }
+            2 -> {
+                drawSecondaryTimeLineByMonth(canvas)
+            }
+            else -> {
+                drawSecondaryTimeLineByMonth(canvas)
+            }
+        }
     }
 }
