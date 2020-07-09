@@ -6,15 +6,12 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
-import com.yuchen.makeplan.TimeUtil
-import com.yuchen.makeplan.TimeUtil.StampToDate
-import com.yuchen.makeplan.TimeUtil.millisToDay
-import com.yuchen.makeplan.TimeUtil.millisToMonth
-import com.yuchen.makeplan.TimeUtil.millisToYear
-import com.yuchen.makeplan.TimeUtil.millisToYearMonth
+import com.yuchen.makeplan.util.TimeUtil.millisToDay
+import com.yuchen.makeplan.util.TimeUtil.millisToMonth
+import com.yuchen.makeplan.util.TimeUtil.millisToYear
+import com.yuchen.makeplan.util.TimeUtil.millisToYearMonth
 import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
 import java.util.*
@@ -45,7 +42,7 @@ class GanttTimeLine : View{
         color = Color.GRAY
     }
     private val textPaint = Paint().apply {
-        color = Color.GRAY
+        color = Color.WHITE
         textSize = 16.toPx().toFloat()
         textAlign = Paint.Align.CENTER
     }

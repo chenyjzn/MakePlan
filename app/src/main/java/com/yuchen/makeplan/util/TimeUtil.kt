@@ -1,4 +1,4 @@
-package com.yuchen.makeplan
+package com.yuchen.makeplan.util
 
 import java.text.SimpleDateFormat
 import java.util.*

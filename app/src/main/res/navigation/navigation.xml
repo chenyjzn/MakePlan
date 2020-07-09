@@ -3,11 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/ganttFragment">
+    app:startDestination="@id/projectsFragment">
 
     <fragment
         android:id="@+id/ganttFragment"
         android:name="com.yuchen.makeplan.gantt.GanttFragment"
         android:label="fragment_gantt"
-        tools:layout="@layout/fragment_gantt" />
+        tools:layout="@layout/fragment_gantt" >
+        <argument
+            android:name="projectHistory"
+            app:argType="com.yuchen.makeplan.data.Project[]" />
+        <argument
+            android:name="projectHistoryPos"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_ganttFragment_to_taskFragment"
+            app:destination="@id/taskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/projectsFragment"
+        android:name="com.yuchen.makeplan.projects.ProjectsFragment"
+        android:label="fragment_projects"
+        tools:layout="@layout/fragment_projects" >
+        <action
+            android:id="@+id/action_projectsFragment_to_ganttFragment"
+            app:destination="@id/ganttFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskFragment"
+        android:name="com.yuchen.makeplan.task.TaskFragment"
+        android:label="fragment_task"
+        tools:layout="@layout/fragment_task" >
+        <action
+            android:id="@+id/action_taskFragment_to_ganttFragment"
+            app:destination="@id/ganttFragment"
+            app:popUpTo="@id/ganttFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="projectHistory"
+            app:argType="com.yuchen.makeplan.data.Project[]" />
+        <argument
+            android:name="projectHistoryPos"
+            app:argType="integer" />
+    </fragment>
 </navigation>

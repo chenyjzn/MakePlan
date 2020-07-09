@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
-import com.yuchen.makeplan.TimeUtil
 import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
 import java.util.*
@@ -150,7 +149,7 @@ class GanttTaskTimeLine : View {
         }else{
             timeLineType = 4
         }
-        Log.d("chenyjzn", " Scale = ${calScale(DAY_MILLIS)}, type = $timeLineType")
+        //Log.d("chenyjzn", " Scale = ${calScale(DAY_MILLIS)}, type = $timeLineType")
     }
 
     fun interpolation(startTime : Long, endTime : Long, actualTime : Long) : Float{

@@ -8,29 +8,46 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.FragmentGanttBinding
+import com.yuchen.makeplan.ext.getVmFactory
 import kotlin.math.sqrt
 
 
 class GanttFragment : Fragment() {
+
+    private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory,
+        GanttFragmentArgs.fromBundle(requireArguments()).projectHistoryPos) }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val application = requireNotNull(this.activity).application
-        val viewModelFactory = GanttViewModelFactory(application)
-        val viewModel = ViewModelProviders.of(this,viewModelFactory).get(GanttViewModel::class.java)
-
         val taskAdapter = GanttTaskAdapter()
         binding.ganttTaskRecycler.adapter = taskAdapter
+
+        val toolAdapter = GanttToolBarAdapter(viewModel)
+        binding.ganttToolBar.adapter = toolAdapter
+        binding.ganttToolBar.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         viewModel.project.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
                 binding.ganttTimeLine.setRange(it.startTimeMillis,it.endTimeMillis)
                 binding.ganttTimeLine.invalidate()
                 taskAdapter.submitProject(it)
+            }
+        })
+
+        viewModel.navigateToTaskSetting.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.projectRep.toTypedArray(),it))
+                viewModel.goToTaskDone()
             }
         })
 

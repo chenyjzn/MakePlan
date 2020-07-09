@@ -2,6 +2,7 @@ package com.yuchen.makeplan.ext
 
 import android.content.res.Resources
 import android.util.Log
+import com.yuchen.makeplan.data.Project
 import kotlin.math.roundToInt
 
 fun Int.toPx(): Int {
