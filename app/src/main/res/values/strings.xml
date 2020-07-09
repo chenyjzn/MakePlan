@@ -4,4 +4,25 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="int_rate">%d%%</string>
+
+    <string-array name="color_array">
+        <item>EF9A9A</item>
+        <item>CE93D8</item>
+        <item>90CAF9</item>
+        <item>A5D6A7</item>
+        <item>FFF59D</item>
+        <item>FFCC80</item>
+        <item>EF5350</item>
+        <item>AB47BC</item>
+        <item>42A5F5</item>
+        <item>66BB6A</item>
+        <item>FFEE58</item>
+        <item>FFA726</item>
+        <item>E53935</item>
+        <item>8E24AA</item>
+        <item>1E88E5</item>
+        <item>43A047</item>
+        <item>FDD835</item>
+        <item>FB8C00</item>
+    </string-array>
 </resources>

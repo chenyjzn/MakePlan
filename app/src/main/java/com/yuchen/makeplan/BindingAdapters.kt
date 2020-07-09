@@ -19,9 +19,6 @@ fun bindColorByColorCode(view: View, colorString: String?, taskColor : String?) 
                 paint.color = Color.parseColor("#$color")
                 paint.style = Paint.Style.FILL
                 canvas.drawCircle(this.width/2,this.height/2,this.width/2,paint)
-
-                Log.d("chenyjzn", "color = $colorString, taskColor = $taskColor")
-
                 if (taskColor == colorString){
                     Log.d("chenyjzn", "color = taskColor")
                     paint.color = Color.BLACK
@@ -29,7 +26,6 @@ fun bindColorByColorCode(view: View, colorString: String?, taskColor : String?) 
                     paint.strokeWidth = 2.toPx().toFloat()
                     canvas.drawCircle(this.width/2,this.height/2,this.width/2-paint.strokeWidth,paint)
                 }
-
             }
         })
     }

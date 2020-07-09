@@ -18,11 +18,7 @@ import com.yuchen.makeplan.databinding.ItemTaskColorBinding
 
 class TaskColorAdapter(private val viewModel : TaskViewModel) : RecyclerView.Adapter<TaskColorAdapter.TaskColorHolder>() {
 
-    private var colorList: List<String> = listOf(
-        "EF9A9A","CE93D8","90CAF9","A5D6A7","FFF59D","FFCC80",
-        "EF5350","AB47BC","42A5F5","66BB6A","FFEE58","FFA726",
-        "E53935","8E24AA","1E88E5","43A047","FDD835","FB8C00"
-    )
+    private var colorList: List<String> = viewModel.colorList
 
     class TaskColorHolder(var binding: ItemTaskColorBinding) : RecyclerView.ViewHolder(binding.root), LifecycleOwner {
         fun bind(viewModel: TaskViewModel, colorString : String) {
@@ -30,7 +26,7 @@ class TaskColorAdapter(private val viewModel : TaskViewModel) : RecyclerView.Ada
             binding.viewModel = viewModel
             binding.colorString = colorString
             binding.taskColor.setOnClickListener {
-                viewModel.newTask.value?.color = colorString
+                viewModel.newTaskColor.value = colorString
             }
             binding.executePendingBindings()
         }
