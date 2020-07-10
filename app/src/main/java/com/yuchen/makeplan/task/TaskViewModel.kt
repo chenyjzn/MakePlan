@@ -1,7 +1,5 @@
 package com.yuchen.makeplan.task
 
-import android.util.Log
-import androidx.databinding.InverseMethod
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,59 +8,51 @@ import com.yuchen.makeplan.HOUR_MILLIS
 import com.yuchen.makeplan.MINUTE_MILLIS
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
-import com.yuchen.makeplan.data.ToDo
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TaskViewModel (private val repository: MakePlanRepository, private val projectHistory : Array<Project>, private val pos : Int, val colorList : List<String>) : ViewModel() {
+class TaskViewModel (private val repository: MakePlanRepository, private val projectHistory : Array<Project>, private val taskPos : Int, val colorList : List<String>) : ViewModel() {
 
     var projectRep : MutableList<Project> = projectHistory.toMutableList()
-    val calendarStart = Calendar.getInstance()
-    val calendarEnd = Calendar.getInstance()
+    private val calendarStart = Calendar.getInstance()
+    private val calendarEnd = Calendar.getInstance()
 
     val newStartTimeMillis = MutableLiveData<Long>().apply {
-        if (pos == -1)
+        if (taskPos == -1)
             calendarStart.set(calendarStart.get(Calendar.YEAR), calendarStart.get(Calendar.MONTH), calendarStart.get(Calendar.DAY_OF_MONTH), 0, 0)
         else
-            calendarStart.timeInMillis = projectHistory.last().taskList[pos].startTimeMillis
+            calendarStart.timeInMillis = projectHistory.last().taskList[taskPos].startTimeMillis
         value = calendarStart.timeInMillis
     }
 
     val newEndTimeMillis = MutableLiveData<Long>().apply {
-        if (pos == -1)
+        if (taskPos == -1)
             calendarEnd.timeInMillis = calendarStart.timeInMillis + 1 * DAY_MILLIS
         else
-            calendarEnd.timeInMillis = projectHistory.last().taskList[pos].endTimeMillis
+            calendarEnd.timeInMillis = projectHistory.last().taskList[taskPos].endTimeMillis
         value = calendarEnd.timeInMillis
     }
 
-    var duration = 0L
-
     val newTaskName = MutableLiveData<String>().apply {
-        value = if (pos == -1)
+        value = if (taskPos == -1)
             "New Task"
         else
-            projectHistory.last().taskList[pos].name
+            projectHistory.last().taskList[taskPos].name
     }
+
     val newTaskColor = MutableLiveData<String>().apply {
-        value = if (pos == -1)
+        value = if (taskPos == -1)
             colorList.first()
         else
-            projectHistory.last().taskList[pos].color
+            projectHistory.last().taskList[taskPos].color
     }
 
-    private val _taskPos = MutableLiveData<Int>().apply {
-        value = pos
-    }
-    val taskPos: LiveData<Int>
-        get() = _taskPos
-
-    val newTask = MutableLiveData<Task>().apply {
-        if (pos == -1)
-            value = Task()
+    val newTaskCompleteRate = MutableLiveData<Int>().apply {
+        value = if (taskPos == -1)
+            0
         else
-            value = projectHistory.last().taskList[pos].newRefTask()
+            projectHistory.last().taskList[taskPos].completeRate
     }
 
     private val _newProject = MutableLiveData<MutableList<Project>>()
@@ -71,7 +61,20 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
 
     fun addTaskToNewProject(){
         val newProject =projectRep.last().newRefProject()
-        newTask.value?.let { newProject.taskList.add(it) }
+        val name = newTaskName.value?:"Project"
+        val startTimeMillis = newStartTimeMillis.value?:calendarStart.timeInMillis
+        val endTimeMillis = newEndTimeMillis.value?:calendarEnd.timeInMillis
+        val color = newTaskColor.value?:colorList.first()
+        var completeRate = newTaskCompleteRate.value?:0
+        if (taskPos == -1){
+            newProject.taskList.add(Task(startTimeMillis=startTimeMillis,endTimeMillis = endTimeMillis,name = name,color = color,completeRate = completeRate))
+        }else{
+            newProject.taskList[taskPos].startTimeMillis=startTimeMillis
+            newProject.taskList[taskPos].endTimeMillis=endTimeMillis
+            newProject.taskList[taskPos].name=name
+            newProject.taskList[taskPos].color=color
+            newProject.taskList[taskPos].completeRate=completeRate
+        }
         projectRep.add(newProject)
         _newProject.value = projectRep
     }
@@ -79,20 +82,32 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
     fun setStartDate(year: Int, month: Int, dayOfMonth: Int){
         calendarStart.set(year,month,dayOfMonth)
         newStartTimeMillis.value = calendarStart.timeInMillis
+
+        if (calendarStart.timeInMillis > calendarEnd.timeInMillis)
+            setEndTimeByTimeMillis(calendarStart.timeInMillis)
     }
 
     fun setStartTime(hourOfDay: Int, minute: Int){
         calendarStart.set(calendarStart.get(Calendar.YEAR),calendarStart.get(Calendar.MONTH),calendarStart.get(Calendar.DAY_OF_MONTH),hourOfDay,minute)
         newStartTimeMillis.value = calendarStart.timeInMillis
+
+        if (calendarStart.timeInMillis > calendarEnd.timeInMillis)
+            setEndTimeByTimeMillis(calendarStart.timeInMillis)
     }
 
-    fun setEndtDate(year: Int, month: Int, dayOfMonth: Int){
+    fun setEndDate(year: Int, month: Int, dayOfMonth: Int){
         calendarEnd.set(year,month,dayOfMonth)
+        if (calendarEnd.timeInMillis < calendarStart.timeInMillis)
+            calendarEnd.timeInMillis = calendarStart.timeInMillis
+
         newEndTimeMillis.value = calendarEnd.timeInMillis
     }
 
     fun setEndTime(hourOfDay: Int, minute: Int){
         calendarEnd.set(calendarEnd.get(Calendar.YEAR),calendarEnd.get(Calendar.MONTH),calendarEnd.get(Calendar.DAY_OF_MONTH),hourOfDay,minute)
+        if (calendarEnd.timeInMillis < calendarStart.timeInMillis)
+            calendarEnd.timeInMillis = calendarStart.timeInMillis
+
         newEndTimeMillis.value = calendarEnd.timeInMillis
     }
 
@@ -101,11 +116,6 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
         calendarEnd.timeInMillis = timeMillis
     }
 
-    @InverseMethod("convertTimeMilliToDateString")
-    fun convertDateStringToTimeMilli(value: String): Long {
-        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
-        return simpleDateFormat.parse(value).time
-    }
     fun convertTimeMilliToDateString(value: Long?): String {
         val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
         if (value == null)
@@ -114,11 +124,6 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
             return simpleDateFormat.format(value)
     }
 
-    @InverseMethod("convertTimeMilliToTimeString")
-    fun convertTimeStringToTimeMilli(value: String): Long {
-        val simpleDateFormat = SimpleDateFormat("HH:mm")
-        return simpleDateFormat.parse(value).time
-    }
     fun convertTimeMilliToTimeString(value: Long?): String {
         val simpleDateFormat = SimpleDateFormat("HH:mm")
         if (value == null)
@@ -127,15 +132,42 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
             return simpleDateFormat.format(value)
     }
 
-    fun getDurationDays(start : Long, end : Long) : String{
+    fun setEndByDurationDay(day : Int){
+        val oldDuration = calendarEnd.timeInMillis - calendarStart.timeInMillis
+        val newDuration = oldDuration - (oldDuration / DAY_MILLIS) * DAY_MILLIS + day * DAY_MILLIS
+        newStartTimeMillis.value?.let {
+            newEndTimeMillis.value = it + newDuration
+            calendarEnd.timeInMillis = it + newDuration
+        }
+    }
+
+    fun setEndByDurationHour(hour : Int){
+        val oldDuration = calendarEnd.timeInMillis - calendarStart.timeInMillis
+        val newDuration = oldDuration - (((oldDuration) % DAY_MILLIS)/HOUR_MILLIS) * HOUR_MILLIS + hour * HOUR_MILLIS
+        newStartTimeMillis.value?.let {
+            newEndTimeMillis.value = it + newDuration
+            calendarEnd.timeInMillis = it + newDuration
+        }
+    }
+
+    fun setEndByDurationMinute(minute : Int){
+        val oldDuration = calendarEnd.timeInMillis - calendarStart.timeInMillis
+        val newDuration = oldDuration - ((((oldDuration) % DAY_MILLIS)% HOUR_MILLIS)/ MINUTE_MILLIS) * MINUTE_MILLIS + minute * MINUTE_MILLIS
+        newStartTimeMillis.value?.let {
+            newEndTimeMillis.value = it + newDuration
+            calendarEnd.timeInMillis = it + newDuration
+        }
+    }
+
+    fun getDurationDays(start : Long , end : Long) : String{
         return ((end - start) / DAY_MILLIS).toString()
     }
 
-    fun getDurationHours(start : Long, end : Long) : String{
+    fun getDurationHours(start : Long , end : Long) : String{
         return (((end - start) % DAY_MILLIS)/ HOUR_MILLIS).toString()
     }
 
-    fun getDurationMinutes(start : Long, end : Long) : String{
+    fun getDurationMinutes(start : Long , end : Long) : String{
         return ((((end - start) % DAY_MILLIS)% HOUR_MILLIS)/ MINUTE_MILLIS).toString()
     }
 }

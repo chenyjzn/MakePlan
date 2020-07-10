@@ -32,7 +32,7 @@
             android:ems="10"
             android:hint="Task name"
             android:inputType="textPersonName"
-            android:text="@={viewModel.newTask.name}"
+            android:text=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/task_name"
             app:layout_constraintTop_toBottomOf="@+id/task_name" />
@@ -156,7 +156,6 @@
             android:text="ToDo:"
             app:layout_constraintStart_toStartOf="@+id/task_color"
             app:layout_constraintTop_toBottomOf="@+id/task_color_recycler" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -135,7 +135,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="date"
+            android:inputType="number"
             android:text="@{viewModel.getDurationDays(viewModel.newStartTimeMillis,viewModel.newEndTimeMillis)}"
             app:layout_constraintEnd_toStartOf="@+id/task_duration_day"
             app:layout_constraintHorizontal_bias="0.5"
@@ -222,10 +222,24 @@
             android:id="@+id/task_complete_rate_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="@={viewModel.newTaskCompleteRate}"
+            app:layout_constraintBottom_toBottomOf="@+id/task_complete_rate_text"
             app:layout_constraintEnd_toEndOf="@+id/task_end_time_edit"
-            app:layout_constraintStart_toStartOf="@+id/task_duration_day_edit"
+            app:layout_constraintStart_toEndOf="@+id/task_complete_rate_text"
             app:layout_constraintTop_toBottomOf="@+id/task_complete_rate" />
+
+        <TextView
+            android:id="@+id/task_complete_rate_text"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{@string/int_rate(viewModel.newTaskCompleteRate)}"
+            app:layout_constraintStart_toStartOf="@+id/task_complete_rate"
+            app:layout_constraintTop_toBottomOf="@+id/task_complete_rate"
+            tools:text="5%" />
 
         <Button
             android:id="@+id/task_cancel"
@@ -235,14 +249,14 @@
             android:layout_marginEnd="4dp"
             android:text="@android:string/cancel"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/task_apply"
+            app:layout_constraintEnd_toStartOf="@+id/task_save"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="@+id/task_color_recycler"
             app:layout_constraintTop_toBottomOf="@+id/task_color_recycler" />
 
         <Button
-            android:id="@+id/task_apply"
+            android:id="@+id/task_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
