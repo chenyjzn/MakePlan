@@ -30,13 +30,13 @@ class ProjectsFragment : Fragment() {
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
                 projectsAdapter.submitProjects(it)
-                Log.d("chenyjzn", "$it")
+//                Log.d("chenyjzn", "$it")
             }
         })
 
         viewModel.navigateToGantt.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Log.d("chenyjzn", "go to gantt $it")
+//                Log.d("chenyjzn", "go to gantt $it")
                 this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(arrayOf(it),0))
                 viewModel.goToGanttDone()
             }
@@ -44,7 +44,7 @@ class ProjectsFragment : Fragment() {
 
         viewModel.navigateToProjectSetting.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Log.d("chenyjzn", "go to project setting $it")
+//                Log.d("chenyjzn", "go to project setting $it")
                 viewModel.goToProjectSettingDone()
             }
         })

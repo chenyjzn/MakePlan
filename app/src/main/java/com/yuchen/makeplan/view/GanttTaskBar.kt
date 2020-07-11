@@ -1,14 +1,15 @@
 package com.yuchen.makeplan.view
 
+import android.R
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
-import com.yuchen.makeplan.ext.toPx
+
 
 class GanttTaskBar : View {
 
@@ -16,60 +17,42 @@ class GanttTaskBar : View {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private var projectStartDate: Long = 0L
-    private var projectEndDate: Long = 0L
+    private val barPaint = Paint()
 
-    private var taskStartDate: Long = 0L
-    private var taskEndDate: Long = 0L
+    private var startPosRate : Float = 0f
+    private var endPosRate : Float = 0f
+    private var completePosRate : Float = 0f
+    private var colorString = ""
+    private var left = 0f
+    private var right = 0f
+    private var top = 0f
+    private var bottom = 0f
 
-    var taskName = ""
-    var colorString = "000000"
-
-    private val linePaint = Paint().apply {
-        strokeWidth = 1.toPx().toFloat()
-        color = Color.GRAY
-    }
-    private val textPaint = Paint().apply {
-        color = Color.WHITE
-        textSize = 16.toPx().toFloat()
-        textAlign = Paint.Align.LEFT
-    }
-
-    private val barPaint = Paint().apply {
-        color = Color.parseColor("#$colorString")
-    }
-
-    private val textBackGroundPaint = Paint().apply {
-        color = Color.WHITE
-    }
-
-    val fontOffsetY = -(textPaint.fontMetrics.top + textPaint.fontMetrics.bottom)/2
-
-    fun setRange(_projectStartDate: Long, _projectEndDate: Long, _taskStartDate: Long, _taskEndDate: Long){
-        this.projectStartDate = _projectStartDate
-        this.projectEndDate = _projectEndDate
-        this.taskStartDate = _taskStartDate
-        this.taskEndDate = _taskEndDate
+    fun taskBarInit(projectStart : Long, projectEnd : Long, taskStart : Long, taskEnd : Long,percent : Int,color : String){
+        startPosRate = (taskStart-projectStart).toFloat()/(projectEnd - projectStart).toFloat()
+        endPosRate = (taskEnd - projectStart).toFloat()/(projectEnd - projectStart).toFloat()
+        completePosRate = startPosRate + (endPosRate - startPosRate)*percent.toFloat()/100f
+        colorString = color
     }
 
     private fun drawTaskBar(canvas: Canvas) {
-        val left = interpolation(projectStartDate,projectEndDate,taskStartDate)*width.toFloat()
-        val right = interpolation(projectStartDate,projectEndDate,taskEndDate)*width.toFloat()
-        val bottom = height.toFloat()*0.5f
-        val top = height.toFloat()
-        val bounds = Rect()
-        textPaint.getTextBounds(taskName, 0, taskName.length, bounds)
-        //canvas.drawRect(left,0f,left + bounds.right- bounds.left, height.toFloat()*0.5f, textBackGroundPaint)
-        canvas.drawText(taskName,left,height.toFloat()*0.25f + fontOffsetY, textPaint)
-        canvas.drawRoundRect(left,top,right , bottom,15f,15f, barPaint)
+        barPaint.color = Color.parseColor("#$colorString")
+        Log.d("chenyjzn","width = $width, LayoutWidth = ${minimumWidth}")
+        left = startPosRate * width.toFloat()
+        top = 0.0f
+        right = endPosRate * width.toFloat()
+        bottom = height.toFloat()
+
+        canvas.drawRoundRect(left,top,right,bottom,15f,15f,barPaint)
+        barPaint.color = Color.WHITE
+        canvas.drawRect(left,0.0f,completePosRate*width.toFloat(),height.toFloat(),barPaint)
     }
 
-    fun interpolation(startTime : Long, endTime : Long, actualTime : Long) : Float{
-        return (actualTime-startTime).toFloat()/(endTime - startTime).toFloat()
+    fun isClick(x:Float,y:Float):Boolean{
+        return x in left..right && y in top..bottom
     }
 
     override fun onDraw(canvas: Canvas) {
-        barPaint.color = Color.parseColor("#$colorString")
         drawTaskBar(canvas)
     }
 }

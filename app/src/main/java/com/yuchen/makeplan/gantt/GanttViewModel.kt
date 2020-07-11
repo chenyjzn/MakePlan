@@ -10,9 +10,21 @@ import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.ext.removeFrom
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 
 class GanttViewModel (private val repository: MakePlanRepository , private val projectHistory : Array<Project>) : ViewModel() {
+
+
+    private var viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+    private val _projectSaveSuccess = MutableLiveData<Boolean>()
+    val projectSaveSuccess: LiveData<Boolean>
+        get() = _projectSaveSuccess
 
     var projectRep : MutableList<Project> = projectHistory.toMutableList()
 
@@ -50,6 +62,19 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         }
     }
 
+    fun saveProject(){
+        _project.value?.let {
+            coroutineScope.launch {
+                repository.updateProject(it)
+                _projectSaveSuccess.value = true
+            }
+        }
+    }
+
+    fun saveProjectDone(){
+        _projectSaveSuccess.value = null
+    }
+
     fun addProjectToRep(){
         //Log.d("chenyjzn","add project = ${_project.value}")
         _project.value?.let {
@@ -85,14 +110,12 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         _project.value = projectRep[projectPos]
     }
 
-    fun setAllProjectRepTime(startTime : Long, endTime : Long){
-        projectRep.forEach {
-            it.startTimeMillis = startTime
-            it.endTimeMillis = endTime
-        }
-    }
-
     fun getUndoListArray(): Array<Project>{
         return projectRep.subList(0,projectPos+1).toTypedArray()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 }

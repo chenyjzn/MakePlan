@@ -26,14 +26,14 @@ data class Project (
     var taskList: MutableList<Task> = mutableListOf()
 ) : Parcelable
 {
-    val completeRate : Int
-        get() {
-            var fb = 0.0f
-            for (i in taskList){
-                fb += (i.startTimeMillis-i.endTimeMillis)*completeRate
-            }
-            return fb.roundToInt()
-        }
+//    val completeRate : Int
+//        get() {
+//            var fb = 0.0f
+//            for (i in taskList){
+//                fb += (i.startTimeMillis-i.endTimeMillis)*completeRate
+//            }
+//            return fb.roundToInt()
+//        }
 
     fun newRefProject(): Project{
         val newProject = this.copy(taskList = mutableListOf())
