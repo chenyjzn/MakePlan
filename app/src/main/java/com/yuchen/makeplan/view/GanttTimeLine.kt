@@ -57,6 +57,7 @@ class GanttTimeLine : View{
     val fontOffsetY = -(textPaint.fontMetrics.top + textPaint.fontMetrics.bottom)/2
 
     fun setRange(_startDate: Long, _endDate: Long){
+        //Log.d("chenyjzn","start $_startDate, end $_endDate")
         this.startDate = _startDate
         calendar.timeInMillis = _startDate
         startYear = calendar.get(Calendar.YEAR)
@@ -83,7 +84,7 @@ class GanttTimeLine : View{
         }else{
             timeLineType = 4
         }
-        Log.d("chenyjzn", " Scale = ${calScale(DAY_MILLIS)}, type = $timeLineType")
+//        Log.d("chenyjzn", " Scale = ${calScale(DAY_MILLIS)}, type = $timeLineType")
     }
 
     private fun drawFrame(canvas: Canvas){

@@ -13,13 +13,62 @@
         android:layout_height="match_parent"
         android:background="@color/cardview_dark_background">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/gantt_tool_bar"
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/gantt_add_task"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_add_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/gantt_undo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_undo_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/gantt_redo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_redo_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/gantt_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_save_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/gantt_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/gantt_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/ic_delete_black_24dp" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <com.yuchen.makeplan.view.GanttTimeLine
             android:id="@+id/gantt_time_line"
@@ -27,7 +76,7 @@
             android:layout_height="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gantt_tool_bar" />
+            app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/gantt_task_recycler"

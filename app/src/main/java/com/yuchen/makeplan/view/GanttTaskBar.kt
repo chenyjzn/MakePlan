@@ -23,6 +23,7 @@ class GanttTaskBar : View {
     private var taskEndDate: Long = 0L
 
     var taskName = ""
+    var colorString = "000000"
 
     private val linePaint = Paint().apply {
         strokeWidth = 1.toPx().toFloat()
@@ -35,7 +36,7 @@ class GanttTaskBar : View {
     }
 
     private val barPaint = Paint().apply {
-        color = Color.RED
+        color = Color.parseColor("#$colorString")
     }
 
     private val textBackGroundPaint = Paint().apply {
@@ -68,6 +69,7 @@ class GanttTaskBar : View {
     }
 
     override fun onDraw(canvas: Canvas) {
+        barPaint.color = Color.parseColor("#$colorString")
         drawTaskBar(canvas)
     }
 }
