@@ -31,12 +31,14 @@ class EditViewModel (private val repository: MakePlanRepository, val project: Pr
         if (project == null){
             val newProject = Project(name = projectName.value?:"Project")
             coroutineScope.launch {
+                newProject.updateTime = System.currentTimeMillis()
                 repository.insertProject(newProject)
                 _runDismiss.value = true
             }
         }else{
             project.name = projectName.value?:"Project"
             coroutineScope.launch {
+                project.updateTime = System.currentTimeMillis()
                 repository.updateProject(project)
                 _runDismiss.value = true
             }

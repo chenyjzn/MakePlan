@@ -1,6 +1,7 @@
 package com.yuchen.makeplan.data
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -23,17 +24,24 @@ data class Project (
     @ColumnInfo(name = "project_name")
     var name: String = "Project",
     @ColumnInfo(name = "project_task_list")
-    var taskList: MutableList<Task> = mutableListOf()
+    var taskList: MutableList<Task> = mutableListOf(),
+    @ColumnInfo(name = "project_update_time")
+    var updateTime: Long = System.currentTimeMillis()
 ) : Parcelable
 {
-//    val completeRate : Int
-//        get() {
-//            var fb = 0.0f
-//            for (i in taskList){
-//                fb += (i.startTimeMillis-i.endTimeMillis)*completeRate
-//            }
-//            return fb.roundToInt()
-//        }
+    val completeRate : Int
+        get(){
+            var fb = 0.0f
+            var max = 0.0f
+            for (i in taskList){
+                max += (i.endTimeMillis-i.startTimeMillis)
+                fb += (i.endTimeMillis-i.startTimeMillis)*(i.completeRate/100f)
+            }
+            if (max == 0.0f)
+                return 0
+            else
+                return (fb*100f/max).roundToInt()
+        }
 
     fun newRefProject(): Project{
         val newProject = this.copy(taskList = mutableListOf())

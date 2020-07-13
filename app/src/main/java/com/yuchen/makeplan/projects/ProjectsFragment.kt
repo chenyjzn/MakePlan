@@ -21,7 +21,7 @@ class ProjectsFragment : Fragment() {
         val binding = FragmentProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val projectsAdapter = ProjectsAdapter(viewModel)
+        val projectsAdapter = ProjectsAdapter(viewModel,resources)
 
         binding.projectsRecycler.adapter = projectsAdapter
 

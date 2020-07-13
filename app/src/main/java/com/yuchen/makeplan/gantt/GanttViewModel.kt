@@ -81,6 +81,7 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     fun saveProject(){
         _project.value?.let {
             coroutineScope.launch {
+                it.updateTime = System.currentTimeMillis()
                 repository.updateProject(it)
                 _projectSaveSuccess.value = true
             }

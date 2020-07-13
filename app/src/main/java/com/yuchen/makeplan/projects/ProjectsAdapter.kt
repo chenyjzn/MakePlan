@@ -1,18 +1,21 @@
 package com.yuchen.makeplan.projects
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.ItemProjectAddBinding
 import com.yuchen.makeplan.databinding.ItemProjectBinding
+import com.yuchen.makeplan.util.TimeUtil.StampToDate
 
-class ProjectsAdapter(private val viewModel : ProjectsViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProjectsAdapter(private val viewModel : ProjectsViewModel,private val resources: Resources) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var projectList: List<Project>? = null
 
     class ProjectHolder(var binding: ItemProjectBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(project: Project,viewModel : ProjectsViewModel) {
+        fun bind(project: Project,viewModel : ProjectsViewModel,resources: Resources) {
             binding.project = project
             binding.itemProjectCard.setOnClickListener {
                 viewModel.goToGantt(project)
@@ -21,6 +24,7 @@ class ProjectsAdapter(private val viewModel : ProjectsViewModel) : RecyclerView.
                 viewModel.goToProjectSetting(project)
                 true
             }
+            binding.itemProjectEditTime.text = StampToDate(project.updateTime)
             binding.executePendingBindings()
         }
     }
@@ -35,24 +39,25 @@ class ProjectsAdapter(private val viewModel : ProjectsViewModel) : RecyclerView.
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType){
-            PROJECT -> {
-                ProjectHolder(ItemProjectBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            }
-            ADD_PROJECT -> {
-                ProjectAddHolder(ItemProjectAddBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            }
-            else -> {
-                throw ClassCastException("Unknown viewType $viewType")
-            }
-        }
+        return ProjectHolder(ItemProjectBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+//        return when(viewType){
+//            PROJECT -> {
+//                ProjectHolder(ItemProjectBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+//            }
+//            ADD_PROJECT -> {
+//                ProjectAddHolder(ItemProjectAddBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+//            }
+//            else -> {
+//                throw ClassCastException("Unknown viewType $viewType")
+//            }
+//        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder) {
             is ProjectHolder -> {
                 projectList?.let {
-                    holder.bind(it[position],viewModel)
+                    holder.bind(it[position],viewModel,resources)
                 }
             }
             is ProjectAddHolder -> {
@@ -61,15 +66,16 @@ class ProjectsAdapter(private val viewModel : ProjectsViewModel) : RecyclerView.
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        if (position < projectList?.size ?: -1){
-            return PROJECT
-        }
-        return ADD_PROJECT
-    }
+//    override fun getItemViewType(position: Int): Int {
+//        if (position < projectList?.size ?: -1){
+//            return PROJECT
+//        }
+//        return ADD_PROJECT
+//    }
 
     override fun getItemCount(): Int {
-        return projectList?.let {it.size+1}?:1
+//        return projectList?.let {it.size+1}?:1
+        return projectList?.let {it.size} ?: 0
     }
 
     fun submitProjects(projectList: List<Project>) {
