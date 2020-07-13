@@ -12,6 +12,10 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         makePlanLocalDataSource.updateProject(project)
     }
 
+    override suspend fun removeProject(project: Project) {
+        makePlanLocalDataSource.removeProject(project)
+    }
+
     override fun getAllProjects(): LiveData<List<Project>> {
         return makePlanLocalDataSource.getAllProjects()
     }

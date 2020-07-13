@@ -7,19 +7,17 @@ import com.yuchen.makeplan.data.Project
 @Dao
 interface MakePlanDataBaseDao {
     @Insert
-    fun insert(inCartProduct: Project)
+    fun insertProject(inCartProduct: Project)
 
     @Update
-    fun update(inCartProduct: Project)
+    fun updateProject(inCartProduct: Project)
+
+    @Delete
+    fun removeProject(project: Project)
 
     @Query("SELECT * FROM project_list ORDER BY id DESC")
     fun getAllProjects():LiveData<List<Project>>
 
-//    @Query("SELECT * FROM cart_product_table WHERE cart_product_id = :productId AND cart_product_color_code = :productColorCode AND cart_product_size = :productSize ")
-//    fun get(productId: Long,productColorCode: String,productSize:String): Project?
-//
-//    @Delete
-//    fun delete(inCartProduct: InCartProduct)
 //
 //    @Query("DELETE FROM cart_product_table")
 //    fun clear()

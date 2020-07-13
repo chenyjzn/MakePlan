@@ -10,13 +10,19 @@ import kotlinx.coroutines.withContext
 class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     override suspend fun insertProject(project: Project) {
         withContext(Dispatchers.IO) {
-            MakePlanDataBase.getInstance(context).makePlanDataBaseDao.insert(project)
+            MakePlanDataBase.getInstance(context).makePlanDataBaseDao.insertProject(project)
         }
     }
 
     override suspend fun updateProject(project: Project) {
         withContext(Dispatchers.IO) {
-            MakePlanDataBase.getInstance(context).makePlanDataBaseDao.update(project)
+            MakePlanDataBase.getInstance(context).makePlanDataBaseDao.updateProject(project)
+        }
+    }
+
+    override suspend fun removeProject(project: Project) {
+        withContext(Dispatchers.IO) {
+            MakePlanDataBase.getInstance(context).makePlanDataBaseDao.removeProject(project)
         }
     }
 

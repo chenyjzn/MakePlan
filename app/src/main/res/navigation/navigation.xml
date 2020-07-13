@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_projectsFragment_to_ganttFragment"
             app:destination="@id/ganttFragment" />
+        <action
+            android:id="@+id/action_projectsFragment_to_EditDialog"
+            app:destination="@id/EditDialog" />
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
@@ -46,4 +49,14 @@
             android:name="projectHistoryPos"
             app:argType="integer" />
     </fragment>
+    <dialog
+        android:id="@+id/EditDialog"
+        android:name="com.yuchen.makeplan.edit.EditDialog"
+        android:label="dialog_project_edit"
+        tools:layout="@layout/dialog_edit" >
+        <argument
+            android:name="project"
+            app:argType="com.yuchen.makeplan.data.Project"
+            app:nullable="true" />
+    </dialog>
 </navigation>

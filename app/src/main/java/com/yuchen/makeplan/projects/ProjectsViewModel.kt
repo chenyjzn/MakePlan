@@ -33,7 +33,7 @@ class ProjectsViewModel (private val repository: MakePlanRepository) : ViewModel
         _navigateToGantt.value = null
     }
 
-    fun goToProjectSetting(project: Project){
+    fun goToProjectSetting(project: Project?){
         _navigateToProjectSetting.value = project
     }
 
@@ -45,5 +45,10 @@ class ProjectsViewModel (private val repository: MakePlanRepository) : ViewModel
         coroutineScope.launch {
             repository.insertProject(Project())
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 }

@@ -13,6 +13,10 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun removeProject(project: Project) {
+        TODO("Not yet implemented")
+    }
+
     override fun getAllProjects(): LiveData<List<Project>> {
         TODO("Not yet implemented")
     }

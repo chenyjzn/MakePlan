@@ -25,18 +25,14 @@ class ProjectsFragment : Fragment() {
 
         binding.projectsRecycler.adapter = projectsAdapter
 
-        binding.projectsBackGround.setBackgroundColor(resources.getColor(R.color.projects_card_EBECF0))
-
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
                 projectsAdapter.submitProjects(it)
-//                Log.d("chenyjzn", "$it")
             }
         })
 
         viewModel.navigateToGantt.observe(viewLifecycleOwner, Observer {
             it?.let {
-//                Log.d("chenyjzn", "go to gantt $it")
                 this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(arrayOf(it),0))
                 viewModel.goToGanttDone()
             }
@@ -44,10 +40,14 @@ class ProjectsFragment : Fragment() {
 
         viewModel.navigateToProjectSetting.observe(viewLifecycleOwner, Observer {
             it?.let {
-//                Log.d("chenyjzn", "go to project setting $it")
+                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(it))
                 viewModel.goToProjectSettingDone()
             }
         })
+
+        binding.projectAdd.setOnClickListener {
+            this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null))
+        }
 
         return binding.root
     }

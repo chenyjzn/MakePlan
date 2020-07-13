@@ -8,5 +8,7 @@ interface MakePlanDataSource{
 
     suspend fun updateProject(project: Project)
 
+    suspend fun removeProject(project: Project)
+
     fun getAllProjects(): LiveData<List<Project>>
 }

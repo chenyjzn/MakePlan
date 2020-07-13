@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MaterialLightNoBarTheme"
+        android:windowSoftInputMode="stateHidden|adjustPan"
         android:name=".MakePlanApplication">
         <activity android:name=".MainActivity">
             <intent-filter>

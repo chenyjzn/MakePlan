@@ -21,7 +21,7 @@ data class Project (
     @ColumnInfo(name = "project_end_time")
     var endTimeMillis : Long = startTimeMillis + 7 * DAY_MILLIS,
     @ColumnInfo(name = "project_name")
-    val name: String = "Project",
+    var name: String = "Project",
     @ColumnInfo(name = "project_task_list")
     var taskList: MutableList<Task> = mutableListOf()
 ) : Parcelable
