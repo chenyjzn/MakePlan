@@ -38,6 +38,8 @@ class GanttChart : View {
     private var endMonth: Int = calendar.get(Calendar.MONTH)
     private var endDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
 
+    private var taskSelect = -1
+
     var dy = 0f
 
     private val linePaint = Paint().apply {
@@ -52,6 +54,12 @@ class GanttChart : View {
     }
 
     private val barPaint = Paint()
+
+    private val taskSelectPaint = Paint().apply {
+        color = Color.BLACK
+        style = Paint.Style.STROKE
+        strokeWidth = 2.toPx().toFloat()
+    }
 
     val fontOffsetY = -(textPaint.fontMetrics.top + textPaint.fontMetrics.bottom)/2
 
@@ -73,7 +81,7 @@ class GanttChart : View {
     }
 
     fun setYPos(dy : Float){
-        Log.d("chenyjzn","allheight = ${taskHight * project!!.taskList!!.size} height = $height, oldDy = ${this.dy}, newDy = $dy")
+        //Log.d("chenyjzn","allheight = ${taskHight * project!!.taskList!!.size} height = $height, oldDy = ${this.dy}, newDy = $dy")
         project?.let {
             val allTaskHigh = taskHight * it.taskList.size
             if (height >= allTaskHigh) {
@@ -102,6 +110,10 @@ class GanttChart : View {
         }else{
             timeLineType = 4
         }
+    }
+
+    fun setTaskSelect(pos:Int){
+        taskSelect = pos
     }
 
     fun interpolation(startTime : Long, endTime : Long, actualTime : Long) : Float{
@@ -184,22 +196,17 @@ class GanttChart : View {
         project?.let {project ->
             if(project.taskList.size > 0){
                 val allTaskHigh = (taskHight * project.taskList.size).toFloat()
-                Log.d("chenyjzn", "$allTaskHigh")
                 when(timeLineType){
                     0 -> {
-                        Log.d("chenyjzn", "$timeLineType")
                         drawSecondaryTimeLineByDay(canvas,allTaskHigh)
                     }
                     1 -> {
-                        Log.d("chenyjzn", "$timeLineType")
                         drawSecondaryTimeLineByWeek(canvas,allTaskHigh)
                     }
                     2 -> {
-                        Log.d("chenyjzn", "$timeLineType")
                         drawSecondaryTimeLineByMonth(canvas,allTaskHigh)
                     }
                     else -> {
-                        Log.d("chenyjzn", "$timeLineType")
                         drawSecondaryTimeLineByMonth(canvas,allTaskHigh)
                     }
                 }
@@ -214,14 +221,31 @@ class GanttChart : View {
                     canvas.drawRoundRect(left,top + taskHight.toFloat()*0.5f + this.dy,right , bottom + this.dy,15f,15f, barPaint)
                     barPaint.color = Color.WHITE
                     canvas.drawRect(left,top + taskHight.toFloat()*0.5f +this.dy,left + (right - left)*value.completeRate.toFloat()/100f , bottom + this.dy,barPaint)
+                    if (index == taskSelect){
+                        canvas.drawRoundRect(left,top + taskHight.toFloat()*0.5f + this.dy,right , bottom + this.dy,15f,15f, taskSelectPaint)
+                    }
+                    Log.d("chenyjzn","Task : $index, left = ${left} , right = ${right}, up: ${top + taskHight.toFloat()*0.5f}, down = ${bottom + this.dy}")
                 }
             }
         }
+    }
+
+    fun posTaskSelect(x : Float, y : Float) : Int{
+        project?.let {
+            for ((index, value) in it.taskList.withIndex()){
+                val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
+                val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
+                val top = ((index)*taskHight).toFloat() + taskHight.toFloat()*0.5f + dy
+                val bottom = ((index+1)*taskHight).toFloat() + dy
+                if (x in left..right && y in top..bottom)
+                    return index
+            }
+        }
+        return -1
     }
 
     override fun onDraw(canvas: Canvas) {
         setTimeLineScale()
         drawGanttChart(canvas)
     }
-
 }

@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
-        this.supportActionBar?.hide()
+//        this.supportActionBar?.hide()
 
 //        val displayMetrics = DisplayMetrics()
 //        this.windowManager.defaultDisplay.getMetrics(displayMetrics)
