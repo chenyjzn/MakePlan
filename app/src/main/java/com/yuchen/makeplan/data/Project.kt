@@ -26,7 +26,9 @@ data class Project (
     @ColumnInfo(name = "project_task_list")
     var taskList: MutableList<Task> = mutableListOf(),
     @ColumnInfo(name = "project_update_time")
-    var updateTime: Long = System.currentTimeMillis()
+    var updateTime: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "project_fire_base_id")
+    var fireBaseId: String = ""
 ) : Parcelable
 {
     val completeRate : Int

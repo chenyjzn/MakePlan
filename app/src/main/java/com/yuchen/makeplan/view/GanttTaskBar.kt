@@ -37,7 +37,7 @@ class GanttTaskBar : View {
 
     private fun drawTaskBar(canvas: Canvas) {
         barPaint.color = Color.parseColor("#$colorString")
-        Log.d("chenyjzn","width = $width, LayoutWidth = ${minimumWidth}")
+//        Log.d("chenyjzn","width = $width, LayoutWidth = ${minimumWidth}")
         left = startPosRate * width.toFloat()
         top = 0.0f
         right = endPosRate * width.toFloat()

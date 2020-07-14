@@ -56,7 +56,7 @@ class GanttFragment : Fragment() {
 
         viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Log.d("chenyjzn","Task select = $it")
+//                Log.d("chenyjzn","Task select = $it")
                 binding.ganttChart.setTaskSelect(it)
                 binding.ganttChart.invalidate()
             }
@@ -185,7 +185,7 @@ class GanttFragment : Fragment() {
                     if (touchStatus == TouchMode.CLICK){
                         c = Calendar.getInstance()
                         if (c.timeInMillis - touchStart < MAX_CLICK_DURATION){
-                            Log.d("chenyjzn","Touch up x = ${event.x} , pos y = ${event.y} click")
+//                            Log.d("chenyjzn","Touch up x = ${event.x} , pos y = ${event.y} click")
                             viewModel.setTaskSelect((v as GanttChart).posTaskSelect(event.x,event.y))
                         }
                     }

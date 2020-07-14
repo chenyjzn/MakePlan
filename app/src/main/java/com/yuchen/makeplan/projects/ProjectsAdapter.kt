@@ -10,12 +10,12 @@ import com.yuchen.makeplan.databinding.ItemProjectAddBinding
 import com.yuchen.makeplan.databinding.ItemProjectBinding
 import com.yuchen.makeplan.util.TimeUtil.StampToDate
 
-class ProjectsAdapter(private val viewModel : ProjectsViewModel,private val resources: Resources) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProjectsAdapter(private val viewModel : ProjectsViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var projectList: List<Project>? = null
 
     class ProjectHolder(var binding: ItemProjectBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(project: Project,viewModel : ProjectsViewModel,resources: Resources) {
+        fun bind(project: Project,viewModel : ProjectsViewModel) {
             binding.project = project
             binding.itemProjectCard.setOnClickListener {
                 viewModel.goToGantt(project)
@@ -57,7 +57,7 @@ class ProjectsAdapter(private val viewModel : ProjectsViewModel,private val reso
         when(holder) {
             is ProjectHolder -> {
                 projectList?.let {
-                    holder.bind(it[position],viewModel,resources)
+                    holder.bind(it[position],viewModel)
                 }
             }
             is ProjectAddHolder -> {

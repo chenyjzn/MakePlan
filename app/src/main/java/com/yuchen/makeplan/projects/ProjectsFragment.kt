@@ -21,7 +21,7 @@ class ProjectsFragment : Fragment() {
         val binding = FragmentProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val projectsAdapter = ProjectsAdapter(viewModel,resources)
+        val projectsAdapter = ProjectsAdapter(viewModel)
 
         binding.projectsRecycler.adapter = projectsAdapter
 
@@ -48,6 +48,9 @@ class ProjectsFragment : Fragment() {
         binding.projectAdd.setOnClickListener {
             this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null))
         }
+
+
+
 
         return binding.root
     }

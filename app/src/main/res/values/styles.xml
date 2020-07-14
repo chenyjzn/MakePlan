@@ -24,6 +24,14 @@
         <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
     </style>
 
+    <style name="MaterialLightTheme" parent="Theme.MaterialComponents.Light">
+        <!-- Add attributes here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
+    </style>
+
     <!--To fix rendering in preview -->
     <style name="AppTextAppearance.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>

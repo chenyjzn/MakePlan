@@ -224,7 +224,7 @@ class GanttChart : View {
                     if (index == taskSelect){
                         canvas.drawRoundRect(left,top + taskHight.toFloat()*0.5f + this.dy,right , bottom + this.dy,15f,15f, taskSelectPaint)
                     }
-                    Log.d("chenyjzn","Task : $index, left = ${left} , right = ${right}, up: ${top + taskHight.toFloat()*0.5f}, down = ${bottom + this.dy}")
+//                    Log.d("chenyjzn","Task : $index, left = ${left} , right = ${right}, up: ${top + taskHight.toFloat()*0.5f}, down = ${bottom + this.dy}")
                 }
             }
         }

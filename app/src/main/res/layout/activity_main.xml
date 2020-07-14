@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -42,6 +43,16 @@
             app:layout_constraintEnd_toEndOf="@+id/nav_fragment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/nav_fragment" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/main_check_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
+            app:layout_constraintStart_toStartOf="@+id/sign_in_button"
+            app:srcCompat="@drawable/ic_cloud_black_24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
