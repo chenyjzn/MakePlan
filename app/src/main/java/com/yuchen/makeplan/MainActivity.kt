@@ -85,6 +85,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+            }
+            true
+        }
     }
 
     override fun onStart() {
