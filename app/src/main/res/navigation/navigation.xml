@@ -59,4 +59,13 @@
             app:argType="com.yuchen.makeplan.data.Project"
             app:nullable="true" />
     </dialog>
+    <dialog
+        android:id="@+id/NotExistCheckDialog"
+        android:name="com.yuchen.makeplan.notexist.NotExistCheckDialog"
+        android:label="dialog_not_exist_check"
+        tools:layout="@layout/dialog_not_exist_check" >
+        <argument
+            android:name="notExistProjects"
+            app:argType="com.yuchen.makeplan.data.Project[]" />
+    </dialog><action android:id="@+id/action_global_NotExistCheckDialog" app:destination="@id/NotExistCheckDialog"/>
 </navigation>

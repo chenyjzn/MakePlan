@@ -2,11 +2,7 @@ package com.yuchen.makeplan
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
-import android.view.ActionMode
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,15 +14,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.yuchen.makeplan.UserManager.auth
-import com.yuchen.makeplan.UserManager.googleSignInClient
+import com.yuchen.makeplan.util.UserManager.auth
+import com.yuchen.makeplan.util.UserManager.googleSignInClient
 import com.yuchen.makeplan.databinding.ActivityMainBinding
 import com.yuchen.makeplan.ext.getVmFactory
-import com.yuchen.makeplan.util.ServiceLocator.makePlanRepository
+import com.yuchen.makeplan.util.UserManager
 
 const val SECOND_MILLIS = 1000L
 const val MINUTE_MILLIS = 60000L
@@ -63,13 +56,6 @@ class MainActivity : AppCompatActivity() {
             else
                 signIn()
         }
-
-        binding.mainCheckLogin.setOnClickListener {
-            UserManager.userEmail?.let {
-                viewModel.getUser(it)
-            }
-        }
-
         viewModel.loadingStatus.observe(this, Observer {
             it?.let {
                 when(it){
@@ -86,13 +72,26 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        
+        findNavController(R.id.nav_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
+            when(destination.id){
+                R.id.ganttFragment ->{
+                    this.actionBar?.hide()
+                }
+                R.id.taskFragment ->{
+                    this.actionBar?.hide()
+                }
+                R.id.projectsFragment ->{
+                    this.actionBar?.hide()
+                }
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        viewModel.updateUser(currentUser)
+        auth.currentUser?.let {
+            viewModel.getUser()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -104,7 +103,6 @@ class MainActivity : AppCompatActivity() {
                 viewModel.signInFirebaseWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 Log.w("chenyjzn", "Google sign in failed", e)
-                viewModel.updateUser(null)
             }
         }
     }
@@ -117,7 +115,7 @@ class MainActivity : AppCompatActivity() {
     fun signOut() {
         auth.signOut()
         googleSignInClient.signOut().addOnCompleteListener(this) {
-            viewModel.updateUser(null)
+
         }
     }
 

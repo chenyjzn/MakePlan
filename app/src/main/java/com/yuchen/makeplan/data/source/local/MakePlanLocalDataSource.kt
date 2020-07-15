@@ -29,23 +29,29 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         }
     }
 
+    override suspend fun searchProject(id: Long): Project? {
+        return withContext(Dispatchers.IO) {
+            MakePlanDataBase.getInstance(context).makePlanDataBaseDao.searchProject(id)
+        }
+    }
+
     override fun getAllProjects(): LiveData<List<Project>> {
         return MakePlanDataBase.getInstance(context).makePlanDataBaseDao.getAllProjects()
     }
 
-    override suspend fun insertProjectToFireBase(project: Project) : Result<String> {
+    override suspend fun removeProjectFromFirebase(id: Long): Result<Long> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateProjectToFireBase(project: Project) {
+    override suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>) : Result<Int> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeProjectToFireBase(project: Project) {
+    override suspend fun downloadPersonalProjectsFromFirebase(): Result<List<Project>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserFromFireBase(email: String): Result<User> {
+    override suspend fun updateUserInfoToFirebase(): Result<User> {
         TODO("Not yet implemented")
     }
 

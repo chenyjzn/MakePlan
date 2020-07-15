@@ -32,7 +32,7 @@ class ProjectsAdapter(private val viewModel : ProjectsViewModel) : RecyclerView.
     class ProjectAddHolder(var binding: ItemProjectAddBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(viewModel : ProjectsViewModel) {
             binding.itemProjectAddCard.setOnClickListener {
-                viewModel.addProject()
+
             }
             binding.executePendingBindings()
         }

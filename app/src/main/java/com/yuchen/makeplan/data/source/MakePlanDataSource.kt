@@ -13,15 +13,17 @@ interface MakePlanDataSource{
 
     suspend fun removeProject(project: Project)
 
+    suspend fun searchProject(id: Long) : Project?
+
     fun getAllProjects(): LiveData<List<Project>>
 
-    suspend fun insertProjectToFireBase(project: Project): Result<String>
+    suspend fun removeProjectFromFirebase(id: Long): Result<Long>
 
-    suspend fun updateProjectToFireBase(project: Project)
+    suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>) : Result<Int>
 
-    suspend fun removeProjectToFireBase(project: Project)
+    suspend fun downloadPersonalProjectsFromFirebase() : Result<List<Project>>
 
-    suspend fun getUserFromFireBase(email: String): Result<User>
+    suspend fun updateUserInfoToFirebase(): Result<User>
 
     suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?>
 }

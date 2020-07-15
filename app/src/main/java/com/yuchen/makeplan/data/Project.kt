@@ -28,7 +28,9 @@ data class Project (
     @ColumnInfo(name = "project_update_time")
     var updateTime: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "project_fire_base_id")
-    var fireBaseId: String = ""
+    var fireBaseId: String = "",
+    @ColumnInfo(name = "project_user_id")
+    var userId: String = ""
 ) : Parcelable
 {
     val completeRate : Int

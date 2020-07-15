@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,24 +20,23 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
     val loadingStatus: LiveData<LoadingStatus>
         get() = _loadingStatus
 
-    fun getUser(email:String){
+    fun getUser(){
         coroutineScope.launch {
-            repository.getUserFromFireBase(email)
-        }
-    }
-
-    fun updateUser(user: FirebaseUser?) {
-        _loadingStatus.value = LoadingStatus.DONE
-        if (user != null) {
-            UserManager.userName = user.displayName
-            UserManager.userEmail = user.email
-            UserManager.userPhoto = user.photoUrl
-            Log.d("chenyjzn", "user sign in ok : ${user.email}, ${user.displayName}, ${user.photoUrl}")
-        } else {
-            UserManager.userName = null
-            UserManager.userEmail = null
-            UserManager.userPhoto = null
-            Log.d("chenyjzn", "user sign in ng: $user")
+            _loadingStatus.value = LoadingStatus.LOADING
+            val userResult = repository.updateUserInfoToFirebase()
+            when(userResult){
+                is Result.Success ->{
+                    Log.d("chenyjzn", "getFireBaseUser OK")
+                    UserManager.user = userResult.data
+                }
+                is Result.Error ->{
+                    Log.d("chenyjzn", "getFireBaseUser result = ${userResult.exception}")
+                }
+                is Result.Fail ->{
+                    Log.d("chenyjzn", "getFireBaseUser result = ${userResult.error}")
+                }
+            }
+            _loadingStatus.value = LoadingStatus.DONE
         }
     }
 
@@ -48,15 +47,25 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
             when(result){
                 is Result.Success ->{
                     Log.d("chenyjzn", "signInFirebaseWithGoogle OK")
-                    updateUser(result.data)
+                    val userResult = repository.updateUserInfoToFirebase()
+                    when(userResult){
+                        is Result.Success ->{
+                            Log.d("chenyjzn", "getFireBaseUser OK")
+                            UserManager.user = userResult.data
+                        }
+                        is Result.Error ->{
+                            Log.d("chenyjzn", "getFireBaseUser result = ${userResult.exception}")
+                        }
+                        is Result.Fail ->{
+                            Log.d("chenyjzn", "getFireBaseUser result = ${userResult.error}")
+                        }
+                    }
                 }
                 is Result.Error ->{
                     Log.d("chenyjzn", "signInFirebaseWithGoogle result = ${result.exception}")
-
                 }
                 is Result.Fail ->{
                     Log.d("chenyjzn", "signInFirebaseWithGoogle result = ${result.error}")
-
                 }
             }
             _loadingStatus.value = LoadingStatus.DONE

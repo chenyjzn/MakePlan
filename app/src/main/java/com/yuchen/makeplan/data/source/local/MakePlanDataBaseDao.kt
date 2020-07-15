@@ -15,19 +15,9 @@ interface MakePlanDataBaseDao {
     @Delete
     fun removeProject(project: Project)
 
-    @Query("SELECT * FROM project_list ORDER BY id DESC")
+    @Query("SELECT * FROM project_list ORDER BY project_update_time DESC")
     fun getAllProjects():LiveData<List<Project>>
 
-//
-//    @Query("DELETE FROM cart_product_table")
-//    fun clear()
-//
-//    @Query("SELECT * FROM cart_product_table ORDER BY id DESC")
-//    fun getAllCartProducts():LiveData<List<InCartProduct>>
-//
-//    @Query("SELECT * FROM cart_product_table")
-//    fun getAllCartProductsCursor():List<InCartProduct>
-//
-//    @Query("SELECT * FROM cart_product_table ORDER BY id DESC LIMIT 1")
-//    fun getLastCartProduct():InCartProduct?
+    @Query("SELECT * FROM project_list WHERE id = :id")
+    fun searchProject(id: Long): Project?
 }

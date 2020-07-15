@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.gantt.GanttViewModel
+import com.yuchen.makeplan.notexist.NotExistCheckViewModel
 import com.yuchen.makeplan.task.TaskViewModel
 
 class GanttViewModelFactory constructor(
@@ -17,6 +18,10 @@ class GanttViewModelFactory constructor(
             when {
                 isAssignableFrom(GanttViewModel::class.java) ->
                     GanttViewModel(makePlanRepository, projectHistory)
+
+                isAssignableFrom(NotExistCheckViewModel::class.java) ->
+                    NotExistCheckViewModel(makePlanRepository,projectHistory)
+
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

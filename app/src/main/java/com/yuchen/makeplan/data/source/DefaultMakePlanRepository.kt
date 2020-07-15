@@ -19,24 +19,28 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         makePlanLocalDataSource.removeProject(project)
     }
 
+    override suspend fun searchProject(id: Long): Project? {
+        return makePlanLocalDataSource.searchProject(id)
+    }
+
     override fun getAllProjects(): LiveData<List<Project>> {
         return makePlanLocalDataSource.getAllProjects()
     }
 
-    override suspend fun insertProjectToFireBase(project: Project): Result<String> {
-        return makePlanRemoteDataSource.insertProjectToFireBase(project)
+    override suspend fun removeProjectFromFirebase(id: Long): Result<Long> {
+        return makePlanRemoteDataSource.removeProjectFromFirebase(id)
     }
 
-    override suspend fun updateProjectToFireBase(project: Project) {
-        makePlanRemoteDataSource.updateProjectToFireBase(project)
+    override suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>) : Result<Int> {
+        return makePlanRemoteDataSource.uploadPersonalProjectsToFirebase(projects)
     }
 
-    override suspend fun removeProjectToFireBase(project: Project) {
-        makePlanRemoteDataSource.removeProject(project)
+    override suspend fun downloadPersonalProjectsFromFirebase(): Result<List<Project>> {
+        return makePlanRemoteDataSource.downloadPersonalProjectsFromFirebase()
     }
 
-    override suspend fun getUserFromFireBase(email: String): Result<User>{
-        return makePlanRemoteDataSource.getUserFromFireBase(email)
+    override suspend fun updateUserInfoToFirebase(): Result<User>{
+        return makePlanRemoteDataSource.updateUserInfoToFirebase()
     }
 
     override suspend fun firebaseAuthWithGoogle(idToken: String): Result<FirebaseUser?> {

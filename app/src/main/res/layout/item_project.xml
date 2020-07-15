@@ -85,10 +85,10 @@
                     android:text="TextView"
                     app:layout_constraintStart_toStartOf="@+id/item_project_name"
                     app:layout_constraintTop_toBottomOf="@+id/item_project_name"
-                    tools:text="2020/07/17"/>
+                    tools:text="2020/07/17" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
 
  </androidx.constraintlayout.widget.ConstraintLayout>
  </layout>
