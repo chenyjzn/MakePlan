@@ -32,4 +32,10 @@ interface MakePlanDataSource{
     suspend fun addTeamToFirebase (teamName : String) : Result<String>
 
     fun getUserTeamsFromFirebase () : MutableLiveData<List<Team>>
+
+    fun getAllTeamsFromFirebase () : MutableLiveData<List<Team>>
+
+    suspend fun getTeamByTextFromFirebase(text : String): Result<List<Team>>
+
+    suspend fun createTeamToFirebase (teamName : String) : Result<String>
 }

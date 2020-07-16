@@ -56,4 +56,16 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
     override fun getUserTeamsFromFirebase(): MutableLiveData<List<Team>> {
         return makePlanRemoteDataSource.getUserTeamsFromFirebase()
     }
+
+    override fun getAllTeamsFromFirebase(): MutableLiveData<List<Team>> {
+        return makePlanRemoteDataSource.getAllTeamsFromFirebase()
+    }
+
+    override suspend fun getTeamByTextFromFirebase(text: String): Result<List<Team>> {
+        return makePlanRemoteDataSource.getTeamByTextFromFirebase(text)
+    }
+
+    override suspend fun createTeamToFirebase(teamName: String): Result<String> {
+        return makePlanRemoteDataSource.createTeamToFirebase(teamName)
+    }
 }

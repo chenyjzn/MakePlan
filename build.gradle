@@ -5,6 +5,7 @@ buildscript {
         kotlin_version = '1.3.72'
         version_moshi = "1.8.0"
         version_navigation = "2.3.0-beta01"
+        version_glide = "4.9.0"
     }
     repositories {
         google()

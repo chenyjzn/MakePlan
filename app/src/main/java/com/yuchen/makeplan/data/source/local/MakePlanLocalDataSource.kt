@@ -68,4 +68,16 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     override fun getUserTeamsFromFirebase(): MutableLiveData<List<Team>> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getTeamByTextFromFirebase(text: String): Result<List<Team>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllTeamsFromFirebase(): MutableLiveData<List<Team>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createTeamToFirebase(teamName: String): Result<String> {
+        TODO("Not yet implemented")
+    }
 }

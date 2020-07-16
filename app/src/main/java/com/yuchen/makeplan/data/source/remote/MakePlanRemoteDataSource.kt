@@ -21,6 +21,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
 
     private const val PERSONAL_PROJECTS = "personal_projects"
     private const val PERSONAL_TEAMS = "personal_teams"
+    private const val TEAM_MEMBERS = "team_member"
     private const val PATH_USERS = "users"
     private const val PATH_TEAMS = "teams"
 
@@ -60,7 +61,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             }
         }
         if (auth.currentUser == null)
-            continuation.resume(Result.Fail("removeProjectFromFirebase fail, User not login"))
+            continuation.resume(Result.Fail("User not loginn"))
     }
 
     override suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>) : Result<Int> = suspendCoroutine { continuation ->
@@ -84,7 +85,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             }
         }
         if (auth.currentUser == null)
-            continuation.resume(Result.Fail("uploadProjectsToFirebase fail, User not login"))
+            continuation.resume(Result.Fail("User not login"))
     }
 
     override suspend fun downloadPersonalProjectsFromFirebase(): Result<List<Project>> = suspendCoroutine {continuation ->
@@ -107,7 +108,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             }
         }
         if (auth.currentUser == null)
-            continuation.resume(Result.Fail("uploadProjectsToFirebase fail, User not login"))
+            continuation.resume(Result.Fail("User not login"))
     }
 
     override suspend fun updateUserInfoToFirebase(): Result<User> = suspendCoroutine{ continuation ->
@@ -128,7 +129,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                 }
         }
         if (auth.currentUser == null)
-            continuation.resume(Result.Fail("getUserFromFireBase fail, User not login"))
+            continuation.resume(Result.Fail("User not login"))
     }
 
     override suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?> = suspendCoroutine { continuation->
@@ -154,16 +155,26 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             val newTeam = Team(teamName,document.id,System.currentTimeMillis(),UserManager.user)
             document.set(newTeam).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val userFirebase = FirebaseFirestore.getInstance().collection(PATH_USERS).document(firebaseUser.uid).collection(PERSONAL_TEAMS)
-                        userFirebase.document(document.id).set(newTeam).addOnCompleteListener { task1 ->
+                        document.collection(TEAM_MEMBERS).document(firebaseUser.uid).set(UserManager.user).addOnCompleteListener {task1->
                             if (task1.isSuccessful) {
-                                continuation.resume(Result.Success(document.id))
+                                val userFirebase = FirebaseFirestore.getInstance().collection(PATH_USERS).document(firebaseUser.uid).collection(PERSONAL_TEAMS)
+                                userFirebase.document(document.id).set(newTeam).addOnCompleteListener { task2 ->
+                                    if (task2.isSuccessful) {
+                                        continuation.resume(Result.Success(document.id))
+                                    } else {
+                                        task2.exception?.let {
+                                            continuation.resume(Result.Error(it))
+                                            return@addOnCompleteListener
+                                        }
+                                        continuation.resume(Result.Fail("addUserTeamsToFirebase fail"))
+                                    }
+                                }
                             } else {
                                 task1.exception?.let {
                                     continuation.resume(Result.Error(it))
                                     return@addOnCompleteListener
                                 }
-                                continuation.resume(Result.Fail("firebaseAuthWithGoogle fail"))
+                                continuation.resume(Result.Fail("addTeamMemberToFirebase fail"))
                             }
                         }
                     } else {
@@ -176,13 +187,13 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                 }
         }
         if (auth.currentUser == null)
-            continuation.resume(Result.Fail("addTeamToFirebase fail, User not login"))
+            continuation.resume(Result.Fail("User not login"))
     }
 
     override fun getUserTeamsFromFirebase(): MutableLiveData<List<Team>> {
         val liveData = MutableLiveData<List<Team>>()
         auth.currentUser?.let {firebaseUser ->
-            val userFirebase = FirebaseFirestore.getInstance().collection(PATH_USERS)
+            FirebaseFirestore.getInstance().collection(PATH_USERS)
                 .document(firebaseUser.uid).collection(PERSONAL_TEAMS)
                 .addSnapshotListener { snapshot, exception ->
                     exception?.let {
@@ -200,4 +211,70 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         return liveData
     }
 
+
+    override fun getAllTeamsFromFirebase(): MutableLiveData<List<Team>> {
+        val liveData = MutableLiveData<List<Team>>()
+        auth.currentUser?.let {firebaseUser ->
+            FirebaseFirestore.getInstance().collection(PATH_TEAMS)
+                .addSnapshotListener { snapshot, exception ->
+                    exception?.let {
+                        Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    }
+                    Log.d("chenyjzn","User team snapshotListener")
+                    val list = mutableListOf<Team>()
+                    for (document in snapshot!!) {
+                        val team = document.toObject(Team::class.java)
+                        list.add(team)
+                    }
+                    liveData.value = list
+                }
+        }
+        return liveData
+    }
+
+    override suspend fun getTeamByTextFromFirebase(text: String): Result<List<Team>> = suspendCoroutine { continuation->
+        auth.currentUser?.let {firebaseUser ->
+            val teamFirebase = FirebaseFirestore.getInstance().collection(PATH_TEAMS)
+            teamFirebase.whereEqualTo("name",text).get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<Team>()
+                        for (document in task.result!!) {
+                            val team = document.toObject(Team::class.java)
+                            list.add(team)
+                        }
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail("getTeamByTextFromFirebase fail"))
+                    }
+                }
+        }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+    }
+
+    override suspend fun createTeamToFirebase(teamName: String): Result<String> = suspendCoroutine { continuation->
+        auth.currentUser?.let {firebaseUser ->
+            val teamFirebase = FirebaseFirestore.getInstance().collection(PATH_TEAMS)
+            val document = teamFirebase.document()
+            val newTeam = Team(teamName,document.id,System.currentTimeMillis(),UserManager.user, listOf(UserManager.user))
+            document.set(newTeam).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    continuation.resume(Result.Success(document.id))
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("addTeamToFirebase fail"))
+                }
+            }
+        }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+    }
 }

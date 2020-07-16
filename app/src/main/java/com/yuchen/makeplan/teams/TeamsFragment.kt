@@ -6,9 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.yuchen.makeplan.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.yuchen.makeplan.databinding.FragmentTeamsBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
@@ -18,13 +19,29 @@ class TeamsFragment : Fragment() {
         val binding = FragmentTeamsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        val adapter = TeamsAdapter(viewModel)
+        binding.teamsRecycler.adapter = adapter
+        binding.teamsRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         binding.teamAdd.setOnClickListener {
-            viewModel.addTeamToFirebase("Test team")
+            viewModel.addTeamToFirebase("Test3 team")
         }
 
-        viewModel.teams.observe(viewLifecycleOwner, Observer {
+        viewModel.allTeams.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Log.d("chenyjzn","my teams = $it")
+                Log.d("chenyjzn","AllList $it")
+            }
+        })
+
+        binding.teamsSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d("chenyjzn","onQueryTextSubmit $query")
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                return false
             }
         })
 
