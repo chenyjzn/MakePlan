@@ -7,6 +7,7 @@ import com.yuchen.makeplan.MainViewModel
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.gantt.GanttViewModel
 import com.yuchen.makeplan.projects.ProjectsViewModel
+import com.yuchen.makeplan.teams.TeamsViewModel
 
 class ViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository
@@ -19,6 +20,8 @@ class ViewModelFactory constructor(
                     ProjectsViewModel(makePlanRepository)
                 isAssignableFrom(MainViewModel::class.java) ->
                     MainViewModel(makePlanRepository)
+                isAssignableFrom(TeamsViewModel::class.java) ->
+                    TeamsViewModel(makePlanRepository)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

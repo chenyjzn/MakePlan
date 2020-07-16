@@ -67,5 +67,12 @@
         <argument
             android:name="notExistProjects"
             app:argType="com.yuchen.makeplan.data.Project[]" />
-    </dialog><action android:id="@+id/action_global_NotExistCheckDialog" app:destination="@id/NotExistCheckDialog"/>
+    </dialog>
+    <action android:id="@+id/action_global_NotExistCheckDialog" app:destination="@id/NotExistCheckDialog" />
+    <fragment
+        android:id="@+id/teamsFragment"
+        android:name="com.yuchen.makeplan.teams.TeamsFragment"
+        android:label="fragment_teams"
+        tools:layout="@layout/fragment_teams" />
+    <action android:id="@+id/action_global_projectsFragment" app:destination="@id/projectsFragment"/><action android:id="@+id/action_global_teamsFragment" app:destination="@id/teamsFragment"/>
 </navigation>

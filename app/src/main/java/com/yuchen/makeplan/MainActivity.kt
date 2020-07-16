@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             else
                 signIn()
         }
+
         viewModel.loadingStatus.observe(this, Observer {
             it?.let {
                 when(it){
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                         binding.mainLoginProgress.visibility = View.INVISIBLE
                     }
                     LoadingStatus.ERROR -> {
-
+                        binding.mainLoginProgress.visibility = View.INVISIBLE
                     }
                 }
             }
@@ -76,18 +77,27 @@ class MainActivity : AppCompatActivity() {
             when(destination.id){
                 R.id.ganttFragment ->{
                     this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.GONE
                 }
                 R.id.taskFragment ->{
                     this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.GONE
                 }
                 R.id.projectsFragment ->{
                     this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.VISIBLE
                 }
             }
         }
 
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when(it.itemId){
+                R.id.nav_personal ->{
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment())
+                }
+                R.id.nav_team -> {
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalTeamsFragment())
+                }
             }
             true
         }

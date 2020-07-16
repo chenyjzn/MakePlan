@@ -1,9 +1,11 @@
 package com.yuchen.makeplan.data.source
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.Team
 import com.yuchen.makeplan.data.User
 
 class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlanDataSource, private val makePlanLocalDataSource : MakePlanDataSource) : MakePlanRepository {
@@ -45,5 +47,13 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
 
     override suspend fun firebaseAuthWithGoogle(idToken: String): Result<FirebaseUser?> {
         return makePlanRemoteDataSource.firebaseAuthWithGoogle(idToken)
+    }
+
+    override suspend fun addTeamToFirebase(teamName : String): Result<String> {
+        return makePlanRemoteDataSource.addTeamToFirebase(teamName)
+    }
+
+    override fun getUserTeamsFromFirebase(): MutableLiveData<List<Team>> {
+        return makePlanRemoteDataSource.getUserTeamsFromFirebase()
     }
 }

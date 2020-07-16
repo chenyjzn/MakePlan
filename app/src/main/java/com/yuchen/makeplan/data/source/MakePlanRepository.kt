@@ -1,10 +1,12 @@
 package com.yuchen.makeplan.data.source
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.Result
+import com.yuchen.makeplan.data.Team
 
 interface MakePlanRepository {
     suspend fun insertProject(project: Project)
@@ -27,4 +29,7 @@ interface MakePlanRepository {
 
     suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?>
 
+    suspend fun addTeamToFirebase (teamName : String) : Result<String>
+
+    fun getUserTeamsFromFirebase () : MutableLiveData<List<Team>>
 }

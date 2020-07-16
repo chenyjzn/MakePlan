@@ -2,9 +2,11 @@ package com.yuchen.makeplan.data.source.local
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.Team
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanDataSource
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +58,14 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     }
 
     override suspend fun firebaseAuthWithGoogle(idToken: String): Result<FirebaseUser?> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addTeamToFirebase(teamName : String): Result<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserTeamsFromFirebase(): MutableLiveData<List<Team>> {
         TODO("Not yet implemented")
     }
 }
