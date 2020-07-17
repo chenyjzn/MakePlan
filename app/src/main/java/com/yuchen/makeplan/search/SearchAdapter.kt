@@ -1,30 +1,21 @@
-package com.yuchen.makeplan.projects
+package com.yuchen.makeplan.search
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.ItemProjectBinding
+import com.yuchen.makeplan.projects.AvatarAdapter
+import com.yuchen.makeplan.projects.ProjectsViewModel
 import com.yuchen.makeplan.util.TimeUtil.StampToDate
 
-class ProjectsAdapter : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>() {
+class SearchAdapter(private val viewModel : ProjectsViewModel) : RecyclerView.Adapter<SearchAdapter.ProjectHolder>() {
 
     private var projectList: List<Project>? = null
 
-    private var onClickListener: OnClickListener? = null
-    fun setItemClickListener(itemClickListener: OnClickListener?) {
-        onClickListener = itemClickListener
-    }
-
-    interface OnClickListener {
-        fun onProjectClick(project: Project)
-        fun onProjectLongClick(project: Project)
-    }
-
-    inner class ProjectHolder(var binding: ItemProjectBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(project: Project) {
+    class ProjectHolder(var binding: ItemProjectBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(project: Project,viewModel : ProjectsViewModel) {
             binding.project = project
 
             val adapter = AvatarAdapter()
@@ -33,20 +24,6 @@ class ProjectsAdapter : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>() {
 
             binding.itemProjectAvatarRecycler.layoutManager = LinearLayoutManager(binding.itemProjectAvatarRecycler.context,LinearLayoutManager.HORIZONTAL,false)
 
-            binding.itemProjectAvatarRecycler.setOnClickListener {
-//                viewModel.goToGantt(project)
-                onClickListener?.onProjectClick(project)
-            }
-
-            binding.itemProjectCard.setOnClickListener {
-//                viewModel.goToGantt(project)
-                onClickListener?.onProjectClick(project)
-            }
-            binding.itemProjectCard.setOnLongClickListener {
-//                viewModel.goToProjectSetting(project)
-                onClickListener?.onProjectLongClick(project)
-                true
-            }
             binding.itemProjectEditTime.text = StampToDate(project.updateTime)
             binding.executePendingBindings()
         }
@@ -58,7 +35,7 @@ class ProjectsAdapter : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>() {
 
     override fun onBindViewHolder(holder: ProjectHolder, position: Int) {
         projectList?.let {
-            holder.bind(it[position])
+            holder.bind(it[position],viewModel)
         }
     }
 

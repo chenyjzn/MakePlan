@@ -19,7 +19,7 @@ class ProjectsViewModel(private val repository: MakePlanRepository,val isMultiPr
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     val projects: LiveData<List<Project>> = if(isMultiProject) {
-        repository.getMultiProjectsFromFirebase()
+        repository.getMyMultiProjectsFromFirebase()
     }else{
         repository.getAllProjects()
     }

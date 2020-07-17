@@ -38,6 +38,9 @@
             android:name="isMultiProject"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_projectsFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
@@ -73,4 +76,9 @@
             app:argType="boolean" />
     </dialog>
     <action android:id="@+id/action_global_projectsFragment" app:destination="@id/projectsFragment"/>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.yuchen.makeplan.search.SearchFragment"
+        android:label="Fragment_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>

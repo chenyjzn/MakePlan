@@ -81,7 +81,7 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectsFromFirebase(): LiveData<List<Project>> {
+    override fun getMyMultiProjectsFromFirebase(): LiveData<List<Project>> {
         TODO("Not yet implemented")
     }
 
@@ -94,6 +94,10 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     }
 
     override suspend fun removeMultiProjectFromFirebase(id: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllMultiProjectsFromFirebase(): LiveData<List<Project>> {
         TODO("Not yet implemented")
     }
 }

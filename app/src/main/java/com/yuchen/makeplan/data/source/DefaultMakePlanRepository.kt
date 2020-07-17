@@ -69,8 +69,8 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.createTeamToFirebase(teamName)
     }
 
-    override fun getMultiProjectsFromFirebase(): LiveData<List<Project>> {
-        return makePlanRemoteDataSource.getMultiProjectsFromFirebase()
+    override fun getMyMultiProjectsFromFirebase(): LiveData<List<Project>> {
+        return makePlanRemoteDataSource.getMyMultiProjectsFromFirebase()
     }
 
     override suspend fun addMultiProjectToFirebase(project: Project): Result<String> {
@@ -83,5 +83,9 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
 
     override suspend fun removeMultiProjectFromFirebase(id: String): Result<Boolean> {
         return makePlanRemoteDataSource.removeMultiProjectFromFirebase(id)
+    }
+
+    override fun getAllMultiProjectsFromFirebase(): LiveData<List<Project>> {
+        return makePlanRemoteDataSource.getAllMultiProjectsFromFirebase()
     }
 }

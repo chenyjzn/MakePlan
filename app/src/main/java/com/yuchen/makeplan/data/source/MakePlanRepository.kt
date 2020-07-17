@@ -39,11 +39,13 @@ interface MakePlanRepository {
 
     suspend fun createTeamToFirebase (teamName : String) : Result<String>
 
-    fun getMultiProjectsFromFirebase () : LiveData<List<Project>>
+    fun getMyMultiProjectsFromFirebase () : LiveData<List<Project>>
 
     suspend fun addMultiProjectToFirebase (project: Project) : Result<String>
 
     suspend fun updateMultiProjectToFirebase (project: Project) : Result<String>
 
     suspend fun removeMultiProjectFromFirebase (id: String) : Result<Boolean>
+
+    fun getAllMultiProjectsFromFirebase () : LiveData<List<Project>>
 }

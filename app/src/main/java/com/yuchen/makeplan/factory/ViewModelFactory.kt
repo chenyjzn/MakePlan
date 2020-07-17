@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.yuchen.makeplan.MainViewModel
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.search.SearchViewModel
 
 class ViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository
@@ -14,6 +15,8 @@ class ViewModelFactory constructor(
             when {
                 isAssignableFrom(MainViewModel::class.java) ->
                     MainViewModel(makePlanRepository)
+                isAssignableFrom(SearchViewModel::class.java) ->
+                    SearchViewModel(makePlanRepository)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

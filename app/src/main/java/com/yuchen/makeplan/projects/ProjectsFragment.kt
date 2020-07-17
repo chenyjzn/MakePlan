@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.R
+import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.FragmentProjectsBinding
 import com.yuchen.makeplan.ext.getVmFactory
 import com.yuchen.makeplan.util.UserManager
@@ -37,7 +38,15 @@ class ProjectsFragment : Fragment() {
         binding = FragmentProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val projectsAdapter = ProjectsAdapter(viewModel)
+        val projectsAdapter = ProjectsAdapter()
+        projectsAdapter.setItemClickListener(object : ProjectsAdapter.OnClickListener{
+            override fun onProjectClick(project: Project) {
+                viewModel.goToGantt(project)
+            }
+            override fun onProjectLongClick(project: Project) {
+                viewModel.goToProjectSetting(project)
+            }
+        })
 
         binding.projectsRecycler.adapter = projectsAdapter
 
@@ -128,6 +137,10 @@ class ProjectsFragment : Fragment() {
                     }
                     .show()
             }
+        }
+
+        binding.projectsMultiSearch.setOnClickListener {
+            this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToSearchFragment())
         }
 
         setProjectsFragmentFun(viewModel.isMultiProject)
