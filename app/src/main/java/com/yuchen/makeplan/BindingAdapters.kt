@@ -8,6 +8,7 @@ import android.graphics.drawable.shapes.Shape
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -31,6 +32,16 @@ fun bindColorByColorCode(view: View, colorString: String?, taskColor : String?) 
                 }
             }
         })
+    }
+}
+
+@BindingAdapter("projectName","membersCount")
+fun bindProjectNameAndCount(view: TextView, projectName: String?, membersCount : Int?) {
+    projectName?.let {
+        if (membersCount == 0 || membersCount == null)
+            view.text = projectName
+        else
+            view.text = "$projectName ($membersCount)"
     }
 }
 

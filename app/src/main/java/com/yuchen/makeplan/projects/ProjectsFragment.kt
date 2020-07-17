@@ -29,7 +29,7 @@ class ProjectsFragment : Fragment() {
             binding.projectsUpload.visibility = View.GONE
             binding.projectsDownload.visibility = View.GONE
         }else {
-
+            binding.projectsMultiSearch.visibility = View.GONE
         }
     }
 
