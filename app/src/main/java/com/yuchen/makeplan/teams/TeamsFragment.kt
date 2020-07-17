@@ -26,25 +26,34 @@ class TeamsFragment : Fragment() {
             viewModel.addTeamToFirebase("Test3 team")
         }
 
-        viewModel.allTeams.observe(viewLifecycleOwner, Observer {
+        viewModel.myTeams.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Log.d("chenyjzn","AllList $it")
+                adapter.submitTeams(it)
+            }
+        })
+
+        viewModel.searchTeams.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.submitTeams(it)
             }
         })
 
         binding.teamsSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("chenyjzn","onQueryTextSubmit $query")
-
+                viewModel.findTeamsByText(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-
                 return false
             }
         })
 
+        binding.teamsSearchView.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus){
+
+            }
+        }
         return binding.root
     }
 }

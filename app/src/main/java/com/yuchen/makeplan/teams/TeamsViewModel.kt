@@ -19,58 +19,46 @@ class TeamsViewModel (private val repository: MakePlanRepository) : ViewModel() 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-//    private var _myTeams = MutableLiveData<List<Team>>()
-//    val myTeams: LiveData<List<Team>>
-//        get() = _myTeams
+    private var _myTeams = MutableLiveData<List<Team>>()
+    val myTeams: LiveData<List<Team>>
+        get() = _myTeams
 
     private var _allTeams = MutableLiveData<List<Team>>()
     val allTeams: LiveData<List<Team>>
         get() = _allTeams
 
-    private var _showTeams = MutableLiveData<List<Team>>()
-    val showTeams: LiveData<List<Team>>
-        get() = _showTeams
+    private var _searchTeams = MutableLiveData<List<Team>>()
+    val searchTeams: LiveData<List<Team>>
+        get() = _searchTeams
 
     private val _loadingStatus = MutableLiveData<LoadingStatus>()
     val loadingStatus: LiveData<LoadingStatus>
         get() = _loadingStatus
 
-    private var _isInSearch = MutableLiveData<Boolean>()
-    val isInSearch: LiveData<Boolean>
-        get() = _isInSearch
+    fun getUserTeamLiveData() {
+        _myTeams = repository.getUserTeamsFromFirebase()
+        _loadingStatus.value = LoadingStatus.DONE
 
-    fun setIsSearch(hasFocus : Boolean){
-        _isInSearch.value = hasFocus
     }
 
-//    fun getUserTeamLiveData() {
-//        _myTeams = repository.getUserTeamsFromFirebase()
-//        _loadingStatus.value = LoadingStatus.DONE
-//
-//    }
+    fun getAllTeamLiveData() {
+        _allTeams = repository.getUserTeamsFromFirebase()
+        _loadingStatus.value = LoadingStatus.DONE
+    }
 
     init {
-        _allTeams = repository.getAllTeamsFromFirebase()
-        _showTeams.value = _allTeams.value?.filter {
-            for ( i in it.member)
-                if (i.uid == com.yuchen.makeplan.util.UserManager.user.uid)
-                    true
-            false
-        }
-        //getUserTeamLiveData()
+        getUserTeamLiveData()
+        getAllTeamLiveData()
     }
 
-
-//    fun resetMyTeams(){
-//        _myTeams.value = _myTeams.value
-//    }
-
-
+    fun resetMyTeam(){
+        _myTeams.value = _myTeams.value
+    }
 
     fun addTeamToFirebase(teamName : String){
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
-            val result = repository.createTeamToFirebase(teamName)
+            val result = repository.addTeamToFirebase(teamName)
             when(result){
                 is Result.Success ->{
                     Log.d("chenyjzn", "addTeamToFirebase OK")
@@ -83,6 +71,15 @@ class TeamsViewModel (private val repository: MakePlanRepository) : ViewModel() 
                 }
             }
             _loadingStatus.value = LoadingStatus.DONE
+        }
+    }
+
+    fun findTeamsByText(text : String?){
+        text?.let {text->
+            val searchList = _allTeams.value?.filter {team->
+                (team.name.contains(text)||team.leader.email.contains(text)||team.leader.displayName.contains(text))
+            }
+            _searchTeams.value = searchList
         }
     }
 

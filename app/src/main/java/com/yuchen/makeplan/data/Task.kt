@@ -11,9 +11,9 @@ data class Task(
     var name: String = "Task",
     var completeRate : Int = 0,
     var color : String ="EF9A9A",
+    var taskOwners : List<User> = listOf(),
     var toDoList : MutableList<ToDo> = mutableListOf()
 ) : Parcelable{
-
     fun newRefTask(): Task{
         val newTask = this.copy(toDoList = mutableListOf())
         this.toDoList.map {toDo->
