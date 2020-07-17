@@ -22,7 +22,6 @@ import kotlin.math.pow
 class GanttFragment : Fragment() {
 
     private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory,GanttFragmentArgs.fromBundle(requireArguments()).isMultiProject)}
-//    private var taskSelect : Int = -1
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

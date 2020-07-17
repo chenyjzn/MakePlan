@@ -2,10 +2,8 @@ package com.yuchen.makeplan.projects
 
 import android.os.Bundle
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -25,15 +23,69 @@ class ProjectsFragment : Fragment() {
     private val viewModel: ProjectsViewModel by viewModels<ProjectsViewModel> { getVmFactory(ProjectsFragmentArgs.fromBundle(requireArguments()).isMultiProject) }
     lateinit var binding: FragmentProjectsBinding
 
-    fun setProjectsFragmentFun(isMultiProject : Boolean){
-        if (isMultiProject){
+    fun setProjectsFragmentFun(isMultiProject : Boolean) {
+        if (isMultiProject) {
             binding.projectsUpload.visibility = View.GONE
             binding.projectsDownload.visibility = View.GONE
-        }else {
+        } else {
             binding.projectsMultiSearch.visibility = View.GONE
         }
+        if (viewModel.isMultiProject) {
+            binding.projectsAppBar.inflateMenu(R.menu.multi_projects_top_menu)
+            binding.projectsAppBar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.search_project -> {
+                        this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToSearchFragment())
+                        true
+                    }
+                    R.id.add_project -> {
+                        this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null,viewModel.isMultiProject))
+                        true
+                    }
+                    else -> false
+                }
+            }
+        } else {
+            binding.projectsAppBar.inflateMenu(R.menu.personal_projects_top_menu)
+            binding.projectsAppBar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.cloud_download -> {
+                        if (UserManager.isLogIn()){
+                            viewModel.downloadProjects()
+                        }
+                        else{
+                            val view = binding.projectsBackGround
+                            Snackbar.make(view, "Please login", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Google Login"){
+                                    (activity as MainActivity).signIn()
+                                }
+                                .show()
+                        }
+                        true
+                    }
+                    R.id.cloud_upload -> {
+                        if (UserManager.isLogIn()){
+                            viewModel.uploadProjects()
+                        }
+                        else{
+                            val view = binding.projectsBackGround
+                            Snackbar.make(view, "Please login", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Google Login"){
+                                    (activity as MainActivity).signIn()
+                                }
+                                .show()
+                        }
+                        true
+                    }
+                    R.id.add_project -> {
+                        this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null,viewModel.isMultiProject))
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner

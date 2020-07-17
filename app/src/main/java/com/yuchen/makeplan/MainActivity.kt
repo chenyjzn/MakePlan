@@ -3,6 +3,8 @@ package com.yuchen.makeplan
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -34,8 +36,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-
-//        this.supportActionBar?.hide()
 
 //        val displayMetrics = DisplayMetrics()
 //        this.windowManager.defaultDisplay.getMetrics(displayMetrics)
