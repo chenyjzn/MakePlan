@@ -93,10 +93,10 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_personal ->{
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment())
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment(false))
                 }
                 R.id.nav_team -> {
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalTeamsFragment())
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment(true))
                 }
             }
             true

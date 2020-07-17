@@ -5,12 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class EditViewModel (private val repository: MakePlanRepository, val project: Project?) : ViewModel() {
+class EditViewModel (private val repository: MakePlanRepository, val project: Project?, val isMultiProject : Boolean) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -28,28 +29,55 @@ class EditViewModel (private val repository: MakePlanRepository, val project: Pr
     }
 
     fun saveProject(){
-        if (project == null){
-            val newProject = Project(name = projectName.value?:"Project")
-            coroutineScope.launch {
+        if (isMultiProject){
+            if (project == null){
+                val newProject = Project(name = projectName.value?:"Project")
                 newProject.updateTime = System.currentTimeMillis()
-                repository.insertProject(newProject)
-                _runDismiss.value = true
+                newProject.members.add(UserManager.user)
+                newProject.membersUid.add(UserManager.user.uid)
+                coroutineScope.launch {
+                    repository.addMultiProjectToFirebase(newProject)
+                    _runDismiss.value = true
+                }
+            }else{
+                project.name = projectName.value?:"Project"
+                project.updateTime = System.currentTimeMillis()
+                coroutineScope.launch {
+                    repository.updateMultiProjectToFirebase(project)
+                    _runDismiss.value = true
+                }
             }
         }else{
-            project.name = projectName.value?:"Project"
-            coroutineScope.launch {
-                project.updateTime = System.currentTimeMillis()
-                repository.updateProject(project)
-                _runDismiss.value = true
+            if (project == null){
+                val newProject = Project(name = projectName.value?:"Project")
+                coroutineScope.launch {
+                    newProject.updateTime = System.currentTimeMillis()
+                    repository.insertProject(newProject)
+                    _runDismiss.value = true
+                }
+            }else{
+                project.name = projectName.value?:"Project"
+                coroutineScope.launch {
+                    project.updateTime = System.currentTimeMillis()
+                    repository.updateProject(project)
+                    _runDismiss.value = true
+                }
             }
         }
     }
 
     fun removeProject(){
         project?.let {project->
-            coroutineScope.launch {
-                repository.removeProject(project)
-                _runDismiss.value = true
+            if (isMultiProject){
+                coroutineScope.launch {
+                    repository.removeMultiProjectFromFirebase(project.firebaseId)
+                    _runDismiss.value = true
+                }
+            }else{
+                coroutineScope.launch {
+                    repository.removeProject(project)
+                    _runDismiss.value = true
+                }
             }
         }
     }

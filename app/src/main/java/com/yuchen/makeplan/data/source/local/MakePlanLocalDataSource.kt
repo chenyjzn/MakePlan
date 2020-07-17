@@ -80,4 +80,20 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     override suspend fun createTeamToFirebase(teamName: String): Result<String> {
         TODO("Not yet implemented")
     }
+
+    override fun getMultiProjectsFromFirebase(): LiveData<List<Project>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addMultiProjectToFirebase(project: Project): Result<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateMultiProjectToFirebase(project: Project): Result<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeMultiProjectFromFirebase(id: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
 }

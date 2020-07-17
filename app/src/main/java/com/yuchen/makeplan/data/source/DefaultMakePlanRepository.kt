@@ -68,4 +68,20 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
     override suspend fun createTeamToFirebase(teamName: String): Result<String> {
         return makePlanRemoteDataSource.createTeamToFirebase(teamName)
     }
+
+    override fun getMultiProjectsFromFirebase(): LiveData<List<Project>> {
+        return makePlanRemoteDataSource.getMultiProjectsFromFirebase()
+    }
+
+    override suspend fun addMultiProjectToFirebase(project: Project): Result<String> {
+        return makePlanRemoteDataSource.addMultiProjectToFirebase(project)
+    }
+
+    override suspend fun updateMultiProjectToFirebase(project: Project): Result<String> {
+        return makePlanRemoteDataSource.updateMultiProjectToFirebase(project)
+    }
+
+    override suspend fun removeMultiProjectFromFirebase(id: String): Result<Boolean> {
+        return makePlanRemoteDataSource.removeMultiProjectFromFirebase(id)
+    }
 }

@@ -38,4 +38,12 @@ interface MakePlanDataSource{
     suspend fun getTeamByTextFromFirebase(text : String): Result<List<Team>>
 
     suspend fun createTeamToFirebase (teamName : String) : Result<String>
+
+    fun getMultiProjectsFromFirebase () : LiveData<List<Project>>
+
+    suspend fun addMultiProjectToFirebase (project: Project) : Result<String>
+
+    suspend fun updateMultiProjectToFirebase (project: Project) : Result<String>
+
+    suspend fun removeMultiProjectFromFirebase (id: String) : Result<Boolean>
 }

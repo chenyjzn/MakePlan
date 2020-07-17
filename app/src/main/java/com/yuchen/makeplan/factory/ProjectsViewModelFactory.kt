@@ -2,21 +2,20 @@ package com.yuchen.makeplan.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.MainViewModel
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.edit.EditViewModel
+import com.yuchen.makeplan.projects.ProjectsViewModel
 
-class EditViewModelFactory constructor(
+class ProjectsViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
-    private val project: Project?,
     private val isMultiProject : Boolean
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {
-                isAssignableFrom(EditViewModel::class.java) ->
-                    EditViewModel(makePlanRepository,project,isMultiProject)
+                isAssignableFrom(ProjectsViewModel::class.java) ->
+                    ProjectsViewModel(makePlanRepository,isMultiProject)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

@@ -13,12 +13,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel() {
+class ProjectsViewModel(private val repository: MakePlanRepository,val isMultiProject:Boolean) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val projects: LiveData<List<Project>> = repository.getAllProjects()
+    val projects: LiveData<List<Project>> = if(isMultiProject) {
+        repository.getMultiProjectsFromFirebase()
+    }else{
+        repository.getAllProjects()
+    }
 
     private val _navigateToGantt = MutableLiveData<Project>()
     val navigateToGantt: LiveData<Project>

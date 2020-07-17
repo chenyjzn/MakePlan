@@ -1,6 +1,5 @@
 package com.yuchen.makeplan.projects
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -21,10 +20,21 @@ import com.yuchen.makeplan.util.UserManager
 
 class ProjectsFragment : Fragment() {
 
-    private val viewModel: ProjectsViewModel by viewModels<ProjectsViewModel> { getVmFactory() }
+
+    private val viewModel: ProjectsViewModel by viewModels<ProjectsViewModel> { getVmFactory(ProjectsFragmentArgs.fromBundle(requireArguments()).isMultiProject) }
+    lateinit var binding: FragmentProjectsBinding
+
+    fun setProjectsFragmentFun(isMultiProject : Boolean){
+        if (isMultiProject){
+            binding.projectsUpload.visibility = View.GONE
+            binding.projectsDownload.visibility = View.GONE
+        }else {
+
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentProjectsBinding.inflate(inflater, container, false)
+        binding = FragmentProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
         val projectsAdapter = ProjectsAdapter(viewModel)
@@ -36,7 +46,6 @@ class ProjectsFragment : Fragment() {
                 projectsAdapter.submitProjects(it)
             }
         })
-
         viewModel.navigateToGantt.observe(viewLifecycleOwner, Observer {
             it?.let {
                 this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(arrayOf(it),0))
@@ -46,7 +55,7 @@ class ProjectsFragment : Fragment() {
 
         viewModel.navigateToProjectSetting.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(it))
+                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(it,viewModel.isMultiProject))
                 viewModel.goToProjectSettingDone()
             }
         })
@@ -74,7 +83,7 @@ class ProjectsFragment : Fragment() {
         })
 
         binding.projectAdd.setOnClickListener {
-            this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null))
+            this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null,viewModel.isMultiProject))
         }
 
         binding.projectsUpload.setOnClickListener {
@@ -120,6 +129,8 @@ class ProjectsFragment : Fragment() {
                     .show()
             }
         }
+
+        setProjectsFragmentFun(viewModel.isMultiProject)
 
         return binding.root
     }

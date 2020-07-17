@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.yuchen.makeplan.data.Project
 
 
-@Database(entities = [Project::class], version = 5, exportSchema = false)
+@Database(entities = [Project::class], version = 2, exportSchema = false)
 abstract class MakePlanDataBase : RoomDatabase() {
     abstract val makePlanDataBaseDao: MakePlanDataBaseDao
 

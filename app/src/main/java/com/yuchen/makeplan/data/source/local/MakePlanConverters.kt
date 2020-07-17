@@ -46,18 +46,36 @@ class MakePlanConverters {
     }
 
     @TypeConverter
-    fun convertUserListToJson(listUser: List<User>): String? {
+    fun convertUserListToJson(listUser: MutableList<User>): String? {
         listUser?.let {
-            return Moshi.Builder().build().adapter<List<User>>(List::class.java).toJson(listUser)
+            return Moshi.Builder().build().adapter<MutableList<User>>(MutableList::class.java).toJson(listUser)
         }
         return null
     }
 
     @TypeConverter
-    fun convertJsonToUserList(json: String?): List<User>? {
+    fun convertJsonToUserList(json: String?): MutableList<User>? {
         json?.let {
-            val type = Types.newParameterizedType(List::class.java, User::class.java)
-            val adapter: JsonAdapter<List<User>> = Moshi.Builder().build().adapter(type)
+            val type = Types.newParameterizedType(MutableList::class.java, User::class.java)
+            val adapter: JsonAdapter<MutableList<User>> = Moshi.Builder().build().adapter(type)
+            return adapter.fromJson(it)
+        }
+        return null
+    }
+
+    @TypeConverter
+    fun convertStringListToJson(listString: MutableList<String>): String? {
+        listString?.let {
+            return Moshi.Builder().build().adapter<MutableList<String>>(MutableList::class.java).toJson(listString)
+        }
+        return null
+    }
+
+    @TypeConverter
+    fun convertJsonToStringList(json: String?): MutableList<String>? {
+        json?.let {
+            val type = Types.newParameterizedType(MutableList::class.java, String::class.java)
+            val adapter: JsonAdapter<MutableList<String>> = Moshi.Builder().build().adapter(type)
             return adapter.fromJson(it)
         }
         return null

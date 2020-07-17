@@ -12,7 +12,7 @@ import com.yuchen.makeplan.ext.getVmFactory
 
 class EditDialog : BottomSheetDialogFragment() {
 
-    private val viewModel: EditViewModel by viewModels<EditViewModel> { getVmFactory(EditDialogArgs.fromBundle(requireArguments()).project)}
+    private val viewModel: EditViewModel by viewModels<EditViewModel> { getVmFactory(EditDialogArgs.fromBundle(requireArguments()).project,EditDialogArgs.fromBundle(requireArguments()).isMultiProject)}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DialogEditBinding.inflate(inflater, container, false)
