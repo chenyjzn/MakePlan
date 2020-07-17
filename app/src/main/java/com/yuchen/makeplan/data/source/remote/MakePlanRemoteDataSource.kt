@@ -13,6 +13,7 @@ import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Team
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanDataSource
+import com.yuchen.makeplan.util.UserManager.user
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -21,6 +22,8 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
     private const val COLLECTION_USERS = "users"
     private const val COLLECTION_MULTI_PROJECTS = "multi_projects"
     private const val COLLECTION_PERSONAL_PROJECTS = "personal_projects"
+    private const val COLLECTION_JOIN_REQUEST = "join_request"
+    private const val COLLECTION_SEND_REQUEST = "send_request"
 
     private const val FIELD_MEMBERSUID = "membersUid"
 
@@ -381,5 +384,42 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                 }
         }
         return liveData
+    }
+
+    override suspend fun sendJoinRequestToFirebase(project: Project): Result<Boolean> = suspendCoroutine { continuation->
+        auth.currentUser?.let {firebaseUser ->
+            val multiProjectsFirebase = FirebaseFirestore.getInstance()
+                .collection(COLLECTION_MULTI_PROJECTS)
+                .document(project.firebaseId)
+                .collection(COLLECTION_JOIN_REQUEST)
+            val document = multiProjectsFirebase.document(UserManager.user.uid)
+            document.set(UserManager.user).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_USERS)
+                        .document(firebaseUser.uid)
+                        .collection(COLLECTION_SEND_REQUEST)
+                        .document(project.firebaseId).set(project).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            continuation.resume(Result.Success(true))
+                        } else {
+                            task.exception?.let {
+                                continuation.resume(Result.Error(it))
+                                return@addOnCompleteListener
+                            }
+                            continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                        }
+                    }
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("sendJoinRequestToFirebase fail"))
+                }
+            }
+        }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
     }
 }

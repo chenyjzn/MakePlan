@@ -88,4 +88,8 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
     override fun getAllMultiProjectsFromFirebase(): LiveData<List<Project>> {
         return makePlanRemoteDataSource.getAllMultiProjectsFromFirebase()
     }
+
+    override suspend fun sendJoinRequestToFirebase(project: Project): Result<Boolean> {
+        return makePlanRemoteDataSource.sendJoinRequestToFirebase(project)
+    }
 }

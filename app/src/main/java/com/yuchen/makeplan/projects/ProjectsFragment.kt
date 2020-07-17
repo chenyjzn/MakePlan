@@ -52,7 +52,8 @@ class ProjectsFragment : Fragment() {
 
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
-                projectsAdapter.submitProjects(it)
+                projectsAdapter.appendList(it)
+                projectsAdapter.notifyDataSetChanged()
             }
         })
         viewModel.navigateToGantt.observe(viewLifecycleOwner, Observer {

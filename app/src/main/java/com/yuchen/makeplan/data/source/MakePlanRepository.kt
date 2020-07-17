@@ -48,4 +48,6 @@ interface MakePlanRepository {
     suspend fun removeMultiProjectFromFirebase (id: String) : Result<Boolean>
 
     fun getAllMultiProjectsFromFirebase () : LiveData<List<Project>>
+
+    suspend fun sendJoinRequestToFirebase (project: Project) : Result<Boolean>
 }

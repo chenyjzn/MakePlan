@@ -13,6 +13,7 @@ import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.ext.toPx
 
 @BindingAdapter("colorString","taskColor")
@@ -71,5 +72,28 @@ fun bindImageCircle(imgView: ImageView, imgUrl: String?) {
                     .error(R.drawable.ic_account_circle_black_24dp)
             )
             .into(imgView)
+    }
+}
+
+@BindingAdapter("users","pos")
+fun bindBatchImageCircle(imgView: ImageView, users: List<User>?, pos : Int) {
+    if (users == null || users.isEmpty()){
+        imgView.visibility = View.GONE
+        return
+    }
+    users?.let {
+        if (pos < users.size){
+            val imgUri = users[pos].photoUrl.toUri().buildUpon().scheme("https").build()
+            Glide.with(imgView.context)
+                .load(imgUri)
+                .apply(RequestOptions().circleCrop())
+                .apply(
+                    RequestOptions().placeholder(R.drawable.ic_account_circle_black_24dp)
+                        .error(R.drawable.ic_account_circle_black_24dp)
+                )
+                .into(imgView)
+        }else{
+            imgView.visibility = View.GONE
+        }
     }
 }
