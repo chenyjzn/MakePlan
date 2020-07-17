@@ -48,7 +48,7 @@ class ProjectsFragment : Fragment() {
         })
         viewModel.navigateToGantt.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(arrayOf(it),0))
+                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(arrayOf(it),0,viewModel.isMultiProject))
                 viewModel.goToGanttDone()
             }
         })

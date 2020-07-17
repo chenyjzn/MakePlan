@@ -12,7 +12,7 @@ import com.yuchen.makeplan.data.source.MakePlanRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TaskViewModel (private val repository: MakePlanRepository, private val projectHistory : Array<Project>, private val taskPos : Int, val colorList : List<String>) : ViewModel() {
+class TaskViewModel (private val repository: MakePlanRepository, private val projectHistory : Array<Project>, private val taskPos : Int, val colorList : List<String>,val isMultiProject:Boolean) : ViewModel() {
 
     var projectRep : MutableList<Project> = projectHistory.toMutableList()
     private val calendarStart = Calendar.getInstance()

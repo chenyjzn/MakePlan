@@ -16,14 +16,14 @@ fun Fragment.getVmFactory(isMultiProject : Boolean): ProjectsViewModelFactory {
     return ProjectsViewModelFactory(repository, isMultiProject)
 }
 
-fun Fragment.getVmFactory(projectHistory : Array<Project>): GanttViewModelFactory {
+fun Fragment.getVmFactory(projectHistory : Array<Project>,isMultiProject:Boolean): GanttViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return GanttViewModelFactory(repository,projectHistory)
+    return GanttViewModelFactory(repository,projectHistory,isMultiProject)
 }
 
-fun Fragment.getVmFactory(projectHistory : Array<Project>, taskPos : Int, colorList : List<String>): TaskViewModelFactory {
+fun Fragment.getVmFactory(projectHistory : Array<Project>, taskPos : Int, colorList : List<String>,isMultiProject:Boolean): TaskViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return TaskViewModelFactory(repository,projectHistory,taskPos,colorList)
+    return TaskViewModelFactory(repository,projectHistory,taskPos,colorList,isMultiProject)
 }
 
 fun Fragment.getVmFactory(project: Project?,isMultiProject : Boolean): EditViewModelFactory {

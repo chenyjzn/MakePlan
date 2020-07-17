@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_ganttFragment_to_taskFragment"
             app:destination="@id/taskFragment" />
+        <argument
+            android:name="isMultiProject"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/projectsFragment"
@@ -52,6 +55,9 @@
         <argument
             android:name="projectHistoryPos"
             app:argType="integer" />
+        <argument
+            android:name="isMultiProject"
+            app:argType="boolean" />
     </fragment>
     <dialog
         android:id="@+id/EditDialog"
@@ -66,15 +72,5 @@
             android:name="isMultiProject"
             app:argType="boolean" />
     </dialog>
-    <dialog
-        android:id="@+id/NotExistCheckDialog"
-        android:name="com.yuchen.makeplan.notexist.NotExistCheckDialog"
-        android:label="dialog_not_exist_check"
-        tools:layout="@layout/dialog_not_exist_check" >
-        <argument
-            android:name="notExistProjects"
-            app:argType="com.yuchen.makeplan.data.Project[]" />
-    </dialog>
-    <action android:id="@+id/action_global_NotExistCheckDialog" app:destination="@id/NotExistCheckDialog" />
     <action android:id="@+id/action_global_projectsFragment" app:destination="@id/projectsFragment"/>
 </navigation>

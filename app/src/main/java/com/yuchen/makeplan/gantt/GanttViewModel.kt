@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GanttViewModel (private val repository: MakePlanRepository , private val projectHistory : Array<Project>) : ViewModel() {
+class GanttViewModel (private val repository: MakePlanRepository , private val projectHistory : Array<Project>,val isMultiProject:Boolean) : ViewModel() {
 
 
     private var viewModelJob = Job()

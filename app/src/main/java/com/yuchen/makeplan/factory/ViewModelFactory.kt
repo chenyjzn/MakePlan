@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.yuchen.makeplan.MainViewModel
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.projects.ProjectsViewModel
 
 class ViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository
