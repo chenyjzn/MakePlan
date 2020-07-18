@@ -32,7 +32,9 @@ class GanttFragment : Fragment() {
             it?.let {
                 binding.ganttTimeLine.setRange(it.startTimeMillis,it.endTimeMillis)
                 binding.ganttTimeLine.invalidate()
-                binding.ganttChart.setProject(it)
+                Log.d("chenyjzn", "${it.startTimeMillis}, ${it.endTimeMillis}")
+                binding.ganttChart.setRange(it.startTimeMillis,it.endTimeMillis)
+                binding.ganttChart.setTaskList(it.taskList)
                 binding.ganttChart.invalidate()
             }
         })

@@ -1,5 +1,6 @@
 package com.yuchen.makeplan.task
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -70,6 +71,7 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
 
     fun addTaskToNewProject(){
         if (isMultiProject){
+            Log.d("chenyjzn","add task ${project.value}")
             val newProject = project.value ?: projectRep.last().newRefProject()
             val name = newTaskName.value ?: "Project"
             val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis

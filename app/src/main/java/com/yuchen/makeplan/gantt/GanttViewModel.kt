@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 
 class GanttViewModel (private val repository: MakePlanRepository , private val projectHistory : Array<Project>,val isMultiProject:Boolean) : ViewModel() {
 
-
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -24,7 +23,9 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
 
     var projectRep : MutableList<Project> = projectHistory.toMutableList()
 
-    private val _project = MutableLiveData<Project>()
+    private val _project = MutableLiveData<Project>().apply {
+        value = projectRep.last()
+    }
     val project: LiveData<Project>
         get() {
             if (isMultiProject)
@@ -118,7 +119,7 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
 
     fun setProjectTimeByDx(dx : Float, width : Int){
         if (isMultiProject){
-            Log.d("chenyjzn","aaa")
+            Log.d("chenyjzn","set ${project.value}")
             var timeOffset = ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat()*dx/width.toFloat()).toLong()
             projectRep.forEach {
                 it.startTimeMillis -= timeOffset
