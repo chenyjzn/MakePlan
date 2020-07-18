@@ -104,4 +104,8 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     override suspend fun sendJoinRequestToFirebase(project: Project): Result<Boolean> {
         TODO("Not yet implemented")
     }
+
+    override fun getMultiProjectFromFirebase(project: Project): LiveData<Project> {
+        TODO("Not yet implemented")
+    }
 }

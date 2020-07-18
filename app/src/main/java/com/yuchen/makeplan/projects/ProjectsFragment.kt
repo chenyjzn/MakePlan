@@ -32,6 +32,7 @@ class ProjectsFragment : Fragment() {
         }
         if (viewModel.isMultiProject) {
             binding.projectsAppBar.inflateMenu(R.menu.multi_projects_top_menu)
+            binding.projectsAppBar.title = "Team Projects"
             binding.projectsAppBar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.search_project -> {
@@ -47,6 +48,7 @@ class ProjectsFragment : Fragment() {
             }
         } else {
             binding.projectsAppBar.inflateMenu(R.menu.personal_projects_top_menu)
+            binding.projectsAppBar.title = "Personal Projects"
             binding.projectsAppBar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.cloud_download -> {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.Team
 import com.yuchen.makeplan.data.User
 
@@ -91,5 +92,9 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
 
     override suspend fun sendJoinRequestToFirebase(project: Project): Result<Boolean> {
         return makePlanRemoteDataSource.sendJoinRequestToFirebase(project)
+    }
+
+    override fun getMultiProjectFromFirebase(project: Project): LiveData<Project> {
+        return makePlanRemoteDataSource.getMultiProjectFromFirebase(project)
     }
 }

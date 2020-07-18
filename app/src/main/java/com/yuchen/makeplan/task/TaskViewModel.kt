@@ -9,14 +9,23 @@ import com.yuchen.makeplan.MINUTE_MILLIS
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TaskViewModel (private val repository: MakePlanRepository, private val projectHistory : Array<Project>, private val taskPos : Int, val colorList : List<String>,val isMultiProject:Boolean) : ViewModel() {
 
+    private var viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
     var projectRep : MutableList<Project> = projectHistory.toMutableList()
     private val calendarStart = Calendar.getInstance()
     private val calendarEnd = Calendar.getInstance()
+
+    val project: LiveData<Project> = repository.getMultiProjectFromFirebase(projectRep.last())
 
     val newStartTimeMillis = MutableLiveData<Long>().apply {
         if (taskPos == -1)
@@ -60,23 +69,62 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
         get() = _newProject
 
     fun addTaskToNewProject(){
-        val newProject =projectRep.last().newRefProject()
-        val name = newTaskName.value?:"Project"
-        val startTimeMillis = newStartTimeMillis.value?:calendarStart.timeInMillis
-        val endTimeMillis = newEndTimeMillis.value?:calendarEnd.timeInMillis
-        val color = newTaskColor.value?:colorList.first()
-        var completeRate = newTaskCompleteRate.value?:0
-        if (taskPos == -1){
-            newProject.taskList.add(Task(startTimeMillis=startTimeMillis,endTimeMillis = endTimeMillis,name = name,color = color,completeRate = completeRate))
-        }else{
-            newProject.taskList[taskPos].startTimeMillis=startTimeMillis
-            newProject.taskList[taskPos].endTimeMillis=endTimeMillis
-            newProject.taskList[taskPos].name=name
-            newProject.taskList[taskPos].color=color
-            newProject.taskList[taskPos].completeRate=completeRate
+        if (isMultiProject){
+            val newProject = project.value ?: projectRep.last().newRefProject()
+            val name = newTaskName.value ?: "Project"
+            val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis
+            val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
+            val color = newTaskColor.value ?: colorList.first()
+            var completeRate = newTaskCompleteRate.value ?: 0
+            if (taskPos == -1) {
+                newProject.taskList.add(
+                    Task(
+                        startTimeMillis = startTimeMillis,
+                        endTimeMillis = endTimeMillis,
+                        name = name,
+                        color = color,
+                        completeRate = completeRate
+                    )
+                )
+            } else {
+                newProject.taskList[taskPos].startTimeMillis = startTimeMillis
+                newProject.taskList[taskPos].endTimeMillis = endTimeMillis
+                newProject.taskList[taskPos].name = name
+                newProject.taskList[taskPos].color = color
+                newProject.taskList[taskPos].completeRate = completeRate
+            }
+            coroutineScope.launch {
+                repository.updateMultiProjectToFirebase(newProject)
+                projectRep.add(newProject)
+                _newProject.value = projectRep
+            }
+        } else {
+            val newProject = projectRep.last().newRefProject()
+            val name = newTaskName.value ?: "Project"
+            val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis
+            val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
+            val color = newTaskColor.value ?: colorList.first()
+            var completeRate = newTaskCompleteRate.value ?: 0
+            if (taskPos == -1) {
+                newProject.taskList.add(
+                    Task(
+                        startTimeMillis = startTimeMillis,
+                        endTimeMillis = endTimeMillis,
+                        name = name,
+                        color = color,
+                        completeRate = completeRate
+                    )
+                )
+            } else {
+                newProject.taskList[taskPos].startTimeMillis = startTimeMillis
+                newProject.taskList[taskPos].endTimeMillis = endTimeMillis
+                newProject.taskList[taskPos].name = name
+                newProject.taskList[taskPos].color = color
+                newProject.taskList[taskPos].completeRate = completeRate
+            }
+            projectRep.add(newProject)
+            _newProject.value = projectRep
         }
-        projectRep.add(newProject)
-        _newProject.value = projectRep
     }
 
     fun setStartDate(year: Int, month: Int, dayOfMonth: Int){
@@ -169,5 +217,10 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
 
     fun getDurationMinutes(start : Long , end : Long) : String{
         return ((((end - start) % DAY_MILLIS)% HOUR_MILLIS)/ MINUTE_MILLIS).toString()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 }

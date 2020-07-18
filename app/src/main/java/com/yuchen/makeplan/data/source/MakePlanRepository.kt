@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.Result
+import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.Team
 
 interface MakePlanRepository {
@@ -50,4 +51,6 @@ interface MakePlanRepository {
     fun getAllMultiProjectsFromFirebase () : LiveData<List<Project>>
 
     suspend fun sendJoinRequestToFirebase (project: Project) : Result<Boolean>
+
+    fun getMultiProjectFromFirebase (project: Project) : LiveData<Project>
 }

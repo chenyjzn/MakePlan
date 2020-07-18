@@ -24,6 +24,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
     private const val COLLECTION_PERSONAL_PROJECTS = "personal_projects"
     private const val COLLECTION_JOIN_REQUEST = "join_request"
     private const val COLLECTION_SEND_REQUEST = "send_request"
+    private const val COLLECTION_TASK_LIST = "task_list"
 
     private const val FIELD_MEMBERSUID = "membersUid"
 
@@ -421,5 +422,21 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         }
         if (auth.currentUser == null)
             continuation.resume(Result.Fail("User not login"))
+    }
+
+    override fun getMultiProjectFromFirebase(project: Project): LiveData<Project> {
+        val liveData = MutableLiveData<Project>()
+        auth.currentUser?.let {firebaseUser ->
+            FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
+                .document(project.firebaseId)
+                .addSnapshotListener { snapshot, exception ->
+                    exception?.let {
+                        Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    }
+                    val projectLiveData = snapshot?.toObject(Project::class.java)
+                    liveData.value = projectLiveData
+                }
+        }
+        return liveData
     }
 }
