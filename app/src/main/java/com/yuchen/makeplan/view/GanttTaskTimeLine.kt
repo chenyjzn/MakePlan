@@ -57,6 +57,17 @@ class GanttTaskTimeLine : View {
         endDay= calendar.get(Calendar.DAY_OF_MONTH)
     }
 
+    fun setProjectTimeByDx(dx : Float, width : Int){
+        var timeOffset = ((endDate - startDate).toFloat()*dx/width.toFloat()).toLong()
+        setRange(startDate - timeOffset, endDate - timeOffset)
+    }
+
+    fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int){
+        var timeOffsetl = ((endDate - startDate).toFloat() * dl / width.toFloat()).toLong()
+        var timeOffsetr = ((endDate - startDate).toFloat() * dr / width.toFloat()).toLong()
+        setRange(startDate + timeOffsetl, endDate - timeOffsetr)
+    }
+
     private fun drawFrame(canvas: Canvas){
         //Upper line
         canvas.drawLine(0f, 0f, width.toFloat(), 0f, linePaint)

@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_projectsFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_projectsFragment_to_multiGanttFragment"
+            app:destination="@id/multiGanttFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
@@ -81,4 +84,33 @@
         android:name="com.yuchen.makeplan.search.SearchFragment"
         android:label="Fragment_search"
         tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/multiGanttFragment"
+        android:name="com.yuchen.makeplan.multigantt.MultiGanttFragment"
+        android:label="fragment_multi_gantt"
+        tools:layout="@layout/fragment_multi_gantt" >
+        <argument
+            android:name="multiProject"
+            app:argType="com.yuchen.makeplan.data.Project" />
+        <action
+            android:id="@+id/action_multiGanttFragment_to_multiTaskFragment"
+            app:destination="@id/multiTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/multiTaskFragment"
+        android:name="com.yuchen.makeplan.multitask.MultiTaskFragment"
+        android:label="fragment_multi_task"
+        tools:layout="@layout/fragment_multi_task" >
+        <action
+            android:id="@+id/action_multiTaskFragment_to_multiGanttFragment"
+            app:destination="@id/multiGanttFragment"
+            app:popUpTo="@id/multiTaskFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="multiProject"
+            app:argType="com.yuchen.makeplan.data.Project" />
+        <argument
+            android:name="taskPos"
+            app:argType="integer" />
+    </fragment>
 </navigation>

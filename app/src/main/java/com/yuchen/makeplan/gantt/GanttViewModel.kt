@@ -27,12 +27,13 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         value = projectRep.last()
     }
     val project: LiveData<Project>
-        get() {
-            if (isMultiProject)
-                return repository.getMultiProjectFromFirebase(projectRep.last())
-            else
-                return _project
-        }
+        get() = _project
+
+    val multiProject: LiveData<Project>? = if (isMultiProject){
+        repository.getMultiProjectFromFirebase(projectRep.last())
+    }else{
+        null
+    }
 
     var projectPos = projectRep.lastIndex
 
@@ -45,6 +46,12 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     }
     val taskSelect: LiveData<Int>
         get() = _taskSelect
+
+    fun pushProjectRep(project: Project){
+        projectRep.add(project)
+        projectPos += 1
+        _project.value = projectRep[projectPos]
+    }
 
     fun isTaskSelect():Int{
         return _taskSelect.value?:-1

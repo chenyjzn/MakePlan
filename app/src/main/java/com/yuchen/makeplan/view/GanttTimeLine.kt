@@ -56,6 +56,17 @@ class GanttTimeLine : View{
 
     val fontOffsetY = -(textPaint.fontMetrics.top + textPaint.fontMetrics.bottom)/2
 
+    fun setProjectTimeByDx(dx : Float, width : Int){
+        var timeOffset = ((endDate - startDate).toFloat()*dx/width.toFloat()).toLong()
+        setRange(startDate - timeOffset, endDate - timeOffset)
+    }
+
+    fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int){
+        var timeOffsetl = ((endDate - startDate).toFloat() * dl / width.toFloat()).toLong()
+        var timeOffsetr = ((endDate - startDate).toFloat() * dr / width.toFloat()).toLong()
+        setRange(startDate + timeOffsetl, endDate - timeOffsetr)
+    }
+
     fun setRange(_startDate: Long, _endDate: Long){
         //Log.d("chenyjzn","start $_startDate, end $_endDate")
         this.startDate = _startDate

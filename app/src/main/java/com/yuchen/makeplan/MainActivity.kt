@@ -83,6 +83,14 @@ class MainActivity : AppCompatActivity() {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.GONE
                 }
+                R.id.multiGanttFragment ->{
+                    this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+                R.id.multiTaskFragment ->{
+                    this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
                 R.id.projectsFragment ->{
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE

@@ -85,6 +85,17 @@ class GanttChart : View {
         this.taskList = taskList
     }
 
+    fun setProjectTimeByDx(dx : Float, width : Int){
+        var timeOffset = ((endDate - startDate).toFloat()*dx/width.toFloat()).toLong()
+        setRange(startDate - timeOffset, endDate - timeOffset)
+    }
+
+    fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int){
+        var timeOffsetl = ((endDate - startDate).toFloat() * dl / width.toFloat()).toLong()
+        var timeOffsetr = ((endDate - startDate).toFloat() * dr / width.toFloat()).toLong()
+        setRange(startDate + timeOffsetl, endDate - timeOffsetr)
+    }
+
 //    fun setProject(project: Project){
 //        this.project = project
 //

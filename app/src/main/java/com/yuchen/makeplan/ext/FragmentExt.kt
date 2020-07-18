@@ -5,6 +5,7 @@ import com.yuchen.makeplan.MakePlanApplication
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.edit.EditViewModel
 import com.yuchen.makeplan.factory.*
+import com.yuchen.makeplan.multitask.MultiTaskViewModel
 
 fun Fragment.getVmFactory(): ViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
@@ -29,4 +30,14 @@ fun Fragment.getVmFactory(projectHistory : Array<Project>, taskPos : Int, colorL
 fun Fragment.getVmFactory(project: Project?,isMultiProject : Boolean): EditViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
     return EditViewModelFactory(repository,project,isMultiProject)
+}
+
+fun Fragment.getVmFactory(project: Project): MultiGanttViewModelFactory {
+    val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
+    return MultiGanttViewModelFactory(repository,project)
+}
+
+fun Fragment.getVmFactory(project: Project, taskPos: Int, colorList : List<String>): MultiTaskViewModelFactory {
+    val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
+    return MultiTaskViewModelFactory(repository,project,taskPos, colorList)
 }
