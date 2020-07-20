@@ -24,20 +24,30 @@ class UsersFragment : Fragment() {
         val adapter = UsersAdapter()
         adapter.setOnSelectListener(object :UsersAdapter.OnSelectListener{
             override fun userSelect(user: User) {
-                MaterialAlertDialogBuilder(requireNotNull(context))
-                    .setTitle("Remove member ${user.displayName}?")
-                    .setNegativeButton("No") { dialog, which ->
+                if (adapter.itemCount == 1){
+                    MaterialAlertDialogBuilder(requireNotNull(context))
+                        .setTitle("Cant't remove the last member")
+                        .setPositiveButton("Yes") { dialog, which ->
 
-                    }.setPositiveButton("Yes") { dialog, which ->
-                        viewModel.removeProjectUser(user)
-                    }
-                    .show()
+                        }
+                        .show()
+                }else {
+                    MaterialAlertDialogBuilder(requireNotNull(context))
+                        .setTitle("Remove member ${user.displayName}?")
+                        .setNegativeButton("No") { dialog, which ->
+
+                        }.setPositiveButton("Yes") { dialog, which ->
+                            viewModel.removeProjectUser(user)
+                        }
+                        .show()
+                }
             }
         })
         binding.usersRecycler.adapter = adapter
         binding.usersRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         viewModel.users.observe(viewLifecycleOwner, Observer {
             it?.let {
+                viewModel.updateMultiProjectUser(it)
                 adapter.submitMembers(it)
             }
         })

@@ -9,6 +9,7 @@ import com.yuchen.makeplan.data.source.MakePlanRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class SearchUserViewModel(private val repository: MakePlanRepository, private val project: MultiProject) : ViewModel() {
 
@@ -18,7 +19,9 @@ class SearchUserViewModel(private val repository: MakePlanRepository, private va
     val users: LiveData<List<User>> = repository.getUsersFromFirebase()
 
     fun inviteUserToProject(user: User){
-
+        coroutineScope.launch {
+            repository.multiProjectInviteUser(project,user)
+        }
     }
 
     override fun onCleared() {

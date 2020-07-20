@@ -1,10 +1,10 @@
 package com.yuchen.makeplan.multiedit
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.MultiProject
-import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +35,18 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
             val newProject = MultiProject(name = projectName.value ?: "Project")
             newProject.updateTime = System.currentTimeMillis()
             coroutineScope.launch {
-                repository.addMultiProjectToFirebase(newProject)
+                val result = repository.addMultiProjectToFirebase(newProject)
+                when(result){
+                    is com.yuchen.makeplan.Result.Success ->{
+
+                    }
+                    is com.yuchen.makeplan.Result.Error ->{
+                        Log.d("chenyjzn", "getFireBaseUser result = ${result.exception}")
+                    }
+                    is com.yuchen.makeplan.Result.Fail ->{
+                        Log.d("chenyjzn", "getFireBaseUser result = ${result.error}")
+                    }
+                }
                 _runDismiss.value = true
             }
         } else {

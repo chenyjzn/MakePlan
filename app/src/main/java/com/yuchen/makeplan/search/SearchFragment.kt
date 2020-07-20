@@ -26,8 +26,8 @@ class SearchFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         val binding = FragmentSearchBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        val adapter = MultiProjectsAdapter()
-        adapter.setItemClickListener(object : MultiProjectsAdapter.OnClickListener{
+        val adapter = SearchAdapter()
+        adapter.setItemClickListener(object : SearchAdapter.OnClickListener{
             override fun onProjectClick(project: MultiProject) {
                 MaterialAlertDialogBuilder(requireNotNull(context))
                     .setTitle("Send join request to ${project.name}?")

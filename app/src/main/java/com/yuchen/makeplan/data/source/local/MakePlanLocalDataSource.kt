@@ -63,7 +63,7 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addMultiProjectToFirebase(project: MultiProject): Result<String> {
+    override suspend fun addMultiProjectToFirebase(project: MultiProject): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -120,7 +120,39 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectJoinRequsetFromFirebase(project: MultiProject): LiveData<List<User>> {
+    override fun getMultiProjectJoinRequestFromFirebase(project: MultiProject): LiveData<List<User>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateMultiProjectUsersToFirebase(
+        project: MultiProject,
+        users: List<User>
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeMultiProjectUsersFromFirebase(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun multiProjectInviteUser(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMultiProjectInviteRequestFromFirebase(project: MultiProject): LiveData<List<User>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun multiProjectCancelInviteFromFirebase(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
         TODO("Not yet implemented")
     }
 }

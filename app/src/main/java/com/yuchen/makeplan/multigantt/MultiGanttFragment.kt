@@ -33,7 +33,7 @@ class MultiGanttFragment : Fragment() {
         }
 
         binding.multiGanttInvite.setOnClickListener {
-            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToSearchUserFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
+            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToInviteUsersFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
         }
 
         binding.multiGanttJoin.setOnClickListener {

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.inviteusers.InviteUsersViewModel
 import com.yuchen.makeplan.joinuser.JoinUserViewModel
 import com.yuchen.makeplan.multigantt.MultiGanttViewModel
 import com.yuchen.makeplan.searchuser.SearchUserViewModel
@@ -26,6 +27,8 @@ class MultiGanttViewModelFactory constructor(
                     SearchUserViewModel(makePlanRepository, project)
                 isAssignableFrom(JoinUserViewModel::class.java) ->
                     JoinUserViewModel(makePlanRepository, project)
+                isAssignableFrom(InviteUsersViewModel::class.java) ->
+                    InviteUsersViewModel(makePlanRepository, project)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

@@ -80,11 +80,11 @@
             android:id="@+id/action_multiGanttFragment_to_usersFragment"
             app:destination="@id/usersFragment" />
         <action
-            android:id="@+id/action_multiGanttFragment_to_searchUserFragment"
-            app:destination="@id/searchUserFragment" />
-        <action
             android:id="@+id/action_multiGanttFragment_to_joinUserFragment"
             app:destination="@id/joinUserFragment" />
+        <action
+            android:id="@+id/action_multiGanttFragment_to_inviteUsersFragment"
+            app:destination="@id/inviteUsersFragment" />
     </fragment>
     <fragment
         android:id="@+id/multiTaskFragment"
@@ -163,4 +163,16 @@
             app:argType="com.yuchen.makeplan.data.MultiProject"
             app:nullable="true" />
     </dialog>
+    <fragment
+        android:id="@+id/inviteUsersFragment"
+        android:name="com.yuchen.makeplan.inviteusers.InviteUsersFragment"
+        android:label="fragment_invite_users"
+        tools:layout="@layout/fragment_invite_users" >
+        <action
+            android:id="@+id/action_inviteUsersFragment_to_searchUserFragment"
+            app:destination="@id/searchUserFragment" />
+        <argument
+            android:name="project"
+            app:argType="com.yuchen.makeplan.data.MultiProject" />
+    </fragment>
 </navigation>

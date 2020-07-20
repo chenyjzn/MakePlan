@@ -1,7 +1,6 @@
 package com.yuchen.makeplan.data.source
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.*
@@ -51,7 +50,7 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.getMyMultiProjectsFromFirebase()
     }
 
-    override suspend fun addMultiProjectToFirebase(project: MultiProject): Result<String> {
+    override suspend fun addMultiProjectToFirebase(project: MultiProject): Result<Boolean> {
         return makePlanRemoteDataSource.addMultiProjectToFirebase(project)
     }
 
@@ -99,7 +98,36 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.getUsersFromFirebase()
     }
 
-    override fun getMultiProjectJoinRequsetFromFirebase(project: MultiProject): LiveData<List<User>> {
-        return makePlanRemoteDataSource.getMultiProjectJoinRequsetFromFirebase(project)
+    override fun getMultiProjectJoinRequestFromFirebase(project: MultiProject): LiveData<List<User>> {
+        return makePlanRemoteDataSource.getMultiProjectJoinRequestFromFirebase(project)
+    }
+
+    override suspend fun updateMultiProjectUsersToFirebase(project: MultiProject, users: List<User>): Result<Boolean> {
+        return makePlanRemoteDataSource.updateMultiProjectUsersToFirebase(project,users)
+    }
+
+    override suspend fun removeMultiProjectUsersFromFirebase(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.removeMultiProjectUsersFromFirebase(project,user)
+    }
+
+    override suspend fun multiProjectInviteUser(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.multiProjectInviteUser(project,user)
+    }
+
+    override fun getMultiProjectInviteRequestFromFirebase(project: MultiProject): LiveData<List<User>> {
+        return makePlanRemoteDataSource.getMultiProjectInviteRequestFromFirebase(project)
+    }
+
+    override suspend fun multiProjectCancelInviteFromFirebase(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.multiProjectCancelInviteFromFirebase(project,user)
     }
 }

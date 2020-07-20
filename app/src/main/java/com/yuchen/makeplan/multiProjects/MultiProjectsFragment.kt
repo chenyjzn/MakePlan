@@ -37,8 +37,7 @@ class MultiProjectsFragment : Fragment() {
 
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
-                projectsAdapter.appendList(it)
-                projectsAdapter.notifyDataSetChanged()
+                projectsAdapter.submitList(it)
             }
         })
 

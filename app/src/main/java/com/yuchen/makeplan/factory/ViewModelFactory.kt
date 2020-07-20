@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.yuchen.makeplan.MainViewModel
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.multiProjects.MultiProjectsViewModel
 import com.yuchen.makeplan.projects.ProjectsViewModel
 import com.yuchen.makeplan.search.SearchViewModel
 
@@ -20,6 +21,8 @@ class ViewModelFactory constructor(
                     SearchViewModel(makePlanRepository)
                 isAssignableFrom(ProjectsViewModel::class.java) ->
                     ProjectsViewModel(makePlanRepository)
+                isAssignableFrom(MultiProjectsViewModel::class.java) ->
+                    MultiProjectsViewModel(makePlanRepository)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

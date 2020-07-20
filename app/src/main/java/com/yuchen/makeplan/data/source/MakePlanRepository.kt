@@ -29,7 +29,7 @@ interface MakePlanRepository {
 
     fun getMyMultiProjectsFromFirebase () : LiveData<List<MultiProject>>
 
-    suspend fun addMultiProjectToFirebase (project: MultiProject) : Result<String>
+    suspend fun addMultiProjectToFirebase (project: MultiProject) : Result<Boolean>
 
     suspend fun updateMultiProjectToFirebase (project: MultiProject) : Result<String>
 
@@ -53,5 +53,15 @@ interface MakePlanRepository {
 
     fun getUsersFromFirebase () : LiveData<List<User>>
 
-    fun getMultiProjectJoinRequsetFromFirebase(project: MultiProject) : LiveData<List<User>>
+    fun getMultiProjectJoinRequestFromFirebase(project: MultiProject) : LiveData<List<User>>
+
+    suspend fun updateMultiProjectUsersToFirebase(project: MultiProject, users :List<User>) : Result<Boolean>
+
+    suspend fun removeMultiProjectUsersFromFirebase(project: MultiProject, user :User) : Result<Boolean>
+
+    suspend fun multiProjectInviteUser(project: MultiProject, user :User) : Result<Boolean>
+
+    fun getMultiProjectInviteRequestFromFirebase(project: MultiProject) : LiveData<List<User>>
+
+    suspend fun multiProjectCancelInviteFromFirebase(project: MultiProject, user :User) : Result<Boolean>
 }

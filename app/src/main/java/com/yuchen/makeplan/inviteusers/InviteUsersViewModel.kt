@@ -1,4 +1,4 @@
-package com.yuchen.makeplan.joinuser
+package com.yuchen.makeplan.inviteusers
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -8,16 +8,19 @@ import com.yuchen.makeplan.data.source.MakePlanRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-class JoinUserViewModel(private val repository: MakePlanRepository, private val project: MultiProject) : ViewModel() {
+class InviteUsersViewModel(private val repository: MakePlanRepository, private val project: MultiProject) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val users: LiveData<List<User>> = repository.getMultiProjectJoinRequestFromFirebase(project)
+    val users: LiveData<List<User>> = repository.getMultiProjectInviteRequestFromFirebase(project)
 
-    fun confirmUserJoin(user: User){
-
+    fun cancelInvite(user: User){
+        coroutineScope.launch {
+            repository.multiProjectCancelInviteFromFirebase(project,user)
+        }
     }
 
     override fun onCleared() {
