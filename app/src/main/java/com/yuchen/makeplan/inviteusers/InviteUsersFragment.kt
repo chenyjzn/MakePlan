@@ -55,6 +55,10 @@ class InviteUsersFragment : Fragment() {
             }
         }
 
+        binding.inviteUserProjectsAppBar.setNavigationOnClickListener {
+            this.findNavController().popBackStack()
+        }
+
         return binding.root
     }
 }

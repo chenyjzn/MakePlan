@@ -130,4 +130,11 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
     ): Result<Boolean> {
         return makePlanRemoteDataSource.multiProjectCancelInviteFromFirebase(project,user)
     }
+
+    override suspend fun multiProjectConfirmUserJoinFirebase(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.multiProjectConfirmUserJoinFirebase(project, user)
+    }
 }

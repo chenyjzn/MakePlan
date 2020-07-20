@@ -155,4 +155,11 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun multiProjectConfirmUserJoinFirebase(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
 }

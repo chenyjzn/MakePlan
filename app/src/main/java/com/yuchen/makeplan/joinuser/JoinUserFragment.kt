@@ -22,8 +22,8 @@ class JoinUserFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentJoinUserBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        val adapter = UsersAdapter()
-        adapter.setOnSelectListener(object :UsersAdapter.OnSelectListener{
+        val adapter = JoinUserAdapter()
+        adapter.setOnSelectListener(object :JoinUserAdapter.OnSelectListener{
             override fun userSelect(user: User) {
                 MaterialAlertDialogBuilder(requireNotNull(context))
                     .setTitle("Do you want to invite ${user.displayName} to project?")

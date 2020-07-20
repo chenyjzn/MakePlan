@@ -75,25 +75,20 @@ class MainActivity : AppCompatActivity() {
 
         findNavController(R.id.nav_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
-                R.id.ganttFragment ->{
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.GONE
-                }
-                R.id.taskFragment ->{
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.GONE
-                }
-                R.id.multiGanttFragment ->{
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.GONE
-                }
-                R.id.multiTaskFragment ->{
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.GONE
-                }
                 R.id.projectsFragment ->{
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+                R.id.multiProjectsFragment ->{
+                    this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+                R.id.notifyFragment ->{
+                    this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+                else ->{
+                    binding.bottomNavigationView.visibility = View.GONE
                 }
             }
         }

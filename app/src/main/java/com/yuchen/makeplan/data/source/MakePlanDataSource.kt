@@ -64,4 +64,6 @@ interface MakePlanDataSource{
     fun getMultiProjectInviteRequestFromFirebase(project: MultiProject) : LiveData<List<User>>
 
     suspend fun multiProjectCancelInviteFromFirebase(project: MultiProject, user :User) : Result<Boolean>
+
+    suspend fun multiProjectConfirmUserJoinFirebase(project: MultiProject, user :User) : Result<Boolean>
 }

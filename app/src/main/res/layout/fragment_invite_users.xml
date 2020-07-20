@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:menu="@menu/invite_user_top_menu"
+                app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
                 app:title="Invited Users" />
 
         </com.google.android.material.appbar.AppBarLayout>

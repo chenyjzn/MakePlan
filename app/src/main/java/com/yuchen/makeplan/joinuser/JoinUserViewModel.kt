@@ -8,6 +8,7 @@ import com.yuchen.makeplan.data.source.MakePlanRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class JoinUserViewModel(private val repository: MakePlanRepository, private val project: MultiProject) : ViewModel() {
 
@@ -17,7 +18,9 @@ class JoinUserViewModel(private val repository: MakePlanRepository, private val 
     val users: LiveData<List<User>> = repository.getMultiProjectJoinRequestFromFirebase(project)
 
     fun confirmUserJoin(user: User){
-
+        coroutineScope.launch {
+            repository.multiProjectConfirmUserJoinFirebase(project,user)
+        }
     }
 
     override fun onCleared() {

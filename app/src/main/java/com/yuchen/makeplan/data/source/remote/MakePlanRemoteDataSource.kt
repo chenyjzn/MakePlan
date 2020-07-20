@@ -197,7 +197,18 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                         .document(user.uid)
                         .set(user).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                continuation.resume(Result.Success(true))
+                                FirebaseFirestore.getInstance().collection(COLLECTION_USERS).document(UserManager.user.uid).collection(COLLECTION_MULTI_PROJECTS).document(project.firebaseId)
+                                    .set(project).addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        continuation.resume(Result.Success(true))
+                                    } else {
+                                        task.exception?.let {
+                                            continuation.resume(Result.Error(it))
+                                            return@addOnCompleteListener
+                                        }
+                                        continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                                    }
+                                }
                             } else {
                                 task.exception?.let {
                                     continuation.resume(Result.Error(it))
@@ -626,6 +637,72 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                         .document(project.firebaseId).delete().addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 continuation.resume(Result.Success(true))
+                            } else {
+                                task.exception?.let {
+                                    continuation.resume(Result.Error(it))
+                                    return@addOnCompleteListener
+                                }
+                                continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                            }
+                        }
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("sendJoinRequestToFirebase fail"))
+                }
+            }
+        }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+    }
+
+    override suspend fun multiProjectConfirmUserJoinFirebase(project: MultiProject, user: User): Result<Boolean> = suspendCoroutine { continuation->
+        auth.currentUser?.let {firebaseUser ->
+            val multiProjectsFirebase = FirebaseFirestore.getInstance()
+                .collection(COLLECTION_MULTI_PROJECTS)
+                .document(project.firebaseId)
+                .collection(COLLECTION_JOIN_REQUEST)
+            val document = multiProjectsFirebase.document(user.uid)
+            document.delete().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_USERS)
+                        .document(user.uid)
+                        .collection(COLLECTION_SEND_REQUEST)
+                        .document(project.firebaseId).delete().addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val multiProjectsFirebase = FirebaseFirestore.getInstance()
+                                    .collection(COLLECTION_MULTI_PROJECTS)
+                                    .document(project.firebaseId)
+                                    .collection(COLLECTION_MEMBERS)
+                                val document = multiProjectsFirebase.document(user.uid)
+                                document.set(user).addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        FirebaseFirestore.getInstance()
+                                            .collection(COLLECTION_USERS)
+                                            .document(user.uid)
+                                            .collection(COLLECTION_MULTI_PROJECTS)
+                                            .document(project.firebaseId).set(project).addOnCompleteListener { task ->
+                                                if (task.isSuccessful) {
+                                                    continuation.resume(Result.Success(true))
+                                                } else {
+                                                    task.exception?.let {
+                                                        continuation.resume(Result.Error(it))
+                                                        return@addOnCompleteListener
+                                                    }
+                                                    continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                                                }
+                                            }
+                                    } else {
+                                        task.exception?.let {
+                                            continuation.resume(Result.Error(it))
+                                            return@addOnCompleteListener
+                                        }
+                                        continuation.resume(Result.Fail("sendJoinRequestToFirebase fail"))
+                                    }
+                                }
                             } else {
                                 task.exception?.let {
                                     continuation.resume(Result.Error(it))
