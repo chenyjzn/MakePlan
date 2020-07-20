@@ -37,7 +37,7 @@ class NotifyItems : Fragment() {
                         .setNegativeButton("No") { dialog, which ->
 
                         }.setPositiveButton("Yes") { dialog, which ->
-
+                            viewModel.cancelSend(project)
                         }
                         .show()
                 }else{
@@ -46,7 +46,7 @@ class NotifyItems : Fragment() {
                         .setNegativeButton("No") { dialog, which ->
 
                         }.setPositiveButton("Yes") { dialog, which ->
-
+                            viewModel.confirmInvite(project)
                         }
                         .show()
                 }

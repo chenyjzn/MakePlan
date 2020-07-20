@@ -59,118 +59,112 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getMyMultiProjectsFromFirebase(): LiveData<List<MultiProject>> {
+    override fun getMyMultiProjects(): LiveData<List<MultiProject>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addMultiProjectToFirebase(project: MultiProject): Result<Boolean> {
+    override fun getAllMultiProjects(): LiveData<List<MultiProject>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateMultiProjectToFirebase(project: MultiProject): Result<String> {
+    override fun getMultiProject(project: MultiProject): LiveData<MultiProject> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeMultiProjectFromFirebase(project: MultiProject): Result<Boolean> {
+    override fun getMultiProjectTasks(project: MultiProject): LiveData<List<MultiTask>> {
         TODO("Not yet implemented")
     }
 
-    override fun getAllMultiProjectsFromFirebase(): LiveData<List<MultiProject>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun sendJoinRequestToFirebase(project: MultiProject): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getMultiProjectFromFirebase(project: MultiProject): LiveData<MultiProject> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getMultiProjectTasksFromFirebase(project: MultiProject): LiveData<List<MultiTask>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateMultiProjectTaskToFirebase(
+    override suspend fun updateMultiProjectTask(
         project: MultiProject,
         task: MultiTask
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeMultiProjectTaskFromFirebase(
+    override suspend fun removeMultiProjectTask(
         project: MultiProject,
         task: MultiTask
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateMultiProjectCompleteRateToFirebase(
+    override suspend fun updateMultiProjectCompleteRate(
         project: MultiProject,
         completeRate: Int
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectUsersFromFirebase(project: MultiProject): LiveData<List<User>> {
+    override fun getMultiProjectUsers(project: MultiProject): LiveData<List<User>> {
         TODO("Not yet implemented")
     }
 
-    override fun getUsersFromFirebase(): LiveData<List<User>> {
+    override fun getAllUsers(): LiveData<List<User>> {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectJoinRequestFromFirebase(project: MultiProject): LiveData<List<User>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateMultiProjectUsersToFirebase(
+    override suspend fun updateMultiProjectUsers(
         project: MultiProject,
         users: List<User>
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeMultiProjectUsersFromFirebase(
-        project: MultiProject,
-        user: User
-    ): Result<Boolean> {
+    override suspend fun addMultiProject(project: MultiProject): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun multiProjectInviteUser(
-        project: MultiProject,
-        user: User
-    ): Result<Boolean> {
+    override suspend fun updateMultiProject(project: MultiProject): Result<String> {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectInviteRequestFromFirebase(project: MultiProject): LiveData<List<User>> {
+    override suspend fun removeMultiProject(project: MultiProject): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun multiProjectCancelInviteFromFirebase(
-        project: MultiProject,
-        user: User
-    ): Result<Boolean> {
+    override fun getMyMultiProjects(collection: String): LiveData<List<MultiProject>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun multiProjectConfirmUserJoinFirebase(
-        project: MultiProject,
-        user: User
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getMyMultiProjectsFromFirebase(collection: String): LiveData<List<MultiProject>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getMultiProjectUsersFromFirebase(
+    override fun getMultiProjectUsers(
         project: MultiProject,
         collection: String
     ): LiveData<List<User>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun approveUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectCollection: String,
+        userCollection: String
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancelUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectCollection: String,
+        userCollection: String
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun requestUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectCollection: String,
+        userCollection: String
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeMultiProjectUser(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
         TODO("Not yet implemented")
     }
 }

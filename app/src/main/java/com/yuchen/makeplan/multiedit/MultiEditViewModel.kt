@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,7 +34,7 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
             val newProject = MultiProject(name = projectName.value ?: "Project")
             newProject.updateTime = System.currentTimeMillis()
             coroutineScope.launch {
-                val result = repository.addMultiProjectToFirebase(newProject)
+                val result = repository.addMultiProject(newProject)
                 when(result){
                     is com.yuchen.makeplan.Result.Success ->{
 
@@ -53,7 +52,7 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
             project.name = projectName.value ?: "Project"
             project.updateTime = System.currentTimeMillis()
             coroutineScope.launch {
-                repository.updateMultiProjectToFirebase(project)
+                repository.updateMultiProject(project)
                 _runDismiss.value = true
             }
         }
@@ -63,7 +62,7 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
     fun removeProject() {
         project?.let { project ->
             coroutineScope.launch {
-                repository.removeMultiProjectFromFirebase(project)
+                repository.removeMultiProject(project)
                 _runDismiss.value = true
             }
         }

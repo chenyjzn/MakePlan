@@ -27,47 +27,42 @@ interface MakePlanRepository {
 
     suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?>
 
-    fun getMyMultiProjectsFromFirebase () : LiveData<List<MultiProject>>
 
-    suspend fun addMultiProjectToFirebase (project: MultiProject) : Result<Boolean>
+    fun getMyMultiProjects () : LiveData<List<MultiProject>>
 
-    suspend fun updateMultiProjectToFirebase (project: MultiProject) : Result<String>
+    fun getAllMultiProjects () : LiveData<List<MultiProject>>
 
-    suspend fun removeMultiProjectFromFirebase (project: MultiProject) : Result<Boolean>
+    fun getMultiProject (project: MultiProject) : LiveData<MultiProject>
 
-    fun getAllMultiProjectsFromFirebase () : LiveData<List<MultiProject>>
+    fun getMultiProjectTasks (project: MultiProject) : LiveData<List<MultiTask>>
 
-    suspend fun sendJoinRequestToFirebase (project: MultiProject) : Result<Boolean>
+    suspend fun updateMultiProjectTask (project: MultiProject, task: MultiTask) : Result<Boolean>
 
-    fun getMultiProjectFromFirebase (project: MultiProject) : LiveData<MultiProject>
+    suspend fun removeMultiProjectTask (project: MultiProject, task: MultiTask) : Result<Boolean>
 
-    fun getMultiProjectTasksFromFirebase (project: MultiProject) : LiveData<List<MultiTask>>
+    suspend fun updateMultiProjectCompleteRate (project: MultiProject, completeRate : Int) : Result<Boolean>
 
-    suspend fun updateMultiProjectTaskToFirebase (project: MultiProject,task: MultiTask) : Result<Boolean>
+    fun getMultiProjectUsers (project: MultiProject) : LiveData<List<User>>
 
-    suspend fun removeMultiProjectTaskFromFirebase (project: MultiProject,task: MultiTask) : Result<Boolean>
+    fun getAllUsers () : LiveData<List<User>>
 
-    suspend fun updateMultiProjectCompleteRateToFirebase (project: MultiProject,completeRate : Int) : Result<Boolean>
+    suspend fun updateMultiProjectUsers(project: MultiProject, users :List<User>) : Result<Boolean>
 
-    fun getMultiProjectUsersFromFirebase (project: MultiProject) : LiveData<List<User>>
+    suspend fun addMultiProject (project: MultiProject) : Result<Boolean>
 
-    fun getUsersFromFirebase () : LiveData<List<User>>
+    suspend fun updateMultiProject (project: MultiProject) : Result<String>
 
-    fun getMultiProjectJoinRequestFromFirebase(project: MultiProject) : LiveData<List<User>>
+    suspend fun removeMultiProject (project: MultiProject) : Result<Boolean>
 
-    suspend fun updateMultiProjectUsersToFirebase(project: MultiProject, users :List<User>) : Result<Boolean>
+    fun getMyMultiProjects(collection : String) : LiveData<List<MultiProject>>
 
-    suspend fun removeMultiProjectUsersFromFirebase(project: MultiProject, user :User) : Result<Boolean>
+    fun getMultiProjectUsers(project: MultiProject, collection: String): LiveData<List<User>>
 
-    suspend fun multiProjectInviteUser(project: MultiProject, user :User) : Result<Boolean>
+    suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>
 
-    fun getMultiProjectInviteRequestFromFirebase(project: MultiProject) : LiveData<List<User>>
+    suspend fun cancelUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>
 
-    suspend fun multiProjectCancelInviteFromFirebase(project: MultiProject, user :User) : Result<Boolean>
+    suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>
 
-    suspend fun multiProjectConfirmUserJoinFirebase(project: MultiProject, user :User) : Result<Boolean>
-
-    fun getMyMultiProjectsFromFirebase(collection : String) : LiveData<List<MultiProject>>
-
-    fun getMultiProjectUsersFromFirebase(project: MultiProject,collection: String): LiveData<List<User>>
+    suspend fun removeMultiProjectUser(project: MultiProject, user :User) : Result<Boolean>
 }

@@ -15,17 +15,17 @@ class UsersViewModel(private val repository: MakePlanRepository,private val proj
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val users: LiveData<List<User>> = repository.getMultiProjectUsersFromFirebase(project)
+    val users: LiveData<List<User>> = repository.getMultiProjectUsers(project)
 
     fun removeProjectUser(user: User){
         coroutineScope.launch {
-            repository.removeMultiProjectUsersFromFirebase(project,user)
+            repository.removeMultiProjectUser(project,user)
         }
     }
 
     fun updateMultiProjectUser(users:List<User>){
         coroutineScope.launch {
-            repository.updateMultiProjectUsersToFirebase(project,users)
+            repository.updateMultiProjectUsers(project,users)
         }
     }
 
