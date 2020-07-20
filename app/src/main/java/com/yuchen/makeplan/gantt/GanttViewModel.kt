@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GanttViewModel (private val repository: MakePlanRepository , private val projectHistory : Array<Project>,val isMultiProject:Boolean) : ViewModel() {
+class GanttViewModel (private val repository: MakePlanRepository , private val projectHistory : Array<Project>) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -28,12 +28,6 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     }
     val project: LiveData<Project>
         get() = _project
-
-    val multiProject: LiveData<Project>? = if (isMultiProject){
-        repository.getMultiProjectFromFirebase(projectRep.last())
-    }else{
-        null
-    }
 
     var projectPos = projectRep.lastIndex
 
@@ -125,40 +119,16 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     }
 
     fun setProjectTimeByDx(dx : Float, width : Int){
-        if (isMultiProject){
-            Log.d("chenyjzn","set ${project.value}")
-            var timeOffset = ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat()*dx/width.toFloat()).toLong()
-            projectRep.forEach {
-                it.startTimeMillis -= timeOffset
-                it.endTimeMillis -= timeOffset
-            }
-            coroutineScope.launch {
-                repository.updateMultiProjectToFirebase(projectRep[projectPos])
-            }
-        } else{
+
             var timeOffset = ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat()*dx/width.toFloat()).toLong()
             projectRep.forEach {
                 it.startTimeMillis -= timeOffset
                 it.endTimeMillis -= timeOffset
             }
             _project.value = projectRep[projectPos]
-        }
     }
 
     fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int){
-        if (isMultiProject){
-            var timeOffsetl =
-                ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat() * dl / width.toFloat()).toLong()
-            var timeOffsetr =
-                ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat() * dr / width.toFloat()).toLong()
-            projectRep.forEach {
-                it.startTimeMillis += timeOffsetl
-                it.endTimeMillis -= timeOffsetr
-            }
-            coroutineScope.launch {
-                repository.updateMultiProjectToFirebase(projectRep[projectPos])
-            }
-        } else {
             var timeOffsetl =
                 ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat() * dl / width.toFloat()).toLong()
             var timeOffsetr =
@@ -168,7 +138,6 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
                 it.endTimeMillis -= timeOffsetr
             }
             _project.value = projectRep[projectPos]
-        }
     }
 
     fun getUndoListArray(): Array<Project>{

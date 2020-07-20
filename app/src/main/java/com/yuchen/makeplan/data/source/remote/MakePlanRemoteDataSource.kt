@@ -8,12 +8,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.yuchen.makeplan.Result
+import com.yuchen.makeplan.data.*
 import com.yuchen.makeplan.util.UserManager
 import com.yuchen.makeplan.util.UserManager.auth
-import com.yuchen.makeplan.data.Project
-import com.yuchen.makeplan.data.Task
-import com.yuchen.makeplan.data.Team
-import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanDataSource
 import com.yuchen.makeplan.util.UserManager.user
 import kotlin.coroutines.resume
@@ -159,8 +156,8 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             }
     }
 
-    override fun getMyMultiProjectsFromFirebase(): LiveData<List<Project>> {
-        val liveData = MutableLiveData<List<Project>>()
+    override fun getMyMultiProjectsFromFirebase(): LiveData<List<MultiProject>> {
+        val liveData = MutableLiveData<List<MultiProject>>()
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
                 .whereArrayContains(FIELD_MEMBERSUID,firebaseUser.uid)
@@ -169,9 +166,9 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                         Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
                     }
                     Log.d("chenyjzn","User team snapshotListener")
-                    val list = mutableListOf<Project>()
+                    val list = mutableListOf<MultiProject>()
                     for (document in snapshot!!) {
-                        val project = document.toObject(Project::class.java)
+                        val project = document.toObject(MultiProject::class.java)
                         list.add(project)
                     }
                     liveData.value = list
@@ -180,7 +177,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         return liveData
     }
 
-    override suspend fun addMultiProjectToFirebase(project: Project): Result<String>  = suspendCoroutine { continuation->
+    override suspend fun addMultiProjectToFirebase(project: MultiProject): Result<String>  = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
             val multiProjectsFirebase = FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
             val document = multiProjectsFirebase.document()
@@ -201,7 +198,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override suspend fun updateMultiProjectToFirebase(project: Project): Result<String> = suspendCoroutine { continuation->
+    override suspend fun updateMultiProjectToFirebase(project: MultiProject): Result<String> = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
             val multiProjectsFirebase = FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
             val document = multiProjectsFirebase.document(project.firebaseId)
@@ -221,10 +218,10 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override suspend fun removeMultiProjectFromFirebase(id: String): Result<Boolean> = suspendCoroutine { continuation->
+    override suspend fun removeMultiProjectFromFirebase(project: MultiProject): Result<Boolean> = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
             val multiProjectsFirebase = FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
-            val document = multiProjectsFirebase.document(id)
+            val document = multiProjectsFirebase.document(project.firebaseId)
             document.delete().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     continuation.resume(Result.Success(true))
@@ -241,8 +238,8 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override fun getAllMultiProjectsFromFirebase(): LiveData<List<Project>> {
-        val liveData = MutableLiveData<List<Project>>()
+    override fun getAllMultiProjectsFromFirebase(): LiveData<List<MultiProject>> {
+        val liveData = MutableLiveData<List<MultiProject>>()
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
                 .addSnapshotListener { snapshot, exception ->
@@ -250,9 +247,9 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                         Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
                     }
                     Log.d("chenyjzn","User team snapshotListener")
-                    val list = mutableListOf<Project>()
+                    val list = mutableListOf<MultiProject>()
                     for (document in snapshot!!) {
-                        val project = document.toObject(Project::class.java)
+                        val project = document.toObject(MultiProject::class.java)
                         list.add(project)
                     }
                     liveData.value = list
@@ -261,7 +258,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         return liveData
     }
 
-    override suspend fun sendJoinRequestToFirebase(project: Project): Result<Boolean> = suspendCoroutine { continuation->
+    override suspend fun sendJoinRequestToFirebase(project: MultiProject): Result<Boolean> = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
             val multiProjectsFirebase = FirebaseFirestore.getInstance()
                 .collection(COLLECTION_MULTI_PROJECTS)
@@ -298,8 +295,8 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override fun getMultiProjectFromFirebase(project: Project): LiveData<Project> {
-        val liveData = MutableLiveData<Project>()
+    override fun getMultiProjectFromFirebase(project: MultiProject): LiveData<MultiProject> {
+        val liveData = MutableLiveData<MultiProject>()
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
                 .document(project.firebaseId)
@@ -307,15 +304,15 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                     exception?.let {
                         Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
                     }
-                    val projectLiveData = snapshot?.toObject(Project::class.java)
+                    val projectLiveData = snapshot?.toObject(MultiProject::class.java)
                     liveData.value = projectLiveData
                 }
         }
         return liveData
     }
 
-    override fun getMultiProjectTasksFromFirebase(project: Project): LiveData<List<Task>> {
-        val liveData = MutableLiveData<List<Task>>()
+    override fun getMultiProjectTasksFromFirebase(project: MultiProject): LiveData<List<MultiTask>> {
+        val liveData = MutableLiveData<List<MultiTask>>()
         auth.currentUser?.let { firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
                 .document(project.firebaseId).collection(COLLECTION_TASK_LIST)
@@ -323,9 +320,9 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                     exception?.let {
                         Log.d("chenyjzn","${this::class.simpleName}] Error getting documents. ${it.message}")
                     }
-                    val list = mutableListOf<Task>()
+                    val list = mutableListOf<MultiTask>()
                     for (document in snapshot!!) {
-                        val task = document.toObject(Task::class.java)
+                        val task = document.toObject(MultiTask::class.java)
                         list.add(task)
                     }
                     liveData.value = list
@@ -334,7 +331,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         return liveData
     }
 
-    override suspend fun updateMultiProjectTaskToFirebase(project: Project,task: Task) : Result<Boolean> = suspendCoroutine { continuation->
+    override suspend fun updateMultiProjectTaskToFirebase(project: MultiProject,task: MultiTask) : Result<Boolean> = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
             val multiProjectsFirebase = FirebaseFirestore.getInstance()
                 .collection(COLLECTION_MULTI_PROJECTS)
@@ -373,7 +370,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override suspend fun removeMultiProjectTaskFromFirebase(project: Project, task: Task): Result<Boolean> = suspendCoroutine { continuation->
+    override suspend fun removeMultiProjectTaskFromFirebase(project: MultiProject, task: MultiTask): Result<Boolean> = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS).document(project.firebaseId)
                 .collection(COLLECTION_TASK_LIST)
@@ -394,7 +391,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override suspend fun updateMultiProjectCompleteRateToFirebase(project: Project, completeRate: Int): Result<Boolean> = suspendCoroutine { continuation->
+    override suspend fun updateMultiProjectCompleteRateToFirebase(project: MultiProject, completeRate: Int): Result<Boolean> = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
             val data = hashMapOf("completeRate" to completeRate)
             val multiProjectsFirebase = FirebaseFirestore.getInstance()
@@ -416,7 +413,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override fun getMultiProjectUsersFromFirebase(project: Project): LiveData<List<User>> {
+    override fun getMultiProjectUsersFromFirebase(project: MultiProject): LiveData<List<User>> {
         val liveData = MutableLiveData<List<User>>()
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
@@ -459,7 +456,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         return liveData
     }
 
-    override fun getMultiProjectJoinRequsetFromFirebase(project: Project): LiveData<List<User>> {
+    override fun getMultiProjectJoinRequsetFromFirebase(project: MultiProject): LiveData<List<User>> {
         val liveData = MutableLiveData<List<User>>()
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance()

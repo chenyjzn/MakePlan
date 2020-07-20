@@ -8,15 +8,14 @@ import com.yuchen.makeplan.gantt.GanttViewModel
 
 class GanttViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
-    private val projectHistory : Array<Project>,
-    private val isMultiProject:Boolean
+    private val projectHistory : Array<Project>
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {
                 isAssignableFrom(GanttViewModel::class.java) ->
-                    GanttViewModel(makePlanRepository, projectHistory,isMultiProject)
+                    GanttViewModel(makePlanRepository, projectHistory)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

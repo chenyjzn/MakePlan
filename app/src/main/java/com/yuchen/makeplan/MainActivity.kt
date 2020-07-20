@@ -101,10 +101,10 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_personal ->{
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment(false))
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment())
                 }
                 R.id.nav_team -> {
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment(true))
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiProjectsFragment())
                 }
                 R.id.nav_notify ->{
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalNotifyFragment())

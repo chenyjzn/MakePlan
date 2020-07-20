@@ -19,9 +19,6 @@
         <action
             android:id="@+id/action_ganttFragment_to_taskFragment"
             app:destination="@id/taskFragment" />
-        <argument
-            android:name="isMultiProject"
-            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/projectsFragment"
@@ -34,16 +31,6 @@
         <action
             android:id="@+id/action_projectsFragment_to_EditDialog"
             app:destination="@id/EditDialog" />
-        <argument
-            android:name="isMultiProject"
-            app:argType="boolean"
-            android:defaultValue="false" />
-        <action
-            android:id="@+id/action_projectsFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
-            android:id="@+id/action_projectsFragment_to_multiGanttFragment"
-            app:destination="@id/multiGanttFragment" />
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
@@ -61,9 +48,6 @@
         <argument
             android:name="projectHistoryPos"
             app:argType="integer" />
-        <argument
-            android:name="isMultiProject"
-            app:argType="boolean" />
     </fragment>
     <dialog
         android:id="@+id/EditDialog"
@@ -74,9 +58,6 @@
             android:name="project"
             app:argType="com.yuchen.makeplan.data.Project"
             app:nullable="true" />
-        <argument
-            android:name="isMultiProject"
-            app:argType="boolean" />
     </dialog>
     <action android:id="@+id/action_global_projectsFragment" app:destination="@id/projectsFragment"/>
     <fragment
@@ -91,7 +72,7 @@
         tools:layout="@layout/fragment_multi_gantt" >
         <argument
             android:name="multiProject"
-            app:argType="com.yuchen.makeplan.data.Project" />
+            app:argType="com.yuchen.makeplan.data.MultiProject" />
         <action
             android:id="@+id/action_multiGanttFragment_to_multiTaskFragment"
             app:destination="@id/multiTaskFragment" />
@@ -117,10 +98,10 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="project"
-            app:argType="com.yuchen.makeplan.data.Project" />
+            app:argType="com.yuchen.makeplan.data.MultiProject" />
         <argument
             android:name="task"
-            app:argType="com.yuchen.makeplan.data.Task"
+            app:argType="com.yuchen.makeplan.data.MultiTask"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -130,7 +111,7 @@
         tools:layout="@layout/fragment_users" >
         <argument
             android:name="project"
-            app:argType="com.yuchen.makeplan.data.Project" />
+            app:argType="com.yuchen.makeplan.data.MultiProject" />
     </fragment>
     <fragment
         android:id="@+id/searchUserFragment"
@@ -139,7 +120,7 @@
         tools:layout="@layout/fragment_search_user" >
         <argument
             android:name="project"
-            app:argType="com.yuchen.makeplan.data.Project" />
+            app:argType="com.yuchen.makeplan.data.MultiProject" />
     </fragment>
     <fragment
         android:id="@+id/joinUserFragment"
@@ -148,7 +129,7 @@
         tools:layout="@layout/fragment_join_user" >
         <argument
             android:name="project"
-            app:argType="com.yuchen.makeplan.data.Project" />
+            app:argType="com.yuchen.makeplan.data.MultiProject" />
     </fragment>
     <fragment
         android:id="@+id/notifyFragment"
@@ -156,4 +137,30 @@
         android:label="fragment_notify"
         tools:layout="@layout/fragment_notify" />
     <action android:id="@+id/action_global_notifyFragment" app:destination="@id/notifyFragment" />
+    <fragment
+        android:id="@+id/multiProjectsFragment"
+        android:name="com.yuchen.makeplan.multiProjects.MultiProjectsFragment"
+        android:label="fragment_multi_projects"
+        tools:layout="@layout/fragment_multi_projects" >
+        <action
+            android:id="@+id/action_multiProjectsFragment_to_multiGanttFragment"
+            app:destination="@id/multiGanttFragment" />
+        <action
+            android:id="@+id/action_multiProjectsFragment_to_multiEditDialog"
+            app:destination="@id/multiEditDialog" />
+        <action
+            android:id="@+id/action_multiProjectsFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_multiProjectsFragment" app:destination="@id/multiProjectsFragment" />
+    <dialog
+        android:id="@+id/multiEditDialog"
+        android:name="com.yuchen.makeplan.multiedit.MultiEditDialog"
+        android:label="dialog_multi_edit"
+        tools:layout="@layout/dialog_multi_edit" >
+        <argument
+            android:name="project"
+            app:argType="com.yuchen.makeplan.data.MultiProject"
+            app:nullable="true" />
+    </dialog>
 </navigation>

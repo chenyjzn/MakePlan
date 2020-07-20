@@ -9,6 +9,8 @@ import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.HOUR_MILLIS
 import com.yuchen.makeplan.MINUTE_MILLIS
 import com.yuchen.makeplan.R
+import com.yuchen.makeplan.data.MultiProject
+import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
@@ -19,7 +21,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MultiTaskViewModel (private val repository: MakePlanRepository, private val projectInput: Project,private val taskInput: Task?, application: Application) : AndroidViewModel(application) {
+class MultiTaskViewModel (private val repository: MakePlanRepository, private val projectInput: MultiProject, private val taskInput: MultiTask?, application: Application) : AndroidViewModel(application) {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -29,7 +31,7 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
 
     val colorList = application.resources.getStringArray(R.array.color_array).toList()
 
-    val project: LiveData<Project> = repository.getMultiProjectFromFirebase(projectInput)
+    val project: LiveData<MultiProject> = repository.getMultiProjectFromFirebase(projectInput)
 
     val newStartTimeMillis = MutableLiveData<Long>().apply {
         if (taskInput == null)
@@ -78,7 +80,7 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
         val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
         val color = newTaskColor.value ?: colorList.first()
         var completeRate = newTaskCompleteRate.value ?: 0
-        var newTask = Task(startTimeMillis = startTimeMillis, endTimeMillis = endTimeMillis, name = name, color = color, completeRate = completeRate)
+        var newTask = MultiTask(startTimeMillis = startTimeMillis, endTimeMillis = endTimeMillis, name = name, color = color, completeRate = completeRate)
         if (taskInput != null) {
             newTask.firebaseId = taskInput.firebaseId
         }

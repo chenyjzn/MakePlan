@@ -13,9 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.FragmentSearchBinding
 import com.yuchen.makeplan.ext.getVmFactory
+import com.yuchen.makeplan.multiProjects.MultiProjectsAdapter
 import com.yuchen.makeplan.projects.ProjectsAdapter
 
 
@@ -24,9 +26,9 @@ class SearchFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
         val binding = FragmentSearchBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        val adapter = ProjectsAdapter()
-        adapter.setItemClickListener(object : ProjectsAdapter.OnClickListener{
-            override fun onProjectClick(project: Project) {
+        val adapter = MultiProjectsAdapter()
+        adapter.setItemClickListener(object : MultiProjectsAdapter.OnClickListener{
+            override fun onProjectClick(project: MultiProject) {
                 MaterialAlertDialogBuilder(requireNotNull(context))
                     .setTitle("Send join request to ${project.name}?")
                     .setNegativeButton("No") { dialog, which ->
@@ -36,7 +38,7 @@ class SearchFragment : Fragment() {
                     }
                     .show()
             }
-            override fun onProjectLongClick(project: Project) {
+            override fun onProjectLongClick(project: MultiProject) {
                 TODO("Not yet implemented")
             }
         })

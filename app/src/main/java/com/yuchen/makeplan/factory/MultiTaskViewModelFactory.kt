@@ -3,6 +3,8 @@ package com.yuchen.makeplan.factory
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.yuchen.makeplan.data.MultiProject
+import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
@@ -11,8 +13,8 @@ import com.yuchen.makeplan.task.TaskViewModel
 
 class MultiTaskViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
-    private val project: Project,
-    private val task: Task?,
+    private val project: MultiProject,
+    private val task: MultiTask?,
     private val application : Application
 ) : ViewModelProvider.NewInstanceFactory() {
 

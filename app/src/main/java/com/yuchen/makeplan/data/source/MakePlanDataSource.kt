@@ -3,11 +3,8 @@ package com.yuchen.makeplan.data.source
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
-import com.yuchen.makeplan.data.Project
-import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.Result
-import com.yuchen.makeplan.data.Task
-import com.yuchen.makeplan.data.Team
+import com.yuchen.makeplan.data.*
 
 interface MakePlanDataSource{
     suspend fun insertProject(project: Project)
@@ -30,31 +27,31 @@ interface MakePlanDataSource{
 
     suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?>
 
-    fun getMyMultiProjectsFromFirebase () : LiveData<List<Project>>
+    fun getMyMultiProjectsFromFirebase () : LiveData<List<MultiProject>>
 
-    suspend fun addMultiProjectToFirebase (project: Project) : Result<String>
+    suspend fun addMultiProjectToFirebase (project: MultiProject) : Result<String>
 
-    suspend fun updateMultiProjectToFirebase (project: Project) : Result<String>
+    suspend fun updateMultiProjectToFirebase (project: MultiProject) : Result<String>
 
-    suspend fun removeMultiProjectFromFirebase (id: String) : Result<Boolean>
+    suspend fun removeMultiProjectFromFirebase (project: MultiProject) : Result<Boolean>
 
-    fun getAllMultiProjectsFromFirebase () : LiveData<List<Project>>
+    fun getAllMultiProjectsFromFirebase () : LiveData<List<MultiProject>>
 
-    suspend fun sendJoinRequestToFirebase (project: Project) : Result<Boolean>
+    suspend fun sendJoinRequestToFirebase (project: MultiProject) : Result<Boolean>
 
-    fun getMultiProjectFromFirebase (project: Project) : LiveData<Project>
+    fun getMultiProjectFromFirebase (project: MultiProject) : LiveData<MultiProject>
 
-    fun getMultiProjectTasksFromFirebase (project: Project) : LiveData<List<Task>>
+    fun getMultiProjectTasksFromFirebase (project: MultiProject) : LiveData<List<MultiTask>>
 
-    suspend fun updateMultiProjectTaskToFirebase (project: Project,task: Task) : Result<Boolean>
+    suspend fun updateMultiProjectTaskToFirebase (project: MultiProject,task: MultiTask) : Result<Boolean>
 
-    suspend fun removeMultiProjectTaskFromFirebase (project: Project,task: Task) : Result<Boolean>
+    suspend fun removeMultiProjectTaskFromFirebase (project: MultiProject,task: MultiTask) : Result<Boolean>
 
-    suspend fun updateMultiProjectCompleteRateToFirebase (project: Project,completeRate : Int) : Result<Boolean>
+    suspend fun updateMultiProjectCompleteRateToFirebase (project: MultiProject,completeRate : Int) : Result<Boolean>
 
-    fun getMultiProjectUsersFromFirebase (project: Project) : LiveData<List<User>>
+    fun getMultiProjectUsersFromFirebase (project: MultiProject) : LiveData<List<User>>
 
     fun getUsersFromFirebase () : LiveData<List<User>>
 
-    fun getMultiProjectJoinRequsetFromFirebase(project: Project) : LiveData<List<User>>
+    fun getMultiProjectJoinRequsetFromFirebase(project: MultiProject) : LiveData<List<User>>
 }

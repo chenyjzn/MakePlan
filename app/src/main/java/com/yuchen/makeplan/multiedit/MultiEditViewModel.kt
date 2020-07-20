@@ -1,8 +1,9 @@
-package com.yuchen.makeplan.edit
+package com.yuchen.makeplan.multiedit
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.util.UserManager
@@ -11,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class EditViewModel(private val repository: MakePlanRepository, val project: Project?) :
+class MultiEditViewModel(private val repository: MakePlanRepository, val project: MultiProject?) :
     ViewModel() {
 
     private var viewModelJob = Job()
@@ -31,26 +32,27 @@ class EditViewModel(private val repository: MakePlanRepository, val project: Pro
 
     fun saveProject() {
         if (project == null) {
-            val newProject = Project(name = projectName.value ?: "Project")
+            val newProject = MultiProject(name = projectName.value ?: "Project")
+            newProject.updateTime = System.currentTimeMillis()
             coroutineScope.launch {
-                newProject.updateTime = System.currentTimeMillis()
-                repository.insertProject(newProject)
+                repository.addMultiProjectToFirebase(newProject)
                 _runDismiss.value = true
             }
         } else {
             project.name = projectName.value ?: "Project"
+            project.updateTime = System.currentTimeMillis()
             coroutineScope.launch {
-                project.updateTime = System.currentTimeMillis()
-                repository.updateProject(project)
+                repository.updateMultiProjectToFirebase(project)
                 _runDismiss.value = true
             }
         }
+
     }
 
     fun removeProject() {
         project?.let { project ->
             coroutineScope.launch {
-                repository.removeProject(project)
+                repository.removeMultiProjectFromFirebase(project)
                 _runDismiss.value = true
             }
         }

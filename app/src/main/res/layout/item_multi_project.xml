@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="project"
+            type="com.yuchen.makeplan.data.MultiProject" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_project_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/item_project_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:checkable="true"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/item_project_card_constrain"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/item_project_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@{project.name}"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:membersCount="@{project.members.size()}"
+                    app:projectName="@{project.name}"
+                    tools:text="Project" />
+
+                <ProgressBar
+                    android:id="@+id/item_project_percent_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="315dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:progress="@{project.completeRate}"
+                    app:layout_constraintBottom_toBottomOf="@+id/item_project_percent_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/item_project_percent_text"
+                    app:layout_constraintTop_toTopOf="@+id/item_project_percent_text" />
+
+                <TextView
+                    android:id="@+id/item_project_percent_text"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{@string/int_rate(project.completeRate)}"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/item_project_edit_time"
+                    app:layout_constraintTop_toBottomOf="@+id/item_avater_image1"
+                    tools:text="5%" />
+
+                <TextView
+                    android:id="@+id/item_project_edit_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="TextView"
+                    app:layout_constraintStart_toStartOf="@+id/item_project_name"
+                    app:layout_constraintTop_toBottomOf="@+id/item_project_name"
+                    tools:text="2020/07/17" />
+
+                <ImageView
+                    android:id="@+id/item_avater_image1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    app:users="@{project.members}"
+                    app:pos="@{0}"
+                    app:layout_constraintStart_toStartOf="@+id/item_project_edit_time"
+                    app:layout_constraintTop_toBottomOf="@+id/item_project_edit_time"
+                    app:srcCompat="@drawable/ic_account_circle_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/item_avater_image2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    app:users="@{project.members}"
+                    app:pos="@{1}"
+                    app:layout_constraintStart_toEndOf="@+id/item_avater_image1"
+                    app:layout_constraintTop_toTopOf="@+id/item_avater_image1"
+                    app:srcCompat="@drawable/ic_account_circle_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/item_avater_image3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    app:users="@{project.members}"
+                    app:pos="@{2}"
+                    app:layout_constraintStart_toEndOf="@+id/item_avater_image2"
+                    app:layout_constraintTop_toTopOf="@+id/item_avater_image2"
+                    app:srcCompat="@drawable/ic_account_circle_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/item_avater_image4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    app:users="@{project.members}"
+                    app:pos="@{3}"
+                    app:layout_constraintStart_toEndOf="@+id/item_avater_image3"
+                    app:layout_constraintTop_toTopOf="@+id/item_avater_image3"
+                    app:srcCompat="@drawable/ic_account_circle_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/item_avater_image5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    app:users="@{project.members}"
+                    app:pos="@{4}"
+                    app:layout_constraintStart_toEndOf="@+id/item_avater_image4"
+                    app:layout_constraintTop_toTopOf="@+id/item_avater_image4"
+                    app:srcCompat="@drawable/ic_account_circle_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/item_avater_image6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    app:users="@{project.members}"
+                    app:pos="@{5}"
+                    app:layout_constraintStart_toEndOf="@+id/item_avater_image5"
+                    app:layout_constraintTop_toTopOf="@+id/item_avater_image5"
+                    app:srcCompat="@drawable/ic_account_circle_black_24dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

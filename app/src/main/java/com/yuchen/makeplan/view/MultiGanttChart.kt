@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
+import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.ext.toDp
@@ -26,7 +27,7 @@ class MultiGanttChart : View {
 
     val taskHight = 50.toPx()
 
-    private var taskList : List<Task>? = null
+    private var taskList : List<MultiTask>? = null
 
     private var timeLineType: Int = 0
 
@@ -43,7 +44,7 @@ class MultiGanttChart : View {
     private var endMonth: Int = calendar.get(Calendar.MONTH)
     private var endDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
 
-    private var taskSelect:Task? = null
+    private var taskSelect:MultiTask? = null
 
     var dy = 0f
 
@@ -83,7 +84,7 @@ class MultiGanttChart : View {
         invalidate()
     }
 
-    fun setTaskList(taskList: List<Task>){
+    fun setTaskList(taskList: List<MultiTask>){
         this.taskList = taskList
     }
 
@@ -130,7 +131,7 @@ class MultiGanttChart : View {
         }
     }
 
-    fun setTaskSelect(task:Task?){
+    fun setTaskSelect(task:MultiTask?){
         taskSelect = task
     }
 
@@ -249,7 +250,7 @@ class MultiGanttChart : View {
         }
     }
 
-    fun taskSelect(x : Float, y : Float) : Task?{
+    fun taskSelect(x : Float, y : Float) : MultiTask?{
         taskList?.let {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
@@ -270,7 +271,7 @@ class MultiGanttChart : View {
     interface OnEventListener {
         fun eventMoveDx(dx : Float, width : Int)
         fun eventZoomDlDr(dl : Float, dr : Float, width : Int)
-        fun eventTaskSelect(task: Task?)
+        fun eventTaskSelect(task: MultiTask?)
     }
 
     var x0 = 0f

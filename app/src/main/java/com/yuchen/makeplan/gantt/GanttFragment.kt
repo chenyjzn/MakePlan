@@ -21,7 +21,7 @@ import kotlin.math.pow
 
 class GanttFragment : Fragment() {
 
-    private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory,GanttFragmentArgs.fromBundle(requireArguments()).isMultiProject)}
+    private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory)}
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,15 +39,9 @@ class GanttFragment : Fragment() {
             }
         })
 
-        viewModel.multiProject?.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                viewModel.pushProjectRep(it)
-            }
-        })
-
         viewModel.navigateToTaskSetting.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.getUndoListArray(),it,viewModel.isMultiProject))
+                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.getUndoListArray(),it))
                 viewModel.goToTaskDone()
             }
         })

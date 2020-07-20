@@ -32,8 +32,7 @@ class TaskFragment : Fragment() {
             getVmFactory(
                 TaskFragmentArgs.fromBundle(requireArguments()).projectHistory,
                 TaskFragmentArgs.fromBundle(requireArguments()).projectHistoryPos,
-                resources.getStringArray(R.array.color_array).toList(),
-                TaskFragmentArgs.fromBundle(requireArguments()).isMultiProject
+                resources.getStringArray(R.array.color_array).toList()
             )
         }
         binding.lifecycleOwner = viewLifecycleOwner
@@ -126,8 +125,7 @@ class TaskFragment : Fragment() {
                 this.findNavController().navigate(
                     TaskFragmentDirections.actionTaskFragmentToGanttFragment(
                         it.toTypedArray(),
-                        it.lastIndex,
-                        viewModel.isMultiProject
+                        it.lastIndex
                     )
                 )
             }
@@ -217,5 +215,4 @@ class TaskFragment : Fragment() {
         }
         return binding.root
     }
-
 }

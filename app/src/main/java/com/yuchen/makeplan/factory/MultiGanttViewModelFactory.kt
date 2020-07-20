@@ -2,6 +2,7 @@ package com.yuchen.makeplan.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.joinuser.JoinUserViewModel
@@ -11,7 +12,7 @@ import com.yuchen.makeplan.users.UsersViewModel
 
 class MultiGanttViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
-    private val project : Project
+    private val project : MultiProject
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>) =

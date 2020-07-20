@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yuchen.makeplan.data.MultiProject
+import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
@@ -13,19 +15,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MultiGanttViewModel (private val repository: MakePlanRepository, private val projectInput : Project) : ViewModel() {
+class MultiGanttViewModel (private val repository: MakePlanRepository, private val projectInput : MultiProject) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val project: LiveData<Project> = repository.getMultiProjectFromFirebase(projectInput)
-    val tasks:LiveData<List<Task>> = repository.getMultiProjectTasksFromFirebase(projectInput)
+    val project: LiveData<MultiProject> = repository.getMultiProjectFromFirebase(projectInput)
+    val tasks:LiveData<List<MultiTask>> = repository.getMultiProjectTasksFromFirebase(projectInput)
 
-    private val _taskSelect = MutableLiveData<Task>()
-    val taskSelect: LiveData<Task>
+    private val _taskSelect = MutableLiveData<MultiTask>()
+    val taskSelect: LiveData<MultiTask>
         get() = _taskSelect
 
-    fun setTaskSelect(task: Task?){
+    fun setTaskSelect(task: MultiTask?){
         if (_taskSelect.value != null && _taskSelect.value == task)
             _taskSelect.value = null
         else

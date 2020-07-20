@@ -3,6 +3,8 @@ package com.yuchen.makeplan.ext
 import android.app.Application
 import androidx.fragment.app.Fragment
 import com.yuchen.makeplan.MakePlanApplication
+import com.yuchen.makeplan.data.MultiProject
+import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.edit.EditViewModel
@@ -14,32 +16,32 @@ fun Fragment.getVmFactory(): ViewModelFactory {
     return ViewModelFactory(repository)
 }
 
-fun Fragment.getVmFactory(isMultiProject : Boolean): ProjectsViewModelFactory {
+fun Fragment.getVmFactory(projectHistory : Array<Project>): GanttViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return ProjectsViewModelFactory(repository, isMultiProject)
+    return GanttViewModelFactory(repository,projectHistory)
 }
 
-fun Fragment.getVmFactory(projectHistory : Array<Project>,isMultiProject:Boolean): GanttViewModelFactory {
+fun Fragment.getVmFactory(projectHistory : Array<Project>, taskPos : Int, colorList : List<String>): TaskViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return GanttViewModelFactory(repository,projectHistory,isMultiProject)
+    return TaskViewModelFactory(repository,projectHistory,taskPos,colorList)
 }
 
-fun Fragment.getVmFactory(projectHistory : Array<Project>, taskPos : Int, colorList : List<String>,isMultiProject:Boolean): TaskViewModelFactory {
+fun Fragment.getVmFactory(project: Project?): EditViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return TaskViewModelFactory(repository,projectHistory,taskPos,colorList,isMultiProject)
+    return EditViewModelFactory(repository,project)
 }
 
-fun Fragment.getVmFactory(project: Project?,isMultiProject : Boolean): EditViewModelFactory {
+fun Fragment.getVmFactory(project: MultiProject?): MultiEditViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return EditViewModelFactory(repository,project,isMultiProject)
+    return MultiEditViewModelFactory(repository,project)
 }
 
-fun Fragment.getVmFactory(project: Project): MultiGanttViewModelFactory {
+fun Fragment.getVmFactory(project: MultiProject): MultiGanttViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
     return MultiGanttViewModelFactory(repository,project)
 }
 
-fun Fragment.getVmFactory(project: Project, task: Task?): MultiTaskViewModelFactory {
+fun Fragment.getVmFactory(project: MultiProject, task: MultiTask?): MultiTaskViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
     val application = requireNotNull(this.activity).application
     return MultiTaskViewModelFactory(repository,project,task,application)
