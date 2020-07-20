@@ -33,27 +33,6 @@
                     app:srcCompat="@drawable/ic_add_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/multi_gantt_undo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_undo_black_24dp" />
-
-                <ImageButton
-                    android:id="@+id/multi_gantt_redo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_redo_black_24dp" />
-
-                <ImageButton
-                    android:id="@+id/multi_gantt_save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/ic_save_black_24dp" />
-
-                <ImageButton
                     android:id="@+id/multi_gantt_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -75,14 +54,14 @@
                     app:srcCompat="@drawable/ic_people_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/multi_gantt_add_member"
+                    android:id="@+id/multi_gantt_invite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_person_add_black_24dp" />
 
                 <ImageButton
-                    android:id="@+id/multi_gantt_invite"
+                    android:id="@+id/multi_gantt_join"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -99,7 +78,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
-        <com.yuchen.makeplan.view.GanttChart
+        <com.yuchen.makeplan.view.MultiGanttChart
             android:id="@+id/multi_gantt_chart"
             android:layout_width="0dp"
             android:layout_height="0dp"

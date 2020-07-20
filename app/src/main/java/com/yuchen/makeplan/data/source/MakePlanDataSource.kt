@@ -30,16 +30,6 @@ interface MakePlanDataSource{
 
     suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?>
 
-    suspend fun addTeamToFirebase (teamName : String) : Result<String>
-
-    fun getUserTeamsFromFirebase () : MutableLiveData<List<Team>>
-
-    fun getAllTeamsFromFirebase () : MutableLiveData<List<Team>>
-
-    suspend fun getTeamByTextFromFirebase(text : String): Result<List<Team>>
-
-    suspend fun createTeamToFirebase (teamName : String) : Result<String>
-
     fun getMyMultiProjectsFromFirebase () : LiveData<List<Project>>
 
     suspend fun addMultiProjectToFirebase (project: Project) : Result<String>
@@ -53,4 +43,18 @@ interface MakePlanDataSource{
     suspend fun sendJoinRequestToFirebase (project: Project) : Result<Boolean>
 
     fun getMultiProjectFromFirebase (project: Project) : LiveData<Project>
+
+    fun getMultiProjectTasksFromFirebase (project: Project) : LiveData<List<Task>>
+
+    suspend fun updateMultiProjectTaskToFirebase (project: Project,task: Task) : Result<Boolean>
+
+    suspend fun removeMultiProjectTaskFromFirebase (project: Project,task: Task) : Result<Boolean>
+
+    suspend fun updateMultiProjectCompleteRateToFirebase (project: Project,completeRate : Int) : Result<Boolean>
+
+    fun getMultiProjectUsersFromFirebase (project: Project) : LiveData<List<User>>
+
+    fun getUsersFromFirebase () : LiveData<List<User>>
+
+    fun getMultiProjectJoinRequsetFromFirebase(project: Project) : LiveData<List<User>>
 }

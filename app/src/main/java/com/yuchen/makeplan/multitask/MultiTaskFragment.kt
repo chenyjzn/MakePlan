@@ -25,9 +25,7 @@ import java.util.*
 class MultiTaskFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentMultiTaskBinding.inflate(inflater, container, false)
-
-        val viewModel: MultiTaskViewModel by viewModels<MultiTaskViewModel> {
-            getVmFactory(MultiTaskFragmentArgs.fromBundle(requireArguments()).multiProject, MultiTaskFragmentArgs.fromBundle(requireArguments()).taskPos, resources.getStringArray(R.array.color_array).toList()) }
+        val viewModel: MultiTaskViewModel by viewModels<MultiTaskViewModel> { getVmFactory(MultiTaskFragmentArgs.fromBundle(requireArguments()).project,MultiTaskFragmentArgs.fromBundle(requireArguments()).task) }
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         val colorAdaptor = MultiTaskColorAdapter(viewModel)
@@ -113,9 +111,10 @@ class MultiTaskFragment : Fragment() {
             endTimePickerDialog.show()
         }
 
-        viewModel.saveProjectDone.observe(viewLifecycleOwner, Observer {
+        viewModel.saveTask.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(MultiTaskFragmentDirections.actionMultiTaskFragmentToMultiGanttFragment(it))
+                if (it)
+                    this.findNavController().navigate(MultiTaskFragmentDirections.actionMultiTaskFragmentToMultiGanttFragment(MultiTaskFragmentArgs.fromBundle(requireArguments()).project))
             }
         })
 
@@ -195,11 +194,11 @@ class MultiTaskFragment : Fragment() {
         })
 
         binding.multiTaskCancel.setOnClickListener {
-            this.findNavController().popBackStack()
+            this.findNavController().navigate(MultiTaskFragmentDirections.actionMultiTaskFragmentToMultiGanttFragment(MultiTaskFragmentArgs.fromBundle(requireArguments()).project))
         }
 
         binding.multiTaskSave.setOnClickListener {
-            viewModel.addTaskToNewProject()
+            viewModel.updateTaskToFirebase()
         }
         return binding.root
     }

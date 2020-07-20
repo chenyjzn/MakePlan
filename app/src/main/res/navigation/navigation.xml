@@ -95,6 +95,15 @@
         <action
             android:id="@+id/action_multiGanttFragment_to_multiTaskFragment"
             app:destination="@id/multiTaskFragment" />
+        <action
+            android:id="@+id/action_multiGanttFragment_to_usersFragment"
+            app:destination="@id/usersFragment" />
+        <action
+            android:id="@+id/action_multiGanttFragment_to_searchUserFragment"
+            app:destination="@id/searchUserFragment" />
+        <action
+            android:id="@+id/action_multiGanttFragment_to_joinUserFragment"
+            app:destination="@id/joinUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/multiTaskFragment"
@@ -104,13 +113,47 @@
         <action
             android:id="@+id/action_multiTaskFragment_to_multiGanttFragment"
             app:destination="@id/multiGanttFragment"
-            app:popUpTo="@id/multiTaskFragment"
+            app:popUpTo="@id/multiGanttFragment"
             app:popUpToInclusive="true" />
         <argument
-            android:name="multiProject"
+            android:name="project"
             app:argType="com.yuchen.makeplan.data.Project" />
         <argument
-            android:name="taskPos"
-            app:argType="integer" />
+            android:name="task"
+            app:argType="com.yuchen.makeplan.data.Task"
+            app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.yuchen.makeplan.users.UsersFragment"
+        android:label="fragment_users"
+        tools:layout="@layout/fragment_users" >
+        <argument
+            android:name="project"
+            app:argType="com.yuchen.makeplan.data.Project" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchUserFragment"
+        android:name="com.yuchen.makeplan.searchuser.SearchUserFragment"
+        android:label="fragment_search_user"
+        tools:layout="@layout/fragment_search_user" >
+        <argument
+            android:name="project"
+            app:argType="com.yuchen.makeplan.data.Project" />
+    </fragment>
+    <fragment
+        android:id="@+id/joinUserFragment"
+        android:name="com.yuchen.makeplan.joinuser.JoinUserFragment"
+        android:label="fragment_join_user"
+        tools:layout="@layout/fragment_join_user" >
+        <argument
+            android:name="project"
+            app:argType="com.yuchen.makeplan.data.Project" />
+    </fragment>
+    <fragment
+        android:id="@+id/notifyFragment"
+        android:name="com.yuchen.makeplan.notify.NotifyFragment"
+        android:label="fragment_notify"
+        tools:layout="@layout/fragment_notify" />
+    <action android:id="@+id/action_global_notifyFragment" app:destination="@id/notifyFragment" />
 </navigation>

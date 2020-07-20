@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.ext.removeFrom
 import kotlinx.coroutines.CoroutineScope
@@ -18,55 +19,37 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     val project: LiveData<Project> = repository.getMultiProjectFromFirebase(projectInput)
+    val tasks:LiveData<List<Task>> = repository.getMultiProjectTasksFromFirebase(projectInput)
 
-    private val _projectSaveSuccess = MutableLiveData<Boolean>()
-    val projectSaveSuccess: LiveData<Boolean>
-        get() = _projectSaveSuccess
-
-    private val _navigateToTaskSetting = MutableLiveData<Int>()
-    val navigateToTaskSetting: LiveData<Int>
-        get() = _navigateToTaskSetting
-
-    private val _taskSelect = MutableLiveData<Int>().apply {
-        value = -1
-    }
-    val taskSelect: LiveData<Int>
+    private val _taskSelect = MutableLiveData<Task>()
+    val taskSelect: LiveData<Task>
         get() = _taskSelect
 
-    fun isTaskSelect():Int{
-        return _taskSelect.value?:-1
-    }
-
-    fun setTaskSelect(taskPos: Int){
-        if (_taskSelect.value != -1 && _taskSelect.value == taskPos)
-            _taskSelect.value = -1
+    fun setTaskSelect(task: Task?){
+        if (_taskSelect.value != null && _taskSelect.value == task)
+            _taskSelect.value = null
         else
-            _taskSelect.value = taskPos
+            _taskSelect.value = task
     }
 
-    fun goToAddTask(){
-        _navigateToTaskSetting.value = -1
+    fun taskSelectClear(){
+        _taskSelect.value = null
     }
 
-    fun goToEditTask(pos : Int){
-        _navigateToTaskSetting.value = pos
-    }
-
-    fun goToTaskDone(){
-        _navigateToTaskSetting.value = null
-    }
-
-    fun saveProjectDone(){
-        _projectSaveSuccess.value = null
-    }
-
-    fun taskRemove(pos : Int){
-        project.value?.let {
-            val newProject = it.newRefProject()
-            newProject.taskList.removeAt(pos)
+    fun taskRemove(){
+        _taskSelect.value?.let {task ->
             coroutineScope.launch {
-                repository.updateProject(newProject)
-                _taskSelect.value = -1
+                repository.removeMultiProjectTaskFromFirebase(projectInput,task)
+                _taskSelect.value = null
+            }
+        }
+    }
+
+    fun updateProjectCompleteRate(completeRate :Int){
+        project.value?.let {project ->
+            coroutineScope.launch {
+                repository.updateMultiProjectCompleteRateToFirebase(project,completeRate)
+                _taskSelect.value = null
             }
         }
     }

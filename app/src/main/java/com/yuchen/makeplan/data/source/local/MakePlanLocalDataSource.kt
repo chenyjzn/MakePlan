@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.Team
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanDataSource
@@ -61,26 +62,6 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun addTeamToFirebase(teamName : String): Result<String> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getUserTeamsFromFirebase(): MutableLiveData<List<Team>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getTeamByTextFromFirebase(text: String): Result<List<Team>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAllTeamsFromFirebase(): MutableLiveData<List<Team>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun createTeamToFirebase(teamName: String): Result<String> {
-        TODO("Not yet implemented")
-    }
-
     override fun getMyMultiProjectsFromFirebase(): LiveData<List<Project>> {
         TODO("Not yet implemented")
     }
@@ -106,6 +87,34 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     }
 
     override fun getMultiProjectFromFirebase(project: Project): LiveData<Project> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMultiProjectTasksFromFirebase(project: Project): LiveData<List<Task>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateMultiProjectTaskToFirebase(project: Project, task: Task): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeMultiProjectTaskFromFirebase(project: Project, task: Task): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateMultiProjectCompleteRateToFirebase(project: Project, completeRate: Int): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMultiProjectUsersFromFirebase(project: Project): LiveData<List<User>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUsersFromFirebase(): LiveData<List<User>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMultiProjectJoinRequsetFromFirebase(project: Project): LiveData<List<User>> {
         TODO("Not yet implemented")
     }
 }

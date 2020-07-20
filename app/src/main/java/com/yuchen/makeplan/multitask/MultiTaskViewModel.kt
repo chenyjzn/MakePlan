@@ -1,11 +1,14 @@
 package com.yuchen.makeplan.multitask
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.HOUR_MILLIS
 import com.yuchen.makeplan.MINUTE_MILLIS
+import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
@@ -16,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MultiTaskViewModel (private val repository: MakePlanRepository, private val projectInput : Project, private val taskPos : Int, val colorList : List<String>) : ViewModel() {
+class MultiTaskViewModel (private val repository: MakePlanRepository, private val projectInput: Project,private val taskInput: Task?, application: Application) : AndroidViewModel(application) {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -24,79 +27,69 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
     private val calendarStart = Calendar.getInstance()
     private val calendarEnd = Calendar.getInstance()
 
+    val colorList = application.resources.getStringArray(R.array.color_array).toList()
+
     val project: LiveData<Project> = repository.getMultiProjectFromFirebase(projectInput)
 
     val newStartTimeMillis = MutableLiveData<Long>().apply {
-        if (taskPos == -1)
+        if (taskInput == null)
             calendarStart.set(calendarStart.get(Calendar.YEAR), calendarStart.get(Calendar.MONTH), calendarStart.get(Calendar.DAY_OF_MONTH), 0, 0)
         else
-            calendarStart.timeInMillis = projectInput.taskList[taskPos].startTimeMillis
+            calendarStart.timeInMillis = taskInput.startTimeMillis
         value = calendarStart.timeInMillis
     }
 
     val newEndTimeMillis = MutableLiveData<Long>().apply {
-        if (taskPos == -1)
+        if (taskInput == null)
             calendarEnd.timeInMillis = calendarStart.timeInMillis + 1 * DAY_MILLIS
         else
-            calendarEnd.timeInMillis = projectInput.taskList[taskPos].endTimeMillis
+            calendarEnd.timeInMillis = taskInput.endTimeMillis
         value = calendarEnd.timeInMillis
     }
 
     val newTaskName = MutableLiveData<String>().apply {
-        value = if (taskPos == -1)
+        value = if (taskInput == null)
             "New Task"
         else
-            projectInput.taskList[taskPos].name
+            taskInput.name
     }
 
     val newTaskColor = MutableLiveData<String>().apply {
-        value = if (taskPos == -1)
+        value = if (taskInput == null)
             colorList.first()
         else
-            projectInput.taskList[taskPos].color
+            taskInput.color
     }
 
     val newTaskCompleteRate = MutableLiveData<Int>().apply {
-        value = if (taskPos == -1)
+        value = if (taskInput == null)
             0
         else
-            projectInput.taskList[taskPos].completeRate
+            taskInput.completeRate
     }
 
-    private val _saveProjectDone = MutableLiveData<Project>()
-    val saveProjectDone: LiveData<Project>
-        get() = _saveProjectDone
+    private val _saveTask = MutableLiveData<Boolean>()
+    val saveTask: LiveData<Boolean>
+        get() = _saveTask
 
-    fun addTaskToNewProject(){
-        project.value?.let {it
-            val newProject = it
-            val name = newTaskName.value ?: "Project"
-            val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis
-            val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
-            val color = newTaskColor.value ?: colorList.first()
-            var completeRate = newTaskCompleteRate.value ?: 0
-            if (taskPos == -1) {
-                newProject.taskList.add(
-                    Task(
-                        startTimeMillis = startTimeMillis,
-                        endTimeMillis = endTimeMillis,
-                        name = name,
-                        color = color,
-                        completeRate = completeRate
-                    )
-                )
-            } else {
-                newProject.taskList[taskPos].startTimeMillis = startTimeMillis
-                newProject.taskList[taskPos].endTimeMillis = endTimeMillis
-                newProject.taskList[taskPos].name = name
-                newProject.taskList[taskPos].color = color
-                newProject.taskList[taskPos].completeRate = completeRate
-            }
-            coroutineScope.launch {
-                repository.updateMultiProjectToFirebase(newProject)
-                _saveProjectDone.value = newProject
-            }
+    fun updateTaskToFirebase(){
+        val name = newTaskName.value ?: "Project"
+        val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis
+        val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
+        val color = newTaskColor.value ?: colorList.first()
+        var completeRate = newTaskCompleteRate.value ?: 0
+        var newTask = Task(startTimeMillis = startTimeMillis, endTimeMillis = endTimeMillis, name = name, color = color, completeRate = completeRate)
+        if (taskInput != null) {
+            newTask.firebaseId = taskInput.firebaseId
         }
+        coroutineScope.launch {
+            repository.updateMultiProjectTaskToFirebase(projectInput,newTask)
+            _saveTask.value = true
+        }
+    }
+
+    fun saveTaskDone(){
+        _saveTask.value = null
     }
 
     fun setStartDate(year: Int, month: Int, dayOfMonth: Int){

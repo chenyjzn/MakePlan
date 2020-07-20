@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.joinuser.JoinUserViewModel
 import com.yuchen.makeplan.multigantt.MultiGanttViewModel
+import com.yuchen.makeplan.searchuser.SearchUserViewModel
+import com.yuchen.makeplan.users.UsersViewModel
 
 class MultiGanttViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
@@ -16,6 +19,12 @@ class MultiGanttViewModelFactory constructor(
             when {
                 isAssignableFrom(MultiGanttViewModel::class.java) ->
                     MultiGanttViewModel(makePlanRepository, project)
+                isAssignableFrom(UsersViewModel::class.java) ->
+                    UsersViewModel(makePlanRepository, project)
+                isAssignableFrom(SearchUserViewModel::class.java) ->
+                    SearchUserViewModel(makePlanRepository, project)
+                isAssignableFrom(JoinUserViewModel::class.java) ->
+                    JoinUserViewModel(makePlanRepository, project)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

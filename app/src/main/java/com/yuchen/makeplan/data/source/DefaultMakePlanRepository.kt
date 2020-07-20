@@ -50,26 +50,6 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.firebaseAuthWithGoogle(idToken)
     }
 
-    override suspend fun addTeamToFirebase(teamName : String): Result<String> {
-        return makePlanRemoteDataSource.addTeamToFirebase(teamName)
-    }
-
-    override fun getUserTeamsFromFirebase(): MutableLiveData<List<Team>> {
-        return makePlanRemoteDataSource.getUserTeamsFromFirebase()
-    }
-
-    override fun getAllTeamsFromFirebase(): MutableLiveData<List<Team>> {
-        return makePlanRemoteDataSource.getAllTeamsFromFirebase()
-    }
-
-    override suspend fun getTeamByTextFromFirebase(text: String): Result<List<Team>> {
-        return makePlanRemoteDataSource.getTeamByTextFromFirebase(text)
-    }
-
-    override suspend fun createTeamToFirebase(teamName: String): Result<String> {
-        return makePlanRemoteDataSource.createTeamToFirebase(teamName)
-    }
-
     override fun getMyMultiProjectsFromFirebase(): LiveData<List<Project>> {
         return makePlanRemoteDataSource.getMyMultiProjectsFromFirebase()
     }
@@ -96,5 +76,33 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
 
     override fun getMultiProjectFromFirebase(project: Project): LiveData<Project> {
         return makePlanRemoteDataSource.getMultiProjectFromFirebase(project)
+    }
+
+    override fun getMultiProjectTasksFromFirebase(project: Project): LiveData<List<Task>> {
+        return makePlanRemoteDataSource.getMultiProjectTasksFromFirebase(project)
+    }
+
+    override suspend fun updateMultiProjectTaskToFirebase(project: Project, task: Task): Result<Boolean> {
+        return makePlanRemoteDataSource.updateMultiProjectTaskToFirebase(project, task)
+    }
+
+    override suspend fun removeMultiProjectTaskFromFirebase(project: Project, task: Task): Result<Boolean> {
+        return makePlanRemoteDataSource.removeMultiProjectTaskFromFirebase(project,task)
+    }
+
+    override suspend fun updateMultiProjectCompleteRateToFirebase(project: Project, completeRate: Int): Result<Boolean> {
+        return makePlanRemoteDataSource.updateMultiProjectCompleteRateToFirebase(project, completeRate)
+    }
+
+    override fun getMultiProjectUsersFromFirebase(project: Project): LiveData<List<User>> {
+        return makePlanRemoteDataSource.getMultiProjectUsersFromFirebase(project)
+    }
+
+    override fun getUsersFromFirebase(): LiveData<List<User>> {
+        return makePlanRemoteDataSource.getUsersFromFirebase()
+    }
+
+    override fun getMultiProjectJoinRequsetFromFirebase(project: Project): LiveData<List<User>> {
+        return makePlanRemoteDataSource.getMultiProjectJoinRequsetFromFirebase(project)
     }
 }

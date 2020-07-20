@@ -1,8 +1,10 @@
 package com.yuchen.makeplan.ext
 
+import android.app.Application
 import androidx.fragment.app.Fragment
 import com.yuchen.makeplan.MakePlanApplication
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.edit.EditViewModel
 import com.yuchen.makeplan.factory.*
 import com.yuchen.makeplan.multitask.MultiTaskViewModel
@@ -37,7 +39,8 @@ fun Fragment.getVmFactory(project: Project): MultiGanttViewModelFactory {
     return MultiGanttViewModelFactory(repository,project)
 }
 
-fun Fragment.getVmFactory(project: Project, taskPos: Int, colorList : List<String>): MultiTaskViewModelFactory {
+fun Fragment.getVmFactory(project: Project, task: Task?): MultiTaskViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return MultiTaskViewModelFactory(repository,project,taskPos, colorList)
+    val application = requireNotNull(this.activity).application
+    return MultiTaskViewModelFactory(repository,project,task,application)
 }

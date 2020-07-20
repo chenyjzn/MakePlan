@@ -18,7 +18,7 @@ import java.util.*
 import kotlin.math.hypot
 import kotlin.math.pow
 
-class GanttChart : View {
+class MultiGanttChart : View {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -43,7 +43,7 @@ class GanttChart : View {
     private var endMonth: Int = calendar.get(Calendar.MONTH)
     private var endDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
 
-    private var taskSelect = -1
+    private var taskSelect:Task? = null
 
     var dy = 0f
 
@@ -130,8 +130,8 @@ class GanttChart : View {
         }
     }
 
-    fun setTaskSelect(pos:Int){
-        taskSelect = pos
+    fun setTaskSelect(task:Task?){
+        taskSelect = task
     }
 
     fun interpolation(startTime : Long, endTime : Long, actualTime : Long) : Float{
@@ -239,27 +239,14 @@ class GanttChart : View {
                     canvas.drawRoundRect(left,top + taskHight.toFloat()*0.5f + this.dy,right , bottom + this.dy,15f,15f, barPaint)
                     barPaint.color = Color.WHITE
                     canvas.drawRect(left,top + taskHight.toFloat()*0.5f +this.dy,left + (right - left)*value.completeRate.toFloat()/100f , bottom + this.dy,barPaint)
-                    if (index == taskSelect){
-                        canvas.drawRoundRect(left,top + taskHight.toFloat()*0.5f + this.dy,right , bottom + this.dy,15f,15f, taskSelectPaint)
+                    taskSelect?.let {
+                        if (it.firebaseId == value.firebaseId)
+                            canvas.drawRoundRect(left,top + taskHight.toFloat()*0.5f + this.dy,right , bottom + this.dy,15f,15f, taskSelectPaint)
                     }
 //                    Log.d("chenyjzn","Task : $index, left = ${left} , right = ${right}, up: ${top + taskHight.toFloat()*0.5f}, down = ${bottom + this.dy}")
                 }
             }
         }
-    }
-
-    fun posTaskSelect(x : Float, y : Float) : Int{
-        taskList?.let {
-            for ((index, value) in it.withIndex()){
-                val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
-                val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHight).toFloat() + taskHight.toFloat()*0.5f + dy
-                val bottom = ((index+1)*taskHight).toFloat() + dy
-                if (x in left..right && y in top..bottom)
-                    return index
-            }
-        }
-        return -1
     }
 
     fun taskSelect(x : Float, y : Float) : Task?{
@@ -276,154 +263,140 @@ class GanttChart : View {
         return null
     }
 
-//    private var onEventListener: OnEventListener? = null
-//    fun setOnEventListener(onEventListener: OnEventListener?) {
-//        this.onEventListener = onEventListener
-//    }
-//    interface OnEventListener {
-//        fun eventMoveDx(dx : Float, width : Int)
-//        fun eventZoomDlDr(dl : Float, dr : Float, width : Int)
-//        fun eventTaskSelect(taskPos: Int)
-//    }
-//
-//    var x0 = 0f
-//    var y0 = 0f
-//    var x1 = 0f
-//    var y1 = 0f
-//    var c = Calendar.getInstance()
-//    var touchStart = c.timeInMillis
-//    var touchStatus = TouchMode.NONE
-//
-//    override fun onTouchEvent(event: MotionEvent?): Boolean {
-//       if (event != null) {
-//            when (event.actionMasked) {
-//                MotionEvent.ACTION_DOWN -> {
-//                    x0 = event.x
-//                    y0 = event.y
-//                    c = Calendar.getInstance()
-//                    touchStart = c.timeInMillis
-//                    touchStatus = TouchMode.CLICK
-////                    Log.d("chenyjzn","touch1, x = $x0 , y = $y0")
-//                    return true
-//                }
-//                MotionEvent.ACTION_POINTER_DOWN -> {
-//                    x1 = event.getX(1)
-//                    y1 = event.getY(1)
-//                    touchStatus = TouchMode.ZOOM
-////                    Log.d("chenyjzn","touch2, x = $x1 , y = $y1")
-//                    return true
-//                }
-//                MotionEvent.ACTION_MOVE -> {
-//                    if (event.pointerCount == 1) {
-//                        if (touchStatus == TouchMode.MOVE) {
-//                            setYPos(event.y - y0)
-//                            setProjectTimeByDx(event.x - x0, width)
-//                            onEventListener?.eventMoveDx(event.x - x0, width)
-////                            binding.multiGanttTimeLine.setProjectTimeByDx(event.x - x0, v.width)
-////                            binding.multiGanttTimeLine.invalidate()
-////                            binding.multiGanttChart.invalidate()
-//                        } else if (touchStatus != TouchMode.NONE && (event.y - y0).pow(2) + (event.x - x0).pow(
-//                                2
-//                            ) > 6.0f
-//                        ) {
-//                            touchStatus = TouchMode.MOVE
-//                            setYPos(event.y - y0)
-//                            setProjectTimeByDx(event.x - x0, width)
-//                            onEventListener?.eventMoveDx(event.x - x0, width)
-////                            binding.multiGanttTimeLine.setProjectTimeByDx(event.x - x0, v.width)
-////                            binding.multiGanttTimeLine.invalidate()
-////                            binding.multiGanttChart.invalidate()
-//                        }
-//                        x0 = event.x
-//                        y0 = event.y
-//                    } else if (event.pointerCount == 2) {
-//                        if (touchStatus == TouchMode.ZOOM) {
-//                            val centerX = (x0 + x1) / 2
-//                            val centerY = (y0 + y1) / 2
-//                            val oldXR: Float
-//                            val oldYR: Float
-//                            val newXR: Float
-//                            val nerYR: Float
-//                            val oldXL: Float
-//                            val oldYL: Float
-//                            val newXL: Float
-//                            val nerYL: Float
-//                            if (x1 > x0) {
-//                                oldXR = x1
-//                                oldYR = y1
-//                                oldXL = x0
-//                                oldYL = y0
-//                                newXR = event.getX(1)
-//                                nerYR = event.getY(1)
-//                                newXL = event.getX(0)
-//                                nerYL = event.getY(0)
-//                            } else {
-//                                oldXR = x0
-//                                oldYR = y0
-//                                oldXL = x1
-//                                oldYL = y1
-//                                newXR = event.getX(0)
-//                                nerYR = event.getY(0)
-//                                newXL = event.getX(1)
-//                                nerYL = event.getY(1)
-//                            }
-//                            val dl = hypot(newXL - centerX, nerYL - centerY) - hypot(
-//                                (oldXL - centerX),
-//                                (oldYL - centerY)
-//                            )
-//                            val dr = hypot(newXR - centerX, nerYR - centerY) - hypot(
-//                                (oldXR - centerX),
-//                                (oldYR - centerY)
-//                            )
-////                            Log.d("chenyjzn", "dl = $dl , dr = $dr")
-//                            setProjectTimeByDlDr(dl, dr, width)
-//                            onEventListener?.eventZoomDlDr(dl, dr, width)
-////                            binding.multiGanttTimeLine.setProjectTimeByDlDr(dl, dr, v.width)
-////                            binding.multiGanttTimeLine.invalidate()
-////                            binding.multiGanttChart.invalidate()
-//                            x0 = event.getX(0)
-//                            x1 = event.getX(1)
-//                            y0 = event.getY(0)
-//                            y1 = event.getY(1)
-//                        }
-//                    }
-//                    return true
-//                }
-//                MotionEvent.ACTION_UP -> {
-//                    if (touchStatus == TouchMode.CLICK) {
-//                        c = Calendar.getInstance()
-//                        if (c.timeInMillis - touchStart < MAX_CLICK_DURATION) {
-////                            Log.d("chenyjzn","Touch up x = ${event.x} , pos y = ${event.y} click")
-////                            viewModel.setTaskSelect((v as GanttChart).posTaskSelect(event.x,event.y))
-//                            onEventListener?.eventTaskSelect(posTaskSelect(event.x,event.y))
-//                        }
-//                    }
-//                    touchStatus = TouchMode.NONE
-//                    return false
-//                }
-//                else -> {
-//                    return true
-//                }
-//            }
-//        }
-//        else{
-//           return true
-//       }
-//    }
+    private var onEventListener: OnEventListener? = null
+    fun setOnEventListener(onEventListener: OnEventListener?) {
+        this.onEventListener = onEventListener
+    }
+    interface OnEventListener {
+        fun eventMoveDx(dx : Float, width : Int)
+        fun eventZoomDlDr(dl : Float, dr : Float, width : Int)
+        fun eventTaskSelect(task: Task?)
+    }
+
+    var x0 = 0f
+    var y0 = 0f
+    var x1 = 0f
+    var y1 = 0f
+    var c = Calendar.getInstance()
+    var touchStart = c.timeInMillis
+    var touchStatus = TouchMode.NONE
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+       if (event != null) {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    x0 = event.x
+                    y0 = event.y
+                    c = Calendar.getInstance()
+                    touchStart = c.timeInMillis
+                    touchStatus = TouchMode.CLICK
+//                    Log.d("chenyjzn","touch1, x = $x0 , y = $y0")
+                    return true
+                }
+                MotionEvent.ACTION_POINTER_DOWN -> {
+                    x1 = event.getX(1)
+                    y1 = event.getY(1)
+                    touchStatus = TouchMode.ZOOM
+//                    Log.d("chenyjzn","touch2, x = $x1 , y = $y1")
+                    return true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (event.pointerCount == 1) {
+                        if (touchStatus == TouchMode.MOVE) {
+                            setYPos(event.y - y0)
+                            setProjectTimeByDx(event.x - x0, width)
+                            onEventListener?.eventMoveDx(event.x - x0, width)
+                        } else if (touchStatus != TouchMode.NONE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f) {
+                            touchStatus = TouchMode.MOVE
+                            setYPos(event.y - y0)
+                            setProjectTimeByDx(event.x - x0, width)
+                            onEventListener?.eventMoveDx(event.x - x0, width)
+                        }
+                        x0 = event.x
+                        y0 = event.y
+                    } else if (event.pointerCount == 2) {
+                        if (touchStatus == TouchMode.ZOOM) {
+                            val centerX = (x0 + x1) / 2
+                            val centerY = (y0 + y1) / 2
+                            val oldXR: Float
+                            val oldYR: Float
+                            val newXR: Float
+                            val nerYR: Float
+                            val oldXL: Float
+                            val oldYL: Float
+                            val newXL: Float
+                            val nerYL: Float
+                            if (x1 > x0) {
+                                oldXR = x1
+                                oldYR = y1
+                                oldXL = x0
+                                oldYL = y0
+                                newXR = event.getX(1)
+                                nerYR = event.getY(1)
+                                newXL = event.getX(0)
+                                nerYL = event.getY(0)
+                            } else {
+                                oldXR = x0
+                                oldYR = y0
+                                oldXL = x1
+                                oldYL = y1
+                                newXR = event.getX(0)
+                                nerYR = event.getY(0)
+                                newXL = event.getX(1)
+                                nerYL = event.getY(1)
+                            }
+                            val dl = hypot(newXL - centerX, nerYL - centerY) - hypot(
+                                (oldXL - centerX),
+                                (oldYL - centerY)
+                            )
+                            val dr = hypot(newXR - centerX, nerYR - centerY) - hypot(
+                                (oldXR - centerX),
+                                (oldYR - centerY)
+                            )
+//                            Log.d("chenyjzn", "dl = $dl , dr = $dr")
+                            setProjectTimeByDlDr(dl, dr, width)
+                            onEventListener?.eventZoomDlDr(dl, dr, width)
+                            x0 = event.getX(0)
+                            x1 = event.getX(1)
+                            y0 = event.getY(0)
+                            y1 = event.getY(1)
+                        }
+                    }
+                    return true
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (touchStatus == TouchMode.CLICK) {
+                        c = Calendar.getInstance()
+                        if (c.timeInMillis - touchStart < MAX_CLICK_DURATION) {
+                            onEventListener?.eventTaskSelect(taskSelect(event.x,event.y))
+                        }
+                    }
+                    touchStatus = TouchMode.NONE
+                    return false
+                }
+                else -> {
+                    return true
+                }
+            }
+        }
+        else{
+           return true
+       }
+    }
 
     override fun onDraw(canvas: Canvas) {
         setTimeLineScale()
         drawGanttChart(canvas)
     }
 
-//    companion object{
-//        const val MAX_CLICK_DURATION = 400
-//        enum class TouchMode {
-//            CLICK,
-//            LONG_CLICK,
-//            MOVE,
-//            ZOOM,
-//            NONE
-//        }
-//    }
+    companion object{
+        const val MAX_CLICK_DURATION = 400
+        enum class TouchMode {
+            CLICK,
+            LONG_CLICK,
+            MOVE,
+            ZOOM,
+            NONE
+        }
+    }
 }
