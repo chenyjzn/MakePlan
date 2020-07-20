@@ -4,12 +4,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.FirebaseFirestore
+import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource
 import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
 
@@ -70,6 +75,19 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
             }
             _loadingStatus.value = LoadingStatus.DONE
         }
+    }
+
+    fun addDummy(){
+        coroutineScope.launch {
+            addDummyUser()
+        }
+    }
+
+    suspend fun addDummyUser(){
+        val userFirebase = FirebaseFirestore.getInstance().collection("users")
+        val document = userFirebase.document()
+        val user = User("GITA", "GITA@gmail.com", "", document.id)
+        document.set(user)
     }
 
     override fun onCleared() {

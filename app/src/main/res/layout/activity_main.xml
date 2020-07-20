@@ -63,5 +63,14 @@
             app:layout_constraintStart_toStartOf="@+id/sign_in_button"
             app:srcCompat="@drawable/ic_cloud_black_24dp" />
 
+        <Button
+            android:id="@+id/add_dummy_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dummy user"
+            app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
+            app:layout_constraintEnd_toEndOf="@+id/nav_fragment"
+            app:layout_constraintStart_toStartOf="@+id/nav_fragment" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

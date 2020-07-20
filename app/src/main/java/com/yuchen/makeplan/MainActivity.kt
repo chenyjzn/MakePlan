@@ -106,8 +106,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_team -> {
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment(true))
                 }
+                R.id.nav_notify ->{
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalNotifyFragment())
+                }
             }
             true
+        }
+
+        binding.addDummyUser.setOnClickListener {
+            viewModel.addDummy()
         }
     }
 
