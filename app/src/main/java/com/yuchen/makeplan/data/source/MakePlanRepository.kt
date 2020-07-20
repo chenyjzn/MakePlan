@@ -66,4 +66,8 @@ interface MakePlanRepository {
     suspend fun multiProjectCancelInviteFromFirebase(project: MultiProject, user :User) : Result<Boolean>
 
     suspend fun multiProjectConfirmUserJoinFirebase(project: MultiProject, user :User) : Result<Boolean>
+
+    fun getMyMultiProjectsFromFirebase(collection : String) : LiveData<List<MultiProject>>
+
+    fun getMultiProjectUsersFromFirebase(project: MultiProject,collection: String): LiveData<List<User>>
 }

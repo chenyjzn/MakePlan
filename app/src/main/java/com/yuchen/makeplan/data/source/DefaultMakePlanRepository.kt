@@ -137,4 +137,12 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
     ): Result<Boolean> {
         return makePlanRemoteDataSource.multiProjectConfirmUserJoinFirebase(project, user)
     }
+
+    override fun getMyMultiProjectsFromFirebase(collection: String): LiveData<List<MultiProject>> {
+        return makePlanRemoteDataSource.getMyMultiProjectsFromFirebase()
+    }
+
+    override fun getMultiProjectUsersFromFirebase(project: MultiProject, collection: String): LiveData<List<User>> {
+        return makePlanRemoteDataSource.getMultiProjectUsersFromFirebase(project,collection)
+    }
 }

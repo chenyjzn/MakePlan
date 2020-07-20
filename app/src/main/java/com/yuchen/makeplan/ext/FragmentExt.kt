@@ -46,3 +46,8 @@ fun Fragment.getVmFactory(project: MultiProject, task: MultiTask?): MultiTaskVie
     val application = requireNotNull(this.activity).application
     return MultiTaskViewModelFactory(repository,project,task,application)
 }
+
+fun Fragment.getVmFactory(notifyPos: Int): NotifyItemsViewModelFactory {
+    val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
+    return NotifyItemsViewModelFactory(repository,notifyPos)
+}

@@ -162,4 +162,15 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
+
+    override fun getMyMultiProjectsFromFirebase(collection: String): LiveData<List<MultiProject>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMultiProjectUsersFromFirebase(
+        project: MultiProject,
+        collection: String
+    ): LiveData<List<User>> {
+        TODO("Not yet implemented")
+    }
 }

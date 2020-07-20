@@ -18,27 +18,27 @@ import kotlin.coroutines.suspendCoroutine
 
 object MakePlanRemoteDataSource :MakePlanDataSource {
 
-    private const val COLLECTION_USERS = "users"
-    private const val COLLECTION_MEMBERS = "members"
-    private const val COLLECTION_MULTI_PROJECTS = "multi_projects"
-    private const val COLLECTION_PERSONAL_PROJECTS = "personal_projects"
+    const val COLLECTION_USERS = "users"
+    const val COLLECTION_MEMBERS = "members"
+    const val COLLECTION_MULTI_PROJECTS = "multi_projects"
+    const val COLLECTION_PERSONAL_PROJECTS = "personal_projects"
 
-    //user to project
-    private const val COLLECTION_JOIN_REQUEST = "join_request"
-    private const val COLLECTION_SEND_REQUEST = "send_request"
 
-    //project to user
-    private const val COLLECTION_INVITE_REQUEST = "invite_request"
-    private const val COLLECTION_RECEIVE_REQUEST = "receive_request"
+    const val COLLECTION_JOIN_REQUEST = "join_request"
+    const val COLLECTION_SEND_REQUEST = "send_request"
 
-    private const val COLLECTION_TASK_LIST = "task_list"
 
-    private const val FIELD_MEMBERS = "members"
-    private const val FIELD_MEMBERSUID = "membersUid"
+    const val COLLECTION_INVITE_REQUEST = "invite_request"
+    const val COLLECTION_RECEIVE_REQUEST = "receive_request"
 
-    private const val PERSONAL_TEAMS = "personal_teams"
-    private const val PATH_TEAMS = "teams"
-    private const val TEAM_MEMBERS = "team_member"
+    const val COLLECTION_TASK_LIST = "task_list"
+
+    const val FIELD_MEMBERS = "members"
+    const val FIELD_MEMBERSUID = "membersUid"
+
+    const val PERSONAL_TEAMS = "personal_teams"
+    const val PATH_TEAMS = "teams"
+    const val TEAM_MEMBERS = "team_member"
 
     override suspend fun insertProject(project: Project) {
         TODO("Not yet implemented")
@@ -722,5 +722,50 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         }
         if (auth.currentUser == null)
             continuation.resume(Result.Fail("User not login"))
+    }
+
+    override fun getMyMultiProjectsFromFirebase(collection: String): LiveData<List<MultiProject>> {
+        val liveData = MutableLiveData<List<MultiProject>>()
+        auth.currentUser?.let {firebaseUser ->
+            FirebaseFirestore.getInstance().collection(COLLECTION_USERS)
+                .document(UserManager.user.uid)
+                .collection(collection)
+                .addSnapshotListener { snapshot, exception ->
+                    exception?.let {
+                        Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    }
+                    Log.d("chenyjzn","User team snapshotListener")
+                    val list = mutableListOf<MultiProject>()
+                    for (document in snapshot!!) {
+                        val project = document.toObject(MultiProject::class.java)
+                        list.add(project)
+                    }
+                    liveData.value = list
+                }
+        }
+        return liveData
+    }
+
+    override fun getMultiProjectUsersFromFirebase(project: MultiProject, collection: String): LiveData<List<User>> {
+        val liveData = MutableLiveData<List<User>>()
+        auth.currentUser?.let {firebaseUser ->
+            FirebaseFirestore.getInstance()
+                .collection(COLLECTION_MULTI_PROJECTS)
+                .document(project.firebaseId)
+                .collection(collection)
+                .addSnapshotListener { snapshot, exception ->
+                    exception?.let {
+                        Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    }
+                    Log.d("chenyjzn","User team snapshotListener")
+                    val list = mutableListOf<User>()
+                    for (document in snapshot!!) {
+                        val user = document.toObject(User::class.java)
+                        list.add(user)
+                    }
+                    liveData.value = list
+                }
+        }
+        return liveData
     }
 }

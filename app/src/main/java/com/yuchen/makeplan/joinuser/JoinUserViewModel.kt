@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_JOIN_REQUEST
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,7 +16,7 @@ class JoinUserViewModel(private val repository: MakePlanRepository, private val 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val users: LiveData<List<User>> = repository.getMultiProjectJoinRequestFromFirebase(project)
+    val users: LiveData<List<User>> = repository.getMultiProjectUsersFromFirebase(project,COLLECTION_JOIN_REQUEST)
 
     fun confirmUserJoin(user: User){
         coroutineScope.launch {
