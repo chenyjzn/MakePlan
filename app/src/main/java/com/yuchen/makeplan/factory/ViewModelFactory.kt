@@ -7,6 +7,7 @@ import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.multiProjects.MultiProjectsViewModel
 import com.yuchen.makeplan.projects.ProjectsViewModel
 import com.yuchen.makeplan.search.SearchViewModel
+import com.yuchen.makeplan.serachproject.SearchProjectViewModel
 
 class ViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository
@@ -23,6 +24,8 @@ class ViewModelFactory constructor(
                     ProjectsViewModel(makePlanRepository)
                 isAssignableFrom(MultiProjectsViewModel::class.java) ->
                     MultiProjectsViewModel(makePlanRepository)
+                isAssignableFrom(SearchProjectViewModel::class.java) ->
+                    SearchProjectViewModel(makePlanRepository)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

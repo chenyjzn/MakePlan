@@ -167,4 +167,35 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun requestUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectField: String
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun approveUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectField: String
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancelUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectField: String
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeUserToMultiProject(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
 }

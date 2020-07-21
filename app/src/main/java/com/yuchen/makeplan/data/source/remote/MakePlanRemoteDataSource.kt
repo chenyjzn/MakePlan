@@ -8,10 +8,13 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.yuchen.makeplan.Result
-import com.yuchen.makeplan.data.*
+import com.yuchen.makeplan.data.MultiProject
+import com.yuchen.makeplan.data.MultiTask
+import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.User
+import com.yuchen.makeplan.data.source.MakePlanDataSource
 import com.yuchen.makeplan.util.UserManager
 import com.yuchen.makeplan.util.UserManager.auth
-import com.yuchen.makeplan.data.source.MakePlanDataSource
 import com.yuchen.makeplan.util.UserManager.user
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -29,8 +32,9 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
     const val COLLECTION_TASK_LIST = "task_list"
 
     const val FIELD_MEMBERS = "members"
-    const val FIELD_RECEIVE = "receive_request"
-    const val FIELD_SEND = "send_request"
+    const val FIELD_MEMBERS_UID = "membersUid"
+    const val FIELD_RECEIVE_UID = "receiveUid"
+    const val FIELD_SEND_UID = "sendUid"
 
     const val FIELD_MEMBERSUID = "membersUid"
 
@@ -685,6 +689,163 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                     }
                 }
         }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+    }
+
+    override suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> = suspendCoroutine { continuation->
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_MULTI_PROJECTS)
+            .document(project.firebaseId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("chenyzjn","${task.result?.get(projectField)}")
+                    val userList = task.result?.get(projectField) as MutableList<String>
+                    userList.add(user.uid)
+                    val data = hashMapOf(
+                        projectField to userList
+                    )
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_MULTI_PROJECTS)
+                        .document(project.firebaseId)
+                        .set(data,SetOptions.merge())
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                continuation.resume(Result.Success(true))
+                            } else {
+                                task.exception?.let {
+                                    continuation.resume(Result.Error(it))
+                                    return@addOnCompleteListener
+                                }
+                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                            }
+                        }
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                }
+            }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+    }
+
+    override suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> = suspendCoroutine { continuation->
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_MULTI_PROJECTS)
+            .document(project.firebaseId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val requestList = task.result?.get(projectField) as MutableList<String>
+                    val memberUidList = task.result?.get(FIELD_MEMBERS_UID) as MutableList<String>
+                    val memberList = task.result?.get(FIELD_MEMBERS) as MutableList<User>
+                    val data = hashMapOf(
+                        projectField to requestList.filter { user.uid != it },
+                        FIELD_MEMBERS_UID to memberUidList.add(user.uid),
+                        FIELD_MEMBERS to memberList.add(user)
+                    )
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_MULTI_PROJECTS)
+                        .document(project.firebaseId)
+                        .set(data,SetOptions.merge())
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                continuation.resume(Result.Success(true))
+                            } else {
+                                task.exception?.let {
+                                    continuation.resume(Result.Error(it))
+                                    return@addOnCompleteListener
+                                }
+                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                            }
+                        }
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                }
+            }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+    }
+
+    override suspend fun cancelUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> = suspendCoroutine { continuation->
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_MULTI_PROJECTS)
+            .document(project.firebaseId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val userList = task.result?.get(projectField) as MutableList<String>
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_MULTI_PROJECTS)
+                        .document(project.firebaseId)
+                        .set(projectField to userList.filter { it!=user.uid },SetOptions.merge())
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                continuation.resume(Result.Success(true))
+                            } else {
+                                task.exception?.let {
+                                    continuation.resume(Result.Error(it))
+                                    return@addOnCompleteListener
+                                }
+                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                            }
+                        }
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                }
+            }
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+    }
+
+    override suspend fun removeUserToMultiProject(project: MultiProject, user: User): Result<Boolean> = suspendCoroutine { continuation->
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_MULTI_PROJECTS)
+            .document(project.firebaseId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val memberUidList = task.result?.get(FIELD_MEMBERS_UID) as MutableList<String>
+                    val memberList = task.result?.get(FIELD_MEMBERS) as MutableList<User>
+                    val data = hashMapOf(
+                        FIELD_MEMBERS_UID to memberUidList.filter { user.uid!=it },
+                        FIELD_MEMBERS to memberList.filter { user.uid!=it.uid }
+                    )
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_MULTI_PROJECTS)
+                        .document(project.firebaseId)
+                        .set(data,SetOptions.merge())
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                continuation.resume(Result.Success(true))
+                            } else {
+                                task.exception?.let {
+                                    continuation.resume(Result.Error(it))
+                                    return@addOnCompleteListener
+                                }
+                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                            }
+                        }
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                }
+            }
         if (auth.currentUser == null)
             continuation.resume(Result.Fail("User not login"))
     }

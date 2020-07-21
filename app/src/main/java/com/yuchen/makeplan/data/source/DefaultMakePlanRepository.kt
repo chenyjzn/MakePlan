@@ -154,4 +154,35 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
     ): Result<Boolean> {
         return makePlanRemoteDataSource.removeMultiProjectUser(project, user)
     }
+
+    override suspend fun requestUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectField: String
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.requestUserToMultiProject(project, user, projectField)
+    }
+
+    override suspend fun approveUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectField: String
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.approveUserToMultiProject(project, user, projectField)
+    }
+
+    override suspend fun cancelUserToMultiProject(
+        project: MultiProject,
+        user: User,
+        projectField: String
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.cancelUserToMultiProject(project, user, projectField)
+    }
+
+    override suspend fun removeUserToMultiProject(
+        project: MultiProject,
+        user: User
+    ): Result<Boolean> {
+        return makePlanRemoteDataSource.removeUserToMultiProject(project, user)
+    }
 }

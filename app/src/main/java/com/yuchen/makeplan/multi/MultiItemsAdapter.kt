@@ -16,12 +16,12 @@ class MultiItemsAdapter() : RecyclerView.Adapter<MultiItemsAdapter.MultiProjectH
         notifyDataSetChanged()
     }
 
-    private var onClickListener: OnClickListener? = null
-    fun setItemClickListener(itemClickListener: OnClickListener?) {
-        onClickListener = itemClickListener
+    private var projectClickListener: ProjectClickListener? = null
+    fun setProjectClickListener(projectClickListener: ProjectClickListener?) {
+        this.projectClickListener = projectClickListener
     }
 
-    interface OnClickListener {
+    interface ProjectClickListener {
         fun onProjectClick(project: MultiProject)
         fun onProjectLongClick(project: MultiProject)
     }
@@ -29,14 +29,14 @@ class MultiItemsAdapter() : RecyclerView.Adapter<MultiItemsAdapter.MultiProjectH
     inner class MultiProjectHolder(var binding: ItemMultiProjectBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(project: MultiProject) {
             binding.project = project
-            binding.itemProjectCard.setOnClickListener {
-                onClickListener?.onProjectClick(project)
+            binding.itemMultiProjectCard.setOnClickListener {
+                projectClickListener?.onProjectClick(project)
             }
-            binding.itemProjectCard.setOnLongClickListener {
-                onClickListener?.onProjectLongClick(project)
+            binding.itemMultiProjectCard.setOnLongClickListener {
+                projectClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemProjectEditTime.text = StampToDate(project.updateTime)
+            binding.itemMultiProjectEditTime.text = StampToDate(project.updateTime)
             binding.executePendingBindings()
         }
     }

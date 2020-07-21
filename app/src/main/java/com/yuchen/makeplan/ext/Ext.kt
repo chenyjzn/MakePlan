@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.util.Log
 import android.widget.TextView
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.User
 import kotlin.math.roundToInt
 
 fun Int.toPx(): Int {
@@ -22,4 +23,10 @@ fun MutableList<*>.removeFrom(index:Int) {
 
 fun TextView.setWidthAndPos(){
 
+}
+
+fun List<User>.toUidStringList() : List<String>{
+    return this.map {
+        it.uid
+    }
 }

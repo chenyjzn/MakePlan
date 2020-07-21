@@ -201,6 +201,17 @@
         <action
             android:id="@+id/action_multiFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_multiFragment_to_multiEditDialog"
+            app:destination="@id/multiEditDialog" />
+        <action
+            android:id="@+id/action_multiFragment_to_searchProjectFragment"
+            app:destination="@id/searchProjectFragment" />
     </fragment>
     <action android:id="@+id/action_global_multiFragment" app:destination="@id/multiFragment" />
+    <fragment
+        android:id="@+id/searchProjectFragment"
+        android:name="com.yuchen.makeplan.serachproject.SearchProjectFragment"
+        android:label="fragment_search_project"
+        tools:layout="@layout/fragment_search_project" />
 </navigation>

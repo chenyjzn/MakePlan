@@ -1,4 +1,4 @@
-package com.yuchen.makeplan.search
+package com.yuchen.makeplan.serachproject
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
 import com.yuchen.makeplan.util.TimeUtil.StampToDate
 import com.yuchen.makeplan.util.UserManager
 
-class SearchAdapter : RecyclerView.Adapter<SearchAdapter.MultiProjectHolder>(),Filterable {
+class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProjectHolder>(),Filterable {
 
     private var projectSourceList: List<MultiProject>? = null
     private var projectFilteredList: List<MultiProject>? =null
@@ -38,8 +38,8 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.MultiProjectHolder>(),F
             }
             notMember
         }
-        this.projectSourceList = projectList
-        this.projectFilteredList = projectList
+        this.projectSourceList = excludeSource
+        this.projectFilteredList = excludeSource
     }
 
     private var onClickListener: OnClickListener? = null
@@ -87,28 +87,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.MultiProjectHolder>(),F
                 var filteredList : List<MultiProject>?
                 val charString: String = constraint.toString()
                 if (charString.isEmpty()) {
-                    filteredList = projectSourceList?.filter {
-                        var notMember = true
-                        for (i in it.membersUid){
-                            if (i == UserManager.user.uid) {
-                                notMember = false
-                                break
-                            }
-                        }
-                        for (i in it.sendUid){
-                            if (i == UserManager.user.uid) {
-                                notMember = false
-                                break
-                            }
-                        }
-                        for (i in it.receiveUid){
-                            if (i == UserManager.user.uid) {
-                                notMember = false
-                                break
-                            }
-                        }
-                        notMember
-                    }
+                    filteredList = projectSourceList
                 } else {
                     filteredList = projectSourceList?.filter {
                         var haveProjectName = it.name.toUpperCase().contains(charString.toUpperCase())

@@ -65,4 +65,12 @@ interface MakePlanDataSource{
     suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>
 
     suspend fun removeMultiProjectUser(project: MultiProject, user :User) : Result<Boolean>
+
+    suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String) : Result<Boolean>
+
+    suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectField: String) : Result<Boolean>
+
+    suspend fun cancelUserToMultiProject(project: MultiProject, user :User, projectField: String) : Result<Boolean>
+
+    suspend fun removeUserToMultiProject(project: MultiProject, user :User) : Result<Boolean>
 }

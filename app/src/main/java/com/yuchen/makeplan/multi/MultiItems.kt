@@ -7,12 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 
+
 class MultiItems : Fragment() {
+    val pagerPos = arguments?.getInt("object")?:0
     private val viewModel: MultiItemsViewModel by viewModels<MultiItemsViewModel> { getVmFactory(arguments?.getInt("object")?:0) }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ItemMultiBinding.inflate(inflater, container, false)
@@ -25,7 +29,28 @@ class MultiItems : Fragment() {
                 adapter.submitList(it)
             }
         })
-
+        adapter.setProjectClickListener(object : MultiItemsAdapter.ProjectClickListener{
+            override fun onProjectClick(project: MultiProject) {
+                when(pagerPos){
+                    PAGER_PROJECTS -> parentFragment?.findNavController()?.navigate(MultiFragmentDirections.actionMultiFragmentToMultiGanttFragment(project))
+                    PAGER_SENDS -> {}
+                    PAGER_RECEIVE -> {}
+                }
+            }
+            override fun onProjectLongClick(project: MultiProject) {
+                when(pagerPos){
+                    PAGER_PROJECTS -> parentFragment?.findNavController()?.navigate(MultiFragmentDirections.actionMultiFragmentToMultiEditDialog(project))
+                    PAGER_SENDS -> {}
+                    PAGER_RECEIVE -> {}
+                }
+            }
+        })
         return binding.root
+    }
+
+    companion object{
+        const val PAGER_PROJECTS = 0
+        const val PAGER_SENDS = 1
+        const val PAGER_RECEIVE = 2
     }
 }

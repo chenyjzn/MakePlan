@@ -31,14 +31,14 @@ class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjec
     inner class MultiProjectHolder(var binding: ItemMultiProjectBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(project: MultiProject) {
             binding.project = project
-            binding.itemProjectCard.setOnClickListener {
+            binding.itemMultiProjectCard.setOnClickListener {
                 onClickListener?.onProjectClick(project)
             }
-            binding.itemProjectCard.setOnLongClickListener {
+            binding.itemMultiProjectCard.setOnLongClickListener {
                 onClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemProjectEditTime.text = StampToDate(project.updateTime)
+            binding.itemMultiProjectEditTime.text = StampToDate(project.updateTime)
             binding.executePendingBindings()
         }
     }

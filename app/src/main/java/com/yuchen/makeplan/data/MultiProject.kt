@@ -18,5 +18,7 @@ data class MultiProject (
     var members: MutableList<User> = mutableListOf(),
     var membersUid: MutableList<String> = mutableListOf(),
     var firebaseId: String = "",
-    var completeRate : Int = 0
+    var completeRate : Int = 0,
+    var sendUid: MutableList<String> = mutableListOf(),
+    var receiveUid: MutableList<String> = mutableListOf()
 ) : Parcelable
