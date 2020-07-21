@@ -47,7 +47,7 @@ class InviteUsersFragment : Fragment() {
 
         binding.inviteUserProjectsAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.search_user -> {
+                R.id.search -> {
                     this.findNavController().navigate(InviteUsersFragmentDirections.actionInviteUsersFragmentToSearchUserFragment(InviteUsersFragmentArgs.fromBundle(requireArguments()).project))
                     true
                 }

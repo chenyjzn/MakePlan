@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_RECEIVE_REQUEST
-import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_SEND_REQUEST
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_RECEIVE
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_SEND
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,7 +21,7 @@ class SearchUserViewModel(private val repository: MakePlanRepository, private va
 
     fun inviteUserToProject(user: User){
         coroutineScope.launch {
-            repository.requestUserToMultiProject(project,user,COLLECTION_SEND_REQUEST,COLLECTION_RECEIVE_REQUEST)
+            repository.requestUserToMultiProject(project,user,COLLECTION_SEND,COLLECTION_RECEIVE)
         }
     }
 

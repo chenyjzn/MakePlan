@@ -85,6 +85,9 @@
         <action
             android:id="@+id/action_multiGanttFragment_to_inviteUsersFragment"
             app:destination="@id/inviteUsersFragment" />
+        <action
+            android:id="@+id/action_multiGanttFragment_to_membersFragment"
+            app:destination="@id/membersFragment" />
     </fragment>
     <fragment
         android:id="@+id/multiTaskFragment"
@@ -175,4 +178,29 @@
             android:name="project"
             app:argType="com.yuchen.makeplan.data.MultiProject" />
     </fragment>
+    <fragment
+        android:id="@+id/membersFragment"
+        android:name="com.yuchen.makeplan.members.MembersFragment"
+        android:label="fragment_members"
+        tools:layout="@layout/fragment_members" >
+        <argument
+            android:name="project"
+            app:argType="com.yuchen.makeplan.data.MultiProject" />
+        <action
+            android:id="@+id/action_membersFragment_to_searchUserFragment"
+            app:destination="@id/searchUserFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/multiFragment"
+        android:name="com.yuchen.makeplan.multi.MultiFragment"
+        android:label="fragment_multi"
+        tools:layout="@layout/fragment_multi" >
+        <action
+            android:id="@+id/action_multiFragment_to_multiGanttFragment"
+            app:destination="@id/multiGanttFragment" />
+        <action
+            android:id="@+id/action_multiFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_multiFragment" app:destination="@id/multiFragment" />
 </navigation>

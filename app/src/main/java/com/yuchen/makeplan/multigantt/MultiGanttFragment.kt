@@ -133,6 +133,10 @@ class MultiGanttFragment : Fragment() {
             }
         })
 
+        binding.testButton.setOnClickListener {
+            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMembersFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
+        }
+
         return binding.root
     }
 

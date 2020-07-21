@@ -87,6 +87,10 @@ class MainActivity : AppCompatActivity() {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
+                R.id.multiFragment ->{
+                    this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
                 else ->{
                     binding.bottomNavigationView.visibility = View.GONE
                 }
@@ -99,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment())
                 }
                 R.id.nav_team -> {
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiProjectsFragment())
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiFragment())
                 }
                 R.id.nav_notify ->{
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalNotifyFragment())

@@ -23,12 +23,15 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
     const val COLLECTION_MULTI_PROJECTS = "multi_projects"
     const val COLLECTION_PERSONAL_PROJECTS = "personal_projects"
 
-    const val COLLECTION_RECEIVE_REQUEST = "receive_request"
-    const val COLLECTION_SEND_REQUEST = "send_request"
+    const val COLLECTION_RECEIVE = "receive_request"
+    const val COLLECTION_SEND = "send_request"
 
     const val COLLECTION_TASK_LIST = "task_list"
 
     const val FIELD_MEMBERS = "members"
+    const val FIELD_RECEIVE = "receive_request"
+    const val FIELD_SEND = "send_request"
+
     const val FIELD_MEMBERSUID = "membersUid"
 
     override suspend fun insertProject(project: Project) {
@@ -312,6 +315,9 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                         val task = document.toObject(MultiTask::class.java)
                         list.add(task)
                     }
+                    list.sortBy {
+                        it.startTimeMillis
+                    }
                     liveData.value = list
                 }
         }
@@ -492,12 +498,12 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override fun getMyMultiProjects(collection: String): LiveData<List<MultiProject>> {
+    override fun getMyMultiProjects(field: String): LiveData<List<MultiProject>> {
         val liveData = MutableLiveData<List<MultiProject>>()
         auth.currentUser?.let {firebaseUser ->
-            FirebaseFirestore.getInstance().collection(COLLECTION_USERS)
-                .document(UserManager.user.uid)
-                .collection(collection)
+            FirebaseFirestore.getInstance()
+                .collection(COLLECTION_MULTI_PROJECTS)
+                .whereArrayContains(field,firebaseUser.uid)
                 .addSnapshotListener { snapshot, exception ->
                     exception?.let {
                         Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")

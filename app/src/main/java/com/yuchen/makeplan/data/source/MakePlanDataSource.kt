@@ -54,7 +54,7 @@ interface MakePlanDataSource{
 
     suspend fun removeMultiProject (project: MultiProject) : Result<Boolean>
 
-    fun getMyMultiProjects(collection : String) : LiveData<List<MultiProject>>
+    fun getMyMultiProjects(field : String) : LiveData<List<MultiProject>>
 
     fun getMultiProjectUsers(project: MultiProject, collection: String): LiveData<List<User>>
 

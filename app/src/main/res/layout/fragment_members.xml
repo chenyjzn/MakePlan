@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/notify_app_bar_layout"
+            android:id="@+id/members_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -20,27 +20,30 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/notify_app_bar"
+                android:id="@+id/members_app_bar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="Notify" />
+                app:menu="@menu/search_menu"
+                app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
+                app:title="Team Members" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.viewpager.widget.ViewPager
-            android:id="@+id/notify_pager"
+            android:id="@+id/members_pager"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notify_app_bar_layout">
+            app:layout_constraintTop_toBottomOf="@+id/members_app_bar_layout">
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/notify_tab"
+                android:id="@+id/members_tab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </androidx.viewpager.widget.ViewPager>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

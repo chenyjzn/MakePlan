@@ -67,6 +67,13 @@
                     android:layout_weight="1"
                     app:srcCompat="@drawable/ic_notifications_black_24dp" />
 
+                <ImageButton
+                    android:id="@+id/test_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/color_circle" />
+
             </LinearLayout>
         </HorizontalScrollView>
 

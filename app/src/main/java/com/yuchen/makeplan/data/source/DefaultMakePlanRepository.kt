@@ -110,8 +110,8 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.removeMultiProject(project)
     }
 
-    override fun getMyMultiProjects(collection: String): LiveData<List<MultiProject>> {
-        return makePlanRemoteDataSource.getMyMultiProjects(collection)
+    override fun getMyMultiProjects(field : String): LiveData<List<MultiProject>> {
+        return makePlanRemoteDataSource.getMyMultiProjects(field)
     }
 
     override fun getMultiProjectUsers(

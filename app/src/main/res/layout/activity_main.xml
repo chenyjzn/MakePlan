@@ -35,9 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/add_dummy_user"
             app:layout_constraintStart_toStartOf="parent">
 
         </com.google.android.gms.common.SignInButton>
@@ -68,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dummy user"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
             app:layout_constraintEnd_toEndOf="@+id/nav_fragment"
             app:layout_constraintStart_toStartOf="@+id/nav_fragment" />

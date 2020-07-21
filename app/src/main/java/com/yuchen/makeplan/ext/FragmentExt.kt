@@ -1,15 +1,11 @@
 package com.yuchen.makeplan.ext
 
-import android.app.Application
 import androidx.fragment.app.Fragment
 import com.yuchen.makeplan.MakePlanApplication
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Project
-import com.yuchen.makeplan.data.Task
-import com.yuchen.makeplan.edit.EditViewModel
 import com.yuchen.makeplan.factory.*
-import com.yuchen.makeplan.multitask.MultiTaskViewModel
 
 fun Fragment.getVmFactory(): ViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
@@ -47,7 +43,12 @@ fun Fragment.getVmFactory(project: MultiProject, task: MultiTask?): MultiTaskVie
     return MultiTaskViewModelFactory(repository,project,task,application)
 }
 
-fun Fragment.getVmFactory(notifyPos: Int): NotifyItemsViewModelFactory {
+fun Fragment.getVmFactory(pagerPos: Int): MultiItemsViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return NotifyItemsViewModelFactory(repository,notifyPos)
+    return MultiItemsViewModelFactory(repository,pagerPos)
+}
+
+fun Fragment.getVmFactory(project: MultiProject,membersPos: Int): MembersItemsViewModelFactory {
+    val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
+    return MembersItemsViewModelFactory(repository,project,membersPos)
 }
