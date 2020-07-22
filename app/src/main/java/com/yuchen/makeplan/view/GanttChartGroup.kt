@@ -179,6 +179,7 @@ class GanttChartGroup : View {
         var actualTime = calendar.timeInMillis
 
         var prePos = interpolation(startDate,endDate,actualTime)*width.toFloat()
+        var curPos : Float
         canvas.drawLine(
             prePos,
             0.0f,
@@ -186,10 +187,11 @@ class GanttChartGroup : View {
             timeLineHeight.toFloat()*0.5f,
             linePaint
         )
-        actualTime += DAY_MILLIS
 
         while (actualTime <= extendEndTime){
-            val curPos = interpolation(startDate,endDate,actualTime)*width.toFloat()
+            val text = TimeUtil.millisToYearMonthDay(actualTime)
+            actualTime += DAY_MILLIS
+            curPos = interpolation(startDate,endDate,actualTime)*width.toFloat()
             canvas.drawLine(
                 curPos,
                 0.0f,
@@ -197,15 +199,13 @@ class GanttChartGroup : View {
                 timeLineHeight.toFloat()*0.5f,
                 linePaint
             )
-            val text = TimeUtil.millisToYearMonthDay(actualTime)
-            val helfTextWidth = timeLineTextPaint.measureText(text)/2.0f + primaryTextPadding.toFloat()
-            Log.d("chenyjzn","text Width = $helfTextWidth")
+            val halfTextWidth = timeLineTextPaint.measureText(text)/2.0f + primaryTextPadding.toFloat()
             var textXPos : Float
             if (prePos< 0f && curPos> width.toFloat()){
                 primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
                 textXPos = width*0.5f
             } else if (prePos< 0f && curPos<= width.toFloat()){
-                if ((curPos)/2.0f + helfTextWidth >= curPos){
+                if ((curPos)/2.0f + halfTextWidth >= curPos){
                     primaryTimeLineTextPaint.textAlign = Paint.Align.RIGHT
                     textXPos = curPos - primaryTextPadding
                 }else {
@@ -213,7 +213,7 @@ class GanttChartGroup : View {
                     textXPos = (curPos) / 2.0f
                 }
             }else if (prePos>= 0f && curPos> width.toFloat()){
-                if ((prePos + width.toFloat())/2.0f - helfTextWidth <= prePos){
+                if ((prePos + width.toFloat())/2.0f - halfTextWidth <= prePos){
                     primaryTimeLineTextPaint.textAlign = Paint.Align.LEFT
                     textXPos = prePos + primaryTextPadding
                 }else{
@@ -230,7 +230,6 @@ class GanttChartGroup : View {
                 timeLineHeight.toFloat()*0.25f + fontTimeLineOffsetY,
                 primaryTimeLineTextPaint
             )
-            actualTime += DAY_MILLIS
             prePos = curPos
         }
     }
@@ -244,25 +243,66 @@ class GanttChartGroup : View {
         calendar.add(Calendar.MONTH,-1)
         var actualTime = calendar.timeInMillis
 
+        var prePos = interpolation(startDate,endDate,actualTime)*width.toFloat()
+        var curPos : Float
+
+        canvas.drawLine(
+            prePos,
+            0.0f,
+            prePos,
+            timeLineHeight.toFloat()*0.5f,
+            linePaint
+        )
+
         while (actualTime <= extendEndTime){
+            val text = TimeUtil.millisToYearMonth(actualTime)
+
+            calendar.timeInMillis = actualTime
+            val days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            actualTime += days * DAY_MILLIS
+
+            curPos = interpolation(startDate,endDate,actualTime)*width.toFloat()
+
             canvas.drawLine(
-                interpolation(startDate,endDate,actualTime)*width.toFloat(),
+                curPos,
                 0.0f,
-                interpolation(startDate,endDate,actualTime)*width.toFloat(),
+                curPos,
                 timeLineHeight.toFloat()*0.5f,
                 linePaint
             )
 
-            calendar.timeInMillis = actualTime
-            val days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-
+            val halfTextWidth = timeLineTextPaint.measureText(text)/2.0f + primaryTextPadding.toFloat()
+            var textXPos : Float
+            if (prePos< 0f && curPos> width.toFloat()){
+                primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                textXPos = width*0.5f
+            } else if (prePos< 0f && curPos<= width.toFloat()){
+                if ((curPos)/2.0f + halfTextWidth >= curPos){
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.RIGHT
+                    textXPos = curPos - primaryTextPadding
+                }else {
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                    textXPos = (curPos) / 2.0f
+                }
+            }else if (prePos>= 0f && curPos> width.toFloat()){
+                if ((prePos + width.toFloat())/2.0f - halfTextWidth <= prePos){
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.LEFT
+                    textXPos = prePos + primaryTextPadding
+                }else{
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                    textXPos = (prePos + width.toFloat())/2.0f
+                }
+            }else{
+                textXPos = (prePos + curPos)/2.0f
+                primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+            }
             canvas.drawText(
-                TimeUtil.millisToYearMonth(actualTime),
-                interpolation(startDate,endDate,actualTime + ((days.toFloat()/2.0f)*DAY_MILLIS.toFloat()).toLong())*width.toFloat(),
+                text,
+                textXPos,
                 timeLineHeight.toFloat()*0.25f + fontTimeLineOffsetY,
-                timeLineTextPaint
+                primaryTimeLineTextPaint
             )
-            actualTime += days * DAY_MILLIS
+            prePos = curPos
         }
     }
 
@@ -275,26 +315,66 @@ class GanttChartGroup : View {
         calendar.add(Calendar.YEAR,-1)
         var actualTime = calendar.timeInMillis
 
+        var prePos = interpolation(startDate,endDate,actualTime)*width.toFloat()
+        var curPos : Float
+
+        canvas.drawLine(
+            prePos,
+            0.0f,
+            prePos,
+            timeLineHeight.toFloat()*0.5f,
+            linePaint
+        )
+
         while (actualTime <= extendEndTime){
+            val text = TimeUtil.millisToYear(actualTime)
+
+            calendar.timeInMillis = actualTime
+            val days = calendar.getActualMaximum(Calendar.DAY_OF_YEAR)
+            actualTime += days * DAY_MILLIS
+
+            curPos = interpolation(startDate,endDate,actualTime)*width.toFloat()
 
             canvas.drawLine(
-                interpolation(startDate,endDate,actualTime)*width.toFloat(),
+                curPos,
                 0.0f,
-                interpolation(startDate,endDate,actualTime)*width.toFloat(),
+                curPos,
                 timeLineHeight.toFloat()*0.5f,
                 linePaint
             )
 
-            calendar.timeInMillis = actualTime
-            val days = calendar.getActualMaximum(Calendar.DAY_OF_YEAR)
-
+            val halfTextWidth = timeLineTextPaint.measureText(text)/2.0f + primaryTextPadding.toFloat()
+            var textXPos : Float
+            if (prePos< 0f && curPos> width.toFloat()){
+                primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                textXPos = width*0.5f
+            } else if (prePos< 0f && curPos<= width.toFloat()){
+                if ((curPos)/2.0f + halfTextWidth >= curPos){
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.RIGHT
+                    textXPos = curPos - primaryTextPadding
+                }else {
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                    textXPos = (curPos) / 2.0f
+                }
+            }else if (prePos>= 0f && curPos> width.toFloat()){
+                if ((prePos + width.toFloat())/2.0f - halfTextWidth <= prePos){
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.LEFT
+                    textXPos = prePos + primaryTextPadding
+                }else{
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                    textXPos = (prePos + width.toFloat())/2.0f
+                }
+            }else{
+                textXPos = (prePos + curPos)/2.0f
+                primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+            }
             canvas.drawText(
-                TimeUtil.millisToYear(actualTime),
-                interpolation(startDate,endDate,actualTime + (days.toFloat()*0.5f*DAY_MILLIS.toFloat()).toLong())*width.toFloat(),
+                text,
+                textXPos,
                 timeLineHeight.toFloat()*0.25f + fontTimeLineOffsetY,
-                timeLineTextPaint
+                primaryTimeLineTextPaint
             )
-            actualTime += days * DAY_MILLIS
+            prePos = curPos
         }
     }
 
