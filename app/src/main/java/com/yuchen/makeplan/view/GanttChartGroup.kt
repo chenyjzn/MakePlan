@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
@@ -24,6 +25,7 @@ class GanttChartGroup : View {
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    val primaryTextPadding = 4.toPx()
     val taskHeight = 50.toPx()
     val timeLineHeight = 50.toPx()
 
@@ -52,6 +54,12 @@ class GanttChartGroup : View {
     private val linePaint = Paint().apply {
         strokeWidth = 1.toPx().toFloat()
         color = Color.GRAY
+    }
+
+    private val primaryTimeLineTextPaint = Paint().apply {
+        color = Color.WHITE
+        textSize = 16.toPx().toFloat()
+        textAlign = Paint.Align.CENTER
     }
 
     private val timeLineTextPaint = Paint().apply {
@@ -104,15 +112,17 @@ class GanttChartGroup : View {
         this.taskList = taskList
     }
 
-    fun setProjectTimeByDx(dx : Float, width : Int){
+    fun setProjectTimeByDx(dx : Float, width : Int) : Pair<Long,Long>{
         var timeOffset = ((endDate - startDate).toFloat()*dx/width.toFloat()).toLong()
-        setRange(startDate - timeOffset, endDate - timeOffset)
+        return startDate - timeOffset to endDate - timeOffset
+        //setRange(startDate - timeOffset, endDate - timeOffset)
     }
 
-    fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int){
+    fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int) : Pair<Long,Long> {
         var timeOffsetl = ((endDate - startDate).toFloat() * dl / width.toFloat()).toLong()
         var timeOffsetr = ((endDate - startDate).toFloat() * dr / width.toFloat()).toLong()
-        setRange(startDate + timeOffsetl, endDate - timeOffsetr)
+        return startDate + timeOffsetl to endDate - timeOffsetr
+//        setRange(startDate + timeOffsetl, endDate - timeOffsetr)
     }
 
     fun setYPos(dy : Float){
@@ -168,22 +178,60 @@ class GanttChartGroup : View {
         calendar.add(Calendar.DAY_OF_YEAR,-1)
         var actualTime = calendar.timeInMillis
 
+        var prePos = interpolation(startDate,endDate,actualTime)*width.toFloat()
+        canvas.drawLine(
+            prePos,
+            0.0f,
+            prePos,
+            timeLineHeight.toFloat()*0.5f,
+            linePaint
+        )
+        actualTime += DAY_MILLIS
+
         while (actualTime <= extendEndTime){
+            val curPos = interpolation(startDate,endDate,actualTime)*width.toFloat()
             canvas.drawLine(
-                interpolation(startDate,endDate,actualTime)*width.toFloat(),
+                curPos,
                 0.0f,
-                interpolation(startDate,endDate,actualTime)*width.toFloat(),
+                curPos,
                 timeLineHeight.toFloat()*0.5f,
                 linePaint
             )
-
+            val text = TimeUtil.millisToYearMonthDay(actualTime)
+            val helfTextWidth = timeLineTextPaint.measureText(text)/2.0f + primaryTextPadding.toFloat()
+            Log.d("chenyjzn","text Width = $helfTextWidth")
+            var textXPos : Float
+            if (prePos< 0f && curPos> width.toFloat()){
+                primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                textXPos = width*0.5f
+            } else if (prePos< 0f && curPos<= width.toFloat()){
+                if ((curPos)/2.0f + helfTextWidth >= curPos){
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.RIGHT
+                    textXPos = curPos - primaryTextPadding
+                }else {
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                    textXPos = (curPos) / 2.0f
+                }
+            }else if (prePos>= 0f && curPos> width.toFloat()){
+                if ((prePos + width.toFloat())/2.0f - helfTextWidth <= prePos){
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.LEFT
+                    textXPos = prePos + primaryTextPadding
+                }else{
+                    primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+                    textXPos = (prePos + width.toFloat())/2.0f
+                }
+            }else{
+                textXPos = (prePos + curPos)/2.0f
+                primaryTimeLineTextPaint.textAlign = Paint.Align.CENTER
+            }
             canvas.drawText(
-                TimeUtil.millisToYearMonthDay(actualTime),
-                interpolation(startDate,endDate,actualTime + ((DAY_MILLIS.toFloat()/2.0f)).toLong())*width.toFloat(),
+                text,
+                textXPos,
                 timeLineHeight.toFloat()*0.25f + fontTimeLineOffsetY,
-                timeLineTextPaint
+                primaryTimeLineTextPaint
             )
             actualTime += DAY_MILLIS
+            prePos = curPos
         }
     }
 
@@ -575,7 +623,7 @@ class GanttChartGroup : View {
         }
     }
 
-    fun posTaskSelect(x : Float, y : Float) : Int{
+    fun getTaskSelect(x : Float, y : Float) : Pair<Int,Task?> {
         taskList?.let {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
@@ -583,24 +631,10 @@ class GanttChartGroup : View {
                 val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.5f + dy+timeLineHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight
                 if (x in left..right && y in top..bottom)
-                    return index
+                    return index to value
             }
         }
-        return -1
-    }
-
-    fun taskSelect(x : Float, y : Float) : Task?{
-        taskList?.let {
-            for ((index, value) in it.withIndex()){
-                val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
-                val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.5f + dy+timeLineHeight
-                val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight
-                if (x in left..right && y in top..bottom)
-                    return value
-            }
-        }
-        return null
+        return -1 to null
     }
 
     private var onEventListener: OnEventListener? = null
@@ -608,9 +642,10 @@ class GanttChartGroup : View {
         this.onEventListener = onEventListener
     }
     interface OnEventListener {
+        fun eventChartTime(startTimeMillis: Long,endTimeMillis: Long)
         fun eventMoveDx(dx : Float, width : Int)
         fun eventZoomDlDr(dl : Float, dr : Float, width : Int)
-        fun eventTaskSelect(taskPos: Int)
+        fun eventTaskSelect(taskPos: Int, taskValue : Task?)
     }
 
     var x0 = 0f
@@ -630,34 +665,26 @@ class GanttChartGroup : View {
                     c = Calendar.getInstance()
                     touchStart = c.timeInMillis
                     touchStatus = TouchMode.CLICK
-//                    Log.d("chenyjzn","touch1, x = $x0 , y = $y0")
                     return true
                 }
                 MotionEvent.ACTION_POINTER_DOWN -> {
                     x1 = event.getX(1)
                     y1 = event.getY(1)
                     touchStatus = TouchMode.ZOOM
-//                    Log.d("chenyjzn","touch2, x = $x1 , y = $y1")
                     return true
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (event.pointerCount == 1) {
                         if (touchStatus == TouchMode.MOVE) {
                             setYPos(event.y - y0)
-                            setProjectTimeByDx(event.x - x0, width)
-                            onEventListener?.eventMoveDx(event.x - x0, width)
-//                            binding.multiGanttTimeLine.setProjectTimeByDx(event.x - x0, v.width)
-//                            binding.multiGanttTimeLine.invalidate()
-//                            binding.multiGanttChart.invalidate()
+                            val newTime = setProjectTimeByDx(event.x - x0, width)
+                            onEventListener?.eventChartTime(newTime.first,newTime.second)
                         } else if (touchStatus != TouchMode.NONE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f
                         ) {
                             touchStatus = TouchMode.MOVE
                             setYPos(event.y - y0)
-                            setProjectTimeByDx(event.x - x0, width)
-                            onEventListener?.eventMoveDx(event.x - x0, width)
-//                            binding.multiGanttTimeLine.setProjectTimeByDx(event.x - x0, v.width)
-//                            binding.multiGanttTimeLine.invalidate()
-//                            binding.multiGanttChart.invalidate()
+                            val newTime =  setProjectTimeByDx(event.x - x0, width)
+                            onEventListener?.eventChartTime(newTime.first,newTime.second)
                         }
                         x0 = event.x
                         y0 = event.y
@@ -700,12 +727,8 @@ class GanttChartGroup : View {
                                 (oldXR - centerX),
                                 (oldYR - centerY)
                             )
-//                            Log.d("chenyjzn", "dl = $dl , dr = $dr")
-                            setProjectTimeByDlDr(dl, dr, width)
-                            onEventListener?.eventZoomDlDr(dl, dr, width)
-//                            binding.multiGanttTimeLine.setProjectTimeByDlDr(dl, dr, v.width)
-//                            binding.multiGanttTimeLine.invalidate()
-//                            binding.multiGanttChart.invalidate()
+                            val newTime = setProjectTimeByDlDr(dl, dr, width)
+                            onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.getX(0)
                             x1 = event.getX(1)
                             y0 = event.getY(0)
@@ -718,9 +741,8 @@ class GanttChartGroup : View {
                     if (touchStatus == TouchMode.CLICK) {
                         c = Calendar.getInstance()
                         if (c.timeInMillis - touchStart < MAX_CLICK_DURATION) {
-//                            Log.d("chenyjzn","Touch up x = ${event.x} , pos y = ${event.y} click")
-//                            viewModel.setTaskSelect((v as GanttChart).posTaskSelect(event.x,event.y))
-                            onEventListener?.eventTaskSelect(posTaskSelect(event.x,event.y))
+                            val taskPair = getTaskSelect(event.x,event.y)
+                            onEventListener?.eventTaskSelect(taskPair.first,taskPair.second)
                         }
                     }
                     touchStatus = TouchMode.NONE

@@ -41,9 +41,11 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     val taskSelect: LiveData<Int>
         get() = _taskSelect
 
-    fun pushProjectRep(project: Project){
-        projectRep.add(project)
-        projectPos += 1
+    fun setProjectTime(start : Long, end : Long){
+        for (i in projectRep){
+            i.startTimeMillis = start
+            i.endTimeMillis = end
+        }
         _project.value = projectRep[projectPos]
     }
 
@@ -106,38 +108,6 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         projectPos = projectRep.lastIndex
         _project.value = projectRep.last()
         _taskSelect.value =-1
-    }
-
-    fun addProjectToRep(){
-        //Log.d("chenyjzn","add project = ${_project.value}")
-        _project.value?.let {
-            projectRep.removeFrom(projectPos)
-            projectRep.add(it.newRefProject())
-        }
-        projectPos = projectRep.lastIndex
-        _project.value = projectRep.last()
-    }
-
-    fun setProjectTimeByDx(dx : Float, width : Int){
-
-            var timeOffset = ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat()*dx/width.toFloat()).toLong()
-            projectRep.forEach {
-                it.startTimeMillis -= timeOffset
-                it.endTimeMillis -= timeOffset
-            }
-            _project.value = projectRep[projectPos]
-    }
-
-    fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int){
-            var timeOffsetl =
-                ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat() * dl / width.toFloat()).toLong()
-            var timeOffsetr =
-                ((projectRep[projectPos].endTimeMillis - projectRep[projectPos].startTimeMillis).toFloat() * dr / width.toFloat()).toLong()
-            projectRep.forEach {
-                it.startTimeMillis += timeOffsetl
-                it.endTimeMillis -= timeOffsetr
-            }
-            _project.value = projectRep[projectPos]
     }
 
     fun getUndoListArray(): Array<Project>{

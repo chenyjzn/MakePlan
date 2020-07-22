@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.databinding.FragmentGanttBinding
 import com.yuchen.makeplan.ext.getVmFactory
 import com.yuchen.makeplan.view.GanttChart
+import com.yuchen.makeplan.view.GanttChartGroup
 import java.util.*
 import kotlin.math.hypot
 import kotlin.math.pow
@@ -30,16 +32,28 @@ class GanttFragment : Fragment() {
 
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
-                binding.ganttTimeLine.setRange(it.startTimeMillis,it.endTimeMillis)
-                binding.ganttTimeLine.invalidate()
-                Log.d("chenyjzn", "${it.startTimeMillis}, ${it.endTimeMillis}")
-                binding.ganttChart.setRange(it.startTimeMillis,it.endTimeMillis)
-                binding.ganttChart.setTaskList(it.taskList)
-                binding.ganttChart.invalidate()
-
                 binding.ganttChartGroup.setRange(it.startTimeMillis,it.endTimeMillis)
                 binding.ganttChartGroup.setTaskList(it.taskList)
                 binding.ganttChartGroup.invalidate()
+            }
+        })
+
+        binding.ganttChartGroup.setOnEventListener(object : GanttChartGroup.OnEventListener{
+            override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
+                viewModel.setProjectTime(startTimeMillis,endTimeMillis)
+            }
+
+            override fun eventMoveDx(dx: Float, width: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun eventZoomDlDr(dl: Float, dr: Float, width: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun eventTaskSelect(taskPos: Int, taskValue: Task?) {
+                Log.d("chenyjzn","Task $taskPos")
+                viewModel.setTaskSelect(taskPos)
             }
         })
 
@@ -61,9 +75,8 @@ class GanttFragment : Fragment() {
 
         viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
             it?.let {
-//                Log.d("chenyjzn","Task select = $it")
-                binding.ganttChart.setTaskSelect(it)
-                binding.ganttChart.invalidate()
+                binding.ganttChartGroup.setTaskSelect(it)
+                binding.ganttChartGroup.invalidate()
             }
         })
 
@@ -99,121 +112,6 @@ class GanttFragment : Fragment() {
             }
         }
 
-        var x0 = 0f
-        var y0 = 0f
-        var x1 = 0f
-        var y1 = 0f
-        var c = Calendar.getInstance()
-        var touchStart = c.timeInMillis
-        var touchStatus = TouchMode.NONE
-
-        binding.ganttChart.setOnTouchListener { v, event ->
-            when(event.actionMasked){
-                MotionEvent.ACTION_DOWN -> {
-                    x0 = event.x
-                    y0 = event.y
-                    c = Calendar.getInstance()
-                    touchStart = c.timeInMillis
-                    touchStatus = TouchMode.CLICK
-//                    Log.d("chenyjzn","touch1, x = $x0 , y = $y0")
-                    true
-                }
-                MotionEvent.ACTION_POINTER_DOWN -> {
-                    x1 = event.getX(1)
-                    y1 = event.getY(1)
-                    touchStatus = TouchMode.ZOOM
-//                    Log.d("chenyjzn","touch2, x = $x1 , y = $y1")
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (event.pointerCount == 1) {
-                        if (touchStatus == TouchMode.MOVE) {
-                            (v as GanttChart).setYPos(event.y - y0)
-                            viewModel.setProjectTimeByDx(event.x - x0, v.width)
-                        } else if (touchStatus != TouchMode.NONE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f) {
-                            touchStatus = TouchMode.MOVE
-                            (v as GanttChart).setYPos(event.y - y0)
-                            viewModel.setProjectTimeByDx(event.x - x0, v.width)
-                        }
-                        x0 = event.x
-                        y0 = event.y
-                    }else if (event.pointerCount == 2){
-                        if (touchStatus == TouchMode.ZOOM) {
-                            val centerX = (x0 + x1) / 2
-                            val centerY = (y0 + y1) / 2
-                            val oldXR: Float
-                            val oldYR: Float
-                            val newXR: Float
-                            val nerYR: Float
-                            val oldXL: Float
-                            val oldYL: Float
-                            val newXL: Float
-                            val nerYL: Float
-                            if (x1 > x0) {
-                                oldXR = x1
-                                oldYR = y1
-                                oldXL = x0
-                                oldYL = y0
-                                newXR = event.getX(1)
-                                nerYR = event.getY(1)
-                                newXL = event.getX(0)
-                                nerYL = event.getY(0)
-                            } else {
-                                oldXR = x0
-                                oldYR = y0
-                                oldXL = x1
-                                oldYL = y1
-                                newXR = event.getX(0)
-                                nerYR = event.getY(0)
-                                newXL = event.getX(1)
-                                nerYL = event.getY(1)
-                            }
-                            val dl = hypot(newXL - centerX, nerYL - centerY) - hypot(
-                                (oldXL - centerX),
-                                (oldYL - centerY)
-                            )
-                            val dr = hypot(newXR - centerX, nerYR - centerY) - hypot(
-                                (oldXR - centerX),
-                                (oldYR - centerY)
-                            )
-//                            Log.d("chenyjzn", "dl = $dl , dr = $dr")
-                            viewModel.setProjectTimeByDlDr(dl, dr, v.width)
-                            x0 = event.getX(0)
-                            x1 = event.getX(1)
-                            y0 = event.getY(0)
-                            y1 = event.getY(1)
-                        }
-                    }
-                    true
-                }
-                MotionEvent.ACTION_UP ->{
-                    if (touchStatus == TouchMode.CLICK){
-                        c = Calendar.getInstance()
-                        if (c.timeInMillis - touchStart < MAX_CLICK_DURATION){
-//                            Log.d("chenyjzn","Touch up x = ${event.x} , pos y = ${event.y} click")
-                            viewModel.setTaskSelect((v as GanttChart).posTaskSelect(event.x,event.y))
-                        }
-                    }
-                    touchStatus = TouchMode.NONE
-                    false
-                }
-                else -> {
-                    true
-                }
-            }
-        }
-
         return binding.root
-    }
-
-    companion object{
-        const val MAX_CLICK_DURATION = 400
-        enum class TouchMode {
-            CLICK,
-            LONG_CLICK,
-            MOVE,
-            ZOOM,
-            NONE
-        }
     }
 }
