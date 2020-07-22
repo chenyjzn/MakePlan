@@ -21,6 +21,11 @@ object TimeUtil {
         return simpleDateFormat.parse(date).time
     }
 
+    fun millisToYearMonthDay(time: Long): String {
+        val simpleDateFormat = SimpleDateFormat("yyyy/MMM/dd")
+        return simpleDateFormat.format(Date(time))
+    }
+
     fun millisToYearMonth(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("yyyy/MMM")
         return simpleDateFormat.format(Date(time))
@@ -41,4 +46,8 @@ object TimeUtil {
         return simpleDateFormat.format(Date(time))
     }
 
+    fun millisToHour(time: Long): String {
+        val simpleDateFormat = SimpleDateFormat("HH")
+        return simpleDateFormat.format(Date(time))
+    }
 }

@@ -36,6 +36,10 @@ class GanttFragment : Fragment() {
                 binding.ganttChart.setRange(it.startTimeMillis,it.endTimeMillis)
                 binding.ganttChart.setTaskList(it.taskList)
                 binding.ganttChart.invalidate()
+
+                binding.ganttChartGroup.setRange(it.startTimeMillis,it.endTimeMillis)
+                binding.ganttChartGroup.setTaskList(it.taskList)
+                binding.ganttChartGroup.invalidate()
             }
         })
 
