@@ -114,7 +114,7 @@ class MultiTaskFragment : Fragment() {
         viewModel.saveTask.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it)
-                    this.findNavController().navigate(MultiTaskFragmentDirections.actionMultiTaskFragmentToMultiGanttFragment(MultiTaskFragmentArgs.fromBundle(requireArguments()).project))
+                    this.findNavController().popBackStack()
             }
         })
 
@@ -194,7 +194,7 @@ class MultiTaskFragment : Fragment() {
         })
 
         binding.multiTaskCancel.setOnClickListener {
-            this.findNavController().navigate(MultiTaskFragmentDirections.actionMultiTaskFragmentToMultiGanttFragment(MultiTaskFragmentArgs.fromBundle(requireArguments()).project))
+            this.findNavController().popBackStack()
         }
 
         binding.multiTaskSave.setOnClickListener {

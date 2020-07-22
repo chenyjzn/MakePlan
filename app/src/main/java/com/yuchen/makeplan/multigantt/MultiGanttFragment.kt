@@ -21,7 +21,6 @@ import kotlin.math.roundToInt
 class MultiGanttFragment : Fragment() {
 
     private val viewModel: MultiGanttViewModel by viewModels<MultiGanttViewModel> { getVmFactory(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject)}
-    private var isFirstTime = true
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,34 +48,14 @@ class MultiGanttFragment : Fragment() {
             }
         })
 
-        viewModel.tasks.observe(viewLifecycleOwner, Observer {
-            Log.d("chenyjzn","Task null check = $it")
-            if (it == null && isFirstTime){
-                var start= System.currentTimeMillis()
-                var end : Long = start + 7 * DAY_MILLIS
-                binding.multiGanttTimeLine.setRange(start,end)
-                binding.multiGanttChart.setRange(start,end)
-                binding.multiGanttTimeLine.invalidate()
-                binding.multiGanttChart.invalidate()
-                isFirstTime = false
-            }
-            it?.let {
-                if (isFirstTime){
-                    var start : Long = Long.MAX_VALUE
-                    for (i in it){
-                        if (i.startTimeMillis < start)
-                            start = i.startTimeMillis
-                    }
-                    if (start == Long.MAX_VALUE)
-                        start = System.currentTimeMillis()
-                    var end : Long = start + 7 * DAY_MILLIS
-                    binding.multiGanttTimeLine.setRange(start,end)
-                    binding.multiGanttChart.setRange(start,end)
-                    binding.multiGanttTimeLine.invalidate()
-                    binding.multiGanttChart.invalidate()
-                    isFirstTime = false
-                }
+        var start = System.currentTimeMillis()
+        var end : Long = start + 7 * DAY_MILLIS
 
+        binding.multiGanttTimeLine.setRange(start,end)
+        binding.multiGanttChart.setRange(start,end)
+
+        viewModel.tasks.observe(viewLifecycleOwner, Observer {
+            it?.let {
                 var fb = 0.0f
                 var max = 0.0f
                 for (i in it){

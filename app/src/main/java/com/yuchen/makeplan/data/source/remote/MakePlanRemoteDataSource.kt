@@ -763,8 +763,16 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d("chenyzjn","${task.result?.get(projectField)}")
-                    val userList = task.result?.get(projectField) as MutableList<String>
+                    val cloudProject = task.result?.toObject(MultiProject::class.java)?:project
+                    val userList = when(projectField){
+                        FIELD_SEND_UID -> {
+                            cloudProject.sendUid
+                        }
+                        FIELD_RECEIVE_UID ->{
+                            cloudProject.receiveUid
+                        }
+                        else -> throw IllegalArgumentException("Not correct field")
+                    }
                     userList.add(user.uid)
                     val data = hashMapOf(
                         projectField to userList
@@ -806,13 +814,12 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val cloudProject =  task.result?.toObject(MultiProject::class.java)?:project
-                    var requestList : MutableList<String>
-                    when(projectField){
+                    val requestList = when(projectField){
                         FIELD_SEND_UID -> {
-                            requestList = cloudProject.sendUid
+                            cloudProject.sendUid
                         }
                         FIELD_RECEIVE_UID ->{
-                            requestList = cloudProject.receiveUid
+                            cloudProject.receiveUid
                         }
                         else -> throw IllegalArgumentException("Not correct field")
                     }
@@ -860,10 +867,19 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val userList = task.result?.get(projectField) as MutableList<String>
+                    val cloudProject =  task.result?.toObject(MultiProject::class.java)?:project
+                    val requestList = when(projectField){
+                        FIELD_SEND_UID -> {
+                            cloudProject.sendUid
+                        }
+                        FIELD_RECEIVE_UID ->{
+                            cloudProject.receiveUid
+                        }
+                        else -> throw IllegalArgumentException("Not correct field")
+                    }
+                    val newList = requestList.filter { it!=user.uid }
                     val data = hashMapOf(
-                        projectField to userList.filter { it!=user.uid }
-                    )
+                        projectField to newList)
                     FirebaseFirestore.getInstance()
                         .collection(COLLECTION_MULTI_PROJECTS)
                         .document(project.firebaseId)
@@ -942,8 +958,20 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                     exception?.let {
                         Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
                     }
-                    val userList = snapshot?.get(field) as List<String>
-                    liveData.value = userList
+                    val cloudProject = snapshot?.toObject(MultiProject::class.java)?:project
+                    val list = when(field){
+                        FIELD_MEMBERS_UID ->{
+                            cloudProject.membersUid
+                        }
+                        FIELD_RECEIVE_UID ->{
+                            cloudProject.receiveUid
+                        }
+                        FIELD_SEND_UID ->{
+                            cloudProject.sendUid
+                        }
+                        else -> throw IllegalArgumentException("Wrong field name")
+                    }
+                    liveData.value = list
                 }
         }
         return liveData
