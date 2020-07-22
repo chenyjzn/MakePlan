@@ -15,7 +15,7 @@ import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanDataSource
 import com.yuchen.makeplan.util.UserManager
 import com.yuchen.makeplan.util.UserManager.auth
-import com.yuchen.makeplan.util.UserManager.user
+//import com.yuchen.makeplan.util.UserManager.user
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -125,13 +125,101 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
     }
 
     override suspend fun updateUserInfoToFirebase(): Result<User> = suspendCoroutine{ continuation ->
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
         auth.currentUser?.let {firebaseUser ->
-            val userFirebase = FirebaseFirestore.getInstance().collection(COLLECTION_USERS)
-            val user = User(firebaseUser.displayName?:"", firebaseUser.email?:"", firebaseUser.photoUrl.toString(), firebaseUser.uid)
-            userFirebase.document(firebaseUser.uid).set(user)
-                .addOnCompleteListener { task ->
+            FirebaseFirestore.getInstance()
+                .collection(COLLECTION_USERS)
+                .document(firebaseUser.uid)
+                .get().addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                            continuation.resume(Result.Success(user))
+                        task.result?.let {getUserSnapshot->
+                            val user = User(firebaseUser.displayName?:"", firebaseUser.email?:"", firebaseUser.photoUrl.toString(), firebaseUser.uid)
+                            if (getUserSnapshot.data == null){
+                                FirebaseFirestore.getInstance()
+                                    .collection(COLLECTION_USERS)
+                                    .document(firebaseUser.uid)
+                                    .set(user).addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            UserManager.user = user
+                                            continuation.resume(Result.Success(user))
+                                        } else {
+                                            task.exception?.let {
+                                                continuation.resume(Result.Error(it))
+                                                return@addOnCompleteListener
+                                            }
+                                            continuation.resume(Result.Fail("getUserFromFireBase fail"))
+                                        }
+                                    }
+                            }else{
+                                if (user == getUserSnapshot.toObject(User::class.java)){
+                                    continuation.resume(Result.Success(user))
+                                }
+                                else{
+                                    Log.d("chenyjzn","== $user, ${getUserSnapshot.toObject(User::class.java)}")
+                                    FirebaseFirestore.getInstance()
+                                        .collection(COLLECTION_USERS)
+                                        .document(firebaseUser.uid)
+                                        .set(user).addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                FirebaseFirestore.getInstance()
+                                                    .collection(COLLECTION_MULTI_PROJECTS)
+                                                    .whereArrayContains(FIELD_MEMBERS_UID,firebaseUser.uid)
+                                                    .get().addOnCompleteListener { task ->
+                                                        if (task.isSuccessful) {
+                                                            task.result?.let {snapshot->
+                                                                if (snapshot.documents.isEmpty())
+                                                                    continuation.resume(Result.Success(user))
+                                                                else{
+                                                                    for ((index,value) in snapshot.documents.withIndex()){
+                                                                        val project = value.toObject(MultiProject::class.java)
+                                                                        project?.let {
+                                                                            val members = it.members
+                                                                            val newMembers = members.filter {
+                                                                                it.uid != firebaseUser.uid
+                                                                            }.toMutableList()
+                                                                            newMembers.add(user)
+                                                                            val data = hashMapOf(
+                                                                                FIELD_MEMBERS to newMembers
+                                                                            )
+                                                                            FirebaseFirestore.getInstance()
+                                                                                .collection(COLLECTION_MULTI_PROJECTS)
+                                                                                .document(value.id)
+                                                                                .set(data, SetOptions.merge()).addOnCompleteListener { task ->
+                                                                                    if (task.isSuccessful) {
+                                                                                        if (index >= snapshot.documents.lastIndex)
+                                                                                            continuation.resume(Result.Success(user))
+                                                                                    } else {
+                                                                                        task.exception?.let {
+                                                                                            continuation.resume(Result.Error(it))
+                                                                                            return@addOnCompleteListener
+                                                                                        }
+                                                                                        continuation.resume(Result.Fail("firebaseAuthWithGoogle fail"))
+                                                                                    }
+                                                                                }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+                                                            task.exception?.let {
+                                                                continuation.resume(Result.Error(it))
+                                                                return@addOnCompleteListener
+                                                            }
+                                                            continuation.resume(Result.Fail("getUserFromFireBase fail"))
+                                                        }
+                                                    }
+                                            } else {
+                                                task.exception?.let {
+                                                    continuation.resume(Result.Error(it))
+                                                    return@addOnCompleteListener
+                                                }
+                                                continuation.resume(Result.Fail("getUserFromFireBase fail"))
+                                            }
+                                        }
+                                }
+                            }
+                        }
                     } else {
                         task.exception?.let {
                             continuation.resume(Result.Error(it))
@@ -141,8 +229,6 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                     }
                 }
         }
-        if (auth.currentUser == null)
-            continuation.resume(Result.Fail("User not login"))
     }
 
     override suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?> = suspendCoroutine { continuation->
@@ -191,31 +277,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             project.members.add(UserManager.user)
             document.set(project).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    document.collection(COLLECTION_MEMBERS)
-                        .document(user.uid)
-                        .set(user).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                FirebaseFirestore.getInstance().collection(COLLECTION_USERS).document(UserManager.user.uid).collection(COLLECTION_MULTI_PROJECTS).document(project.firebaseId)
-                                    .set(project).addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        continuation.resume(Result.Success(true))
-                                    } else {
-                                        task.exception?.let {
-                                            continuation.resume(Result.Error(it))
-                                            return@addOnCompleteListener
-                                        }
-                                        continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
-                                    }
-                                }
-                            } else {
-                                task.exception?.let {
-                                    continuation.resume(Result.Error(it))
-                                    return@addOnCompleteListener
-                                }
-                                continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
-                            }
-                        }
-
+                    continuation.resume(Result.Success(true))
                 } else {
                     task.exception?.let {
                         continuation.resume(Result.Error(it))
@@ -251,9 +313,10 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
 
     override suspend fun removeMultiProject(project: MultiProject): Result<Boolean> = suspendCoroutine { continuation->
         auth.currentUser?.let {firebaseUser ->
-            val multiProjectsFirebase = FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
-            val document = multiProjectsFirebase.document(project.firebaseId)
-            document.delete().addOnCompleteListener { task ->
+            FirebaseFirestore.getInstance()
+                .collection(COLLECTION_MULTI_PROJECTS)
+                .document(project.firebaseId)
+                .delete().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     continuation.resume(Result.Success(true))
                 } else {
@@ -410,7 +473,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override fun getMultiProjectUsers(project: MultiProject): LiveData<List<User>> {
+    override fun getMultiProjectUsers1(project: MultiProject): LiveData<List<User>> {
         val liveData = MutableLiveData<List<User>>()
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_MULTI_PROJECTS)
@@ -524,7 +587,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         return liveData
     }
 
-    override fun getMultiProjectUsers(project: MultiProject, collection: String): LiveData<List<User>> {
+    override fun getMultiProjectUsers1(project: MultiProject, collection: String): LiveData<List<User>> {
         val liveData = MutableLiveData<List<User>>()
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance()
@@ -734,19 +797,34 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
     }
 
     override suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> = suspendCoroutine { continuation->
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
         FirebaseFirestore.getInstance()
             .collection(COLLECTION_MULTI_PROJECTS)
             .document(project.firebaseId)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val requestList = task.result?.get(projectField) as MutableList<String>
-                    val memberUidList = task.result?.get(FIELD_MEMBERS_UID) as MutableList<String>
-                    val memberList = task.result?.get(FIELD_MEMBERS) as MutableList<User>
+                    val cloudProject =  task.result?.toObject(MultiProject::class.java)?:project
+                    var requestList : MutableList<String>
+                    when(projectField){
+                        FIELD_SEND_UID -> {
+                            requestList = cloudProject.sendUid
+                        }
+                        FIELD_RECEIVE_UID ->{
+                            requestList = cloudProject.receiveUid
+                        }
+                        else -> throw IllegalArgumentException("Not correct field")
+                    }
+                    val memberUidList = cloudProject.membersUid
+                    val memberList = cloudProject.members
+                    val newRequestList= requestList.filter { user.uid != it }
+                    memberUidList.add(user.uid)
+                    memberList.add(user)
                     val data = hashMapOf(
-                        projectField to requestList.filter { user.uid != it },
-                        FIELD_MEMBERS_UID to memberUidList.add(user.uid),
-                        FIELD_MEMBERS to memberList.add(user)
+                        projectField to newRequestList,
+                        FIELD_MEMBERS_UID to memberUidList,
+                        FIELD_MEMBERS to memberList
                     )
                     FirebaseFirestore.getInstance()
                         .collection(COLLECTION_MULTI_PROJECTS)
@@ -771,11 +849,11 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                     continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
                 }
             }
-        if (auth.currentUser == null)
-            continuation.resume(Result.Fail("User not login"))
     }
 
     override suspend fun cancelUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> = suspendCoroutine { continuation->
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
         FirebaseFirestore.getInstance()
             .collection(COLLECTION_MULTI_PROJECTS)
             .document(project.firebaseId)
@@ -783,45 +861,8 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userList = task.result?.get(projectField) as MutableList<String>
-                    FirebaseFirestore.getInstance()
-                        .collection(COLLECTION_MULTI_PROJECTS)
-                        .document(project.firebaseId)
-                        .set(projectField to userList.filter { it!=user.uid },SetOptions.merge())
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                continuation.resume(Result.Success(true))
-                            } else {
-                                task.exception?.let {
-                                    continuation.resume(Result.Error(it))
-                                    return@addOnCompleteListener
-                                }
-                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
-                            }
-                        }
-                } else {
-                    task.exception?.let {
-                        continuation.resume(Result.Error(it))
-                        return@addOnCompleteListener
-                    }
-                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
-                }
-            }
-        if (auth.currentUser == null)
-            continuation.resume(Result.Fail("User not login"))
-    }
-
-    override suspend fun removeUserToMultiProject(project: MultiProject, user: User): Result<Boolean> = suspendCoroutine { continuation->
-        FirebaseFirestore.getInstance()
-            .collection(COLLECTION_MULTI_PROJECTS)
-            .document(project.firebaseId)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val memberUidList = task.result?.get(FIELD_MEMBERS_UID) as MutableList<String>
-                    val memberList = task.result?.get(FIELD_MEMBERS) as MutableList<User>
                     val data = hashMapOf(
-                        FIELD_MEMBERS_UID to memberUidList.filter { user.uid!=it },
-                        FIELD_MEMBERS to memberList.filter { user.uid!=it.uid }
+                        projectField to userList.filter { it!=user.uid }
                     )
                     FirebaseFirestore.getInstance()
                         .collection(COLLECTION_MULTI_PROJECTS)
@@ -846,7 +887,97 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
                     continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
                 }
             }
+    }
+
+    override suspend fun removeUserToMultiProject(project: MultiProject, user: User): Result<Boolean> = suspendCoroutine { continuation->
         if (auth.currentUser == null)
             continuation.resume(Result.Fail("User not login"))
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_MULTI_PROJECTS)
+            .document(project.firebaseId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val cloudProject =  task.result?.toObject(MultiProject::class.java)?:project
+                    val memberUidList = cloudProject.membersUid
+                    val memberList = cloudProject.members
+                    val newMemberUidList = memberUidList.filter { user.uid!=it }
+                    val newMemberList = memberList.filter { user.uid!=it.uid }
+                    val data = hashMapOf(
+                        FIELD_MEMBERS_UID to newMemberUidList,
+                        FIELD_MEMBERS to newMemberList
+                    )
+                    FirebaseFirestore.getInstance()
+                        .collection(COLLECTION_MULTI_PROJECTS)
+                        .document(project.firebaseId)
+                        .set(data,SetOptions.merge())
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                continuation.resume(Result.Success(true))
+                            } else {
+                                task.exception?.let {
+                                    continuation.resume(Result.Error(it))
+                                    return@addOnCompleteListener
+                                }
+                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                            }
+                        }
+                } else {
+                    task.exception?.let {
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                }
+            }
+    }
+
+    override fun getMultiProjectUsersUid(project: MultiProject, field: String): LiveData<List<String>> {
+        val liveData = MutableLiveData<List<String>>()
+        auth.currentUser?.let {firebaseUser ->
+            FirebaseFirestore.getInstance()
+                .collection(COLLECTION_MULTI_PROJECTS)
+                .document(project.firebaseId)
+                .addSnapshotListener { snapshot, exception ->
+                    exception?.let {
+                        Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    }
+                    val userList = snapshot?.get(field) as List<String>
+                    liveData.value = userList
+                }
+        }
+        return liveData
+    }
+
+    override suspend fun getUsersByUidList(uidList: List<String>): Result<List<User>> = suspendCoroutine { continuation->
+        if (uidList.isEmpty())
+            continuation.resume(Result.Success(listOf()))
+        if (auth.currentUser == null)
+            continuation.resume(Result.Fail("User not login"))
+        auth.currentUser?.let {firebaseUser ->
+            var userList: MutableList<User> = mutableListOf()
+            for ((index,value) in uidList.withIndex()){
+                FirebaseFirestore.getInstance()
+                    .collection(COLLECTION_USERS)
+                    .document(value)
+                    .get().addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val result = task.result?.toObject(User::class.java)
+                            result?.let {
+                                userList.add(it)
+                            }
+                            if (index >= uidList.lastIndex){
+                                continuation.resume(Result.Success(userList))
+                            }
+                        } else {
+                            task.exception?.let {
+                                continuation.resume(Result.Error(it))
+                                return@addOnCompleteListener
+                            }
+                            continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                        }
+                    }
+            }
+        }
     }
 }

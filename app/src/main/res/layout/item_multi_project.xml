@@ -70,9 +70,10 @@
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@{@string/int_rate(project.completeRate)}"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toTopOf="@+id/item_multi_project_accept"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/item_multi_project_edit_time"
                     app:layout_constraintTop_toBottomOf="@+id/item_multi_avatar_image1"
                     tools:text="5%" />
@@ -153,23 +154,6 @@
                     app:srcCompat="@drawable/ic_account_circle_black_24dp"
                     app:users="@{project.members}" />
 
-                <Button
-                    android:id="@+id/item_multi_project_accept"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="Button"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <Button
-                    android:id="@+id/item_multi_project_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="Button"
-                    app:layout_constraintEnd_toStartOf="@+id/item_multi_project_accept"
-                    app:layout_constraintTop_toTopOf="@+id/item_multi_project_accept" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>

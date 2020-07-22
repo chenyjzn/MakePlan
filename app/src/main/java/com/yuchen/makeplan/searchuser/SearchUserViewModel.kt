@@ -7,6 +7,7 @@ import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_RECEIVE
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_SEND
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_SEND_UID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,11 +18,12 @@ class SearchUserViewModel(private val repository: MakePlanRepository, private va
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+    val myProject : LiveData<MultiProject> = repository.getMultiProject(project)
     val users: LiveData<List<User>> = repository.getAllUsers()
 
-    fun inviteUserToProject(user: User){
+    fun requestProjectToUser(user: User){
         coroutineScope.launch {
-            repository.requestUserToMultiProject(project,user,COLLECTION_SEND,COLLECTION_RECEIVE)
+            repository.requestUserToMultiProject(project,user, FIELD_SEND_UID)
         }
     }
 

@@ -15,7 +15,7 @@ class UsersViewModel(private val repository: MakePlanRepository,private val proj
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val users: LiveData<List<User>> = repository.getMultiProjectUsers(project)
+    val users: LiveData<List<User>> = repository.getMultiProjectUsers1(project)
 
     fun removeProjectUser(user: User){
         coroutineScope.launch {

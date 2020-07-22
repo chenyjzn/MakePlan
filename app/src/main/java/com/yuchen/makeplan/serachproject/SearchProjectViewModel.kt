@@ -17,7 +17,7 @@ class SearchProjectViewModel (private val repository: MakePlanRepository) : View
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    fun requestUserSendToProject(project: MultiProject){
+    fun requestUserToProject(project: MultiProject){
         coroutineScope.launch {
             repository.requestUserToMultiProject(project,UserManager.user, FIELD_RECEIVE_UID)
         }

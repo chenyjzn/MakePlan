@@ -3,29 +3,26 @@ package com.yuchen.makeplan.members
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
-import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
 import com.yuchen.makeplan.databinding.ItemUserBinding
-import com.yuchen.makeplan.util.TimeUtil.StampToDate
 
 class MembersItemsAdapter() : RecyclerView.Adapter<MembersItemsAdapter.UserHolder>() {
 
     private var memberList: List<User>? = null
 
-    private var onSelectListener: OnSelectListener? = null
-    interface OnSelectListener{
+    private var userClickListener: UserClickListener? = null
+    interface UserClickListener{
         fun userSelect(user: User)
     }
-    fun setOnSelectListener(onSelectListener: OnSelectListener){
-        this.onSelectListener = onSelectListener
+    fun setUserClickListener(userClickListener: UserClickListener){
+        this.userClickListener = userClickListener
     }
 
     inner class UserHolder(var binding: ItemUserBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             binding.user = user
             binding.itemUserLayout.setOnClickListener {
-                onSelectListener?.userSelect(user)
+                userClickListener?.userSelect(user)
             }
             binding.executePendingBindings()
         }
@@ -45,7 +42,7 @@ class MembersItemsAdapter() : RecyclerView.Adapter<MembersItemsAdapter.UserHolde
         return memberList?.let {it.size} ?: 0
     }
 
-    fun submitMembers(memberList: List<User>) {
+    fun submitList(memberList: List<User>) {
         this.memberList = memberList
         notifyDataSetChanged()
     }

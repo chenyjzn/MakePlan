@@ -17,7 +17,7 @@ class JoinUserViewModel(private val repository: MakePlanRepository, private val 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val users: LiveData<List<User>> = repository.getMultiProjectUsers(project,COLLECTION_RECEIVE)
+    val users: LiveData<List<User>> = repository.getMultiProjectUsers1(project,COLLECTION_RECEIVE)
 
     fun confirmUserJoin(user: User){
         coroutineScope.launch {

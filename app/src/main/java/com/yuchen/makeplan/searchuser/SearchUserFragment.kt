@@ -30,7 +30,7 @@ class SearchUserFragment : Fragment() {
                     .setNegativeButton("No") { dialog, which ->
 
                     }.setPositiveButton("Yes") { dialog, which ->
-                        viewModel.inviteUserToProject(user)
+                        viewModel.requestProjectToUser(user)
                     }
                     .show()
             }
@@ -38,8 +38,75 @@ class SearchUserFragment : Fragment() {
         binding.searchUserRecycler.adapter = adapter
         binding.searchUserRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         viewModel.users.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                adapter.appendList(it)
+            it?.let {list ->
+                viewModel.myProject.value?.let {project ->
+                    val newList = list.filter {
+                        var notMember = true
+                        for (i in project.receiveUid){
+                            if (i == it.uid){
+                                notMember = false
+                                break
+                            }
+                        }
+                        if (notMember) {
+                            for (i in project.membersUid) {
+                                if (i == it.uid){
+                                    notMember = false
+                                    break
+                                }
+                            }
+                        }
+                        if (notMember){
+                            for (i in project.sendUid){
+                                if (i == it.uid){
+                                    notMember = false
+                                    break
+                                }
+                            }
+                        }
+                        notMember
+                    }
+                    adapter.appendList(newList)
+                }
+                if (viewModel.myProject.value == null)
+                    adapter.appendList(list)
+
+                adapter.notifyDataSetChanged()
+            }
+        })
+
+        viewModel.myProject.observe(viewLifecycleOwner, Observer {
+            it?.let {project->
+                viewModel.users.value?.let {list ->
+                    val newList = list.filter {
+                        var notMember = true
+                        for (i in project.receiveUid){
+                            if (i == it.uid){
+                                notMember = false
+                                break
+                            }
+                        }
+                        if (notMember) {
+                            for (i in project.membersUid) {
+                                if (i == it.uid){
+                                    notMember = false
+                                    break
+                                }
+                            }
+                        }
+                        if (notMember){
+                            for (i in project.sendUid){
+                                if (i == it.uid){
+                                    notMember = false
+                                    break
+                                }
+                            }
+                        }
+                        notMember
+                    }
+                    adapter.appendList(newList)
+                    adapter.notifyDataSetChanged()
+                }
             }
         })
 
@@ -56,7 +123,6 @@ class SearchUserFragment : Fragment() {
                 adapter.filter.filter(newText)
                 return true
             }
-
         })
         return binding.root
     }

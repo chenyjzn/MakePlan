@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -16,7 +17,6 @@ import com.yuchen.makeplan.ext.getVmFactory
 
 
 class MultiItems : Fragment() {
-    val pagerPos = arguments?.getInt("object")?:0
     private val viewModel: MultiItemsViewModel by viewModels<MultiItemsViewModel> { getVmFactory(arguments?.getInt("object")?:0) }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ItemMultiBinding.inflate(inflater, container, false)
@@ -31,14 +31,34 @@ class MultiItems : Fragment() {
         })
         adapter.setProjectClickListener(object : MultiItemsAdapter.ProjectClickListener{
             override fun onProjectClick(project: MultiProject) {
-                when(pagerPos){
+                when(viewModel.pagerPos){
                     PAGER_PROJECTS -> parentFragment?.findNavController()?.navigate(MultiFragmentDirections.actionMultiFragmentToMultiGanttFragment(project))
-                    PAGER_SENDS -> {}
-                    PAGER_RECEIVE -> {}
+                    PAGER_SENDS -> {
+                        MaterialAlertDialogBuilder(requireNotNull(context))
+                            .setTitle("Cancel send request to ${project.name}?")
+                            .setNeutralButton("Cancel") { dialog, which ->
+
+                            }
+                            .setPositiveButton("Yes") { dialog, which ->
+                                viewModel.cancelUserToProject(project)
+                            }.show()
+                    }
+                    PAGER_RECEIVE -> {
+                        MaterialAlertDialogBuilder(requireNotNull(context))
+                            .setTitle("Accept join request to ${project.name}?")
+                            .setNeutralButton("Cancel") { dialog, which ->
+
+                            }
+                            .setNegativeButton("No") { dialog, which ->
+                                viewModel.cancelProjectToUser(project)
+                            }.setPositiveButton("Yes") { dialog, which ->
+                                viewModel.acceptProjectToUser(project)
+                            }.show()
+                    }
                 }
             }
             override fun onProjectLongClick(project: MultiProject) {
-                when(pagerPos){
+                when(viewModel.pagerPos){
                     PAGER_PROJECTS -> parentFragment?.findNavController()?.navigate(MultiFragmentDirections.actionMultiFragmentToMultiEditDialog(project))
                     PAGER_SENDS -> {}
                     PAGER_RECEIVE -> {}

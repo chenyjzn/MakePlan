@@ -17,7 +17,7 @@ class InviteUsersViewModel(private val repository: MakePlanRepository, private v
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val users: LiveData<List<User>> = repository.getMultiProjectUsers(project,COLLECTION_SEND)
+    val users: LiveData<List<User>> = repository.getMultiProjectUsers1(project,COLLECTION_SEND)
 
     fun cancelInvite(user: User){
         coroutineScope.launch {

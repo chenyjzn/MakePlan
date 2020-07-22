@@ -83,8 +83,8 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.updateMultiProjectCompleteRate(project, completeRate)
     }
 
-    override fun getMultiProjectUsers(project: MultiProject): LiveData<List<User>> {
-        return makePlanRemoteDataSource.getMultiProjectUsers(project)
+    override fun getMultiProjectUsers1(project: MultiProject): LiveData<List<User>> {
+        return makePlanRemoteDataSource.getMultiProjectUsers1(project)
     }
 
     override fun getAllUsers(): LiveData<List<User>> {
@@ -114,11 +114,11 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.getMyMultiProjects(field)
     }
 
-    override fun getMultiProjectUsers(
+    override fun getMultiProjectUsers1(
         project: MultiProject,
         collection: String
     ): LiveData<List<User>> {
-        return makePlanRemoteDataSource.getMultiProjectUsers(project, collection)
+        return makePlanRemoteDataSource.getMultiProjectUsers1(project, collection)
     }
 
     override suspend fun approveUserToMultiProject(
@@ -184,5 +184,13 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         user: User
     ): Result<Boolean> {
         return makePlanRemoteDataSource.removeUserToMultiProject(project, user)
+    }
+
+    override fun getMultiProjectUsersUid(project: MultiProject, field: String): LiveData<List<String>> {
+        return makePlanRemoteDataSource.getMultiProjectUsersUid(project, field)
+    }
+
+    override suspend fun getUsersByUidList(uidList: List<String>): Result<List<User>> {
+        return makePlanRemoteDataSource.getUsersByUidList(uidList)
     }
 }

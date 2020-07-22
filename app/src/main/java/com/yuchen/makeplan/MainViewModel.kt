@@ -7,14 +7,11 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource
 import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
 

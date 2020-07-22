@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.FragmentSearchProjectBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -28,7 +27,7 @@ class SearchProjectFragment : Fragment() {
                     .setNegativeButton("No") { dialog, which ->
 
                     }.setPositiveButton("Yes") { dialog, which ->
-                        viewModel.requestUserSendToProject(project)
+                        viewModel.requestUserToProject(project)
                     }
                     .show()
             }

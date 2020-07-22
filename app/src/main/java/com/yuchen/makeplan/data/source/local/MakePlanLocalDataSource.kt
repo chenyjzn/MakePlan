@@ -96,7 +96,7 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectUsers(project: MultiProject): LiveData<List<User>> {
+    override fun getMultiProjectUsers1(project: MultiProject): LiveData<List<User>> {
         TODO("Not yet implemented")
     }
 
@@ -127,7 +127,7 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectUsers(
+    override fun getMultiProjectUsers1(
         project: MultiProject,
         collection: String
     ): LiveData<List<User>> {
@@ -196,6 +196,14 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         project: MultiProject,
         user: User
     ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getMultiProjectUsersUid(project: MultiProject, field: String): LiveData<List<String>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUsersByUidList(uidList: List<String>): Result<List<User>> {
         TODO("Not yet implemented")
     }
 }

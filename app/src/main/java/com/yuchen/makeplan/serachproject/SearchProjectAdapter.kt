@@ -24,16 +24,20 @@ class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProj
                     break
                 }
             }
-            for (i in it.sendUid){
-                if (i == UserManager.user.uid) {
-                    notMember = false
-                    break
+            if (notMember) {
+                for (i in it.sendUid) {
+                    if (i == UserManager.user.uid) {
+                        notMember = false
+                        break
+                    }
                 }
             }
-            for (i in it.receiveUid){
-                if (i == UserManager.user.uid) {
-                    notMember = false
-                    break
+            if (notMember) {
+                for (i in it.receiveUid) {
+                    if (i == UserManager.user.uid) {
+                        notMember = false
+                        break
+                    }
                 }
             }
             notMember
