@@ -10,7 +10,7 @@ data class Task(
     var endTimeMillis : Long = System.currentTimeMillis() + 7 * DAY_MILLIS,
     var name: String = "Task",
     var completeRate : Int = 0,
-    var color : String ="EF9A9A",
+    var color : Int =0,
     var taskOwners : List<User> = listOf(),
     var toDoList : MutableList<ToDo> = mutableListOf(),
     var firebaseId: String = ""

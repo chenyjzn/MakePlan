@@ -1,6 +1,5 @@
 package com.yuchen.makeplan.task
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,11 +12,10 @@ import com.yuchen.makeplan.data.source.MakePlanRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TaskViewModel (private val repository: MakePlanRepository, private val projectHistory : Array<Project>, private val taskPos : Int, val colorList : List<String>) : ViewModel() {
+class TaskViewModel (private val repository: MakePlanRepository, private val projectHistory : Array<Project>, private val taskPos : Int, val colorList:List<String>) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -49,11 +47,11 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
             projectHistory.last().taskList[taskPos].name
     }
 
-    val newTaskColor = MutableLiveData<String>().apply {
+    val newTaskColorPair = MutableLiveData<Pair<Int,String>>().apply {
         value = if (taskPos == -1)
-            colorList.first()
+            0 to "EF9A9A"
         else
-            projectHistory.last().taskList[taskPos].color
+            projectHistory.last().taskList[taskPos].color to colorList[projectHistory.last().taskList[taskPos].color]
     }
 
     val newTaskCompleteRate = MutableLiveData<Int>().apply {
@@ -72,7 +70,7 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
             val name = newTaskName.value ?: "Project"
             val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis
             val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
-            val color = newTaskColor.value ?: colorList.first()
+            val color = newTaskColorPair.value?.first ?: 0
             var completeRate = newTaskCompleteRate.value ?: 0
             if (taskPos == -1) {
                 newProject.taskList.add(

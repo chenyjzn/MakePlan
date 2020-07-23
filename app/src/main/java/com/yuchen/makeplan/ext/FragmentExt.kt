@@ -17,7 +17,7 @@ fun Fragment.getVmFactory(projectHistory : Array<Project>): GanttViewModelFactor
     return GanttViewModelFactory(repository,projectHistory)
 }
 
-fun Fragment.getVmFactory(projectHistory : Array<Project>, taskPos : Int, colorList : List<String>): TaskViewModelFactory {
+fun Fragment.getVmFactory(projectHistory : Array<Project>, taskPos : Int,colorList : List<String>): TaskViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
     return TaskViewModelFactory(repository,projectHistory,taskPos,colorList)
 }

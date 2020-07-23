@@ -25,4 +25,46 @@
         <item>FDD835</item>
         <item>FB8C00</item>
     </string-array>
+
+    <string-array name="color_array_1">
+        <item>#EF9A9A</item>
+        <item>#CE93D8</item>
+        <item>#90CAF9</item>
+        <item>#A5D6A7</item>
+        <item>#FFF59D</item>
+        <item>#FFCC80</item>
+        <item>#EF5350</item>
+        <item>#AB47BC</item>
+        <item>#42A5F5</item>
+        <item>#66BB6A</item>
+        <item>#FFEE58</item>
+        <item>#FFA726</item>
+        <item>#E53935</item>
+        <item>#8E24AA</item>
+        <item>#1E88E5</item>
+        <item>#43A047</item>
+        <item>#FDD835</item>
+        <item>#FB8C00</item>
+    </string-array>
+
+    <string-array name="color_array_2">
+        <item>#FF5252</item>
+        <item>#E040FB</item>
+        <item>#448AFF</item>
+        <item>#69F0AE</item>
+        <item>#FFFF00</item>
+        <item>#FFAB40</item>
+        <item>#FF1744</item>
+        <item>#D500F9</item>
+        <item>#2979FF</item>
+        <item>#00E676</item>
+        <item>#FFEA00</item>
+        <item>#FF9100</item>
+        <item>#D50000</item>
+        <item>#AA00FF</item>
+        <item>#2962FF</item>
+        <item>#00C853</item>
+        <item>#FFD600</item>
+        <item>#FF6D00</item>
+    </string-array>
 </resources>

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.databinding.FragmentGanttBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -29,6 +30,8 @@ class GanttFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.ganttChartGroup.setColorList(resources.getStringArray(R.array.color_array_1).toList(),resources.getStringArray(R.array.color_array_2).toList())
 
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {

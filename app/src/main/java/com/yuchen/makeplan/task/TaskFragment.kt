@@ -22,19 +22,9 @@ import com.yuchen.makeplan.ext.getVmFactory
 import java.util.*
 
 class TaskFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentTaskBinding.inflate(inflater, container, false)
-        val viewModel: TaskViewModel by viewModels<TaskViewModel> {
-            getVmFactory(
-                TaskFragmentArgs.fromBundle(requireArguments()).projectHistory,
-                TaskFragmentArgs.fromBundle(requireArguments()).projectHistoryPos,
-                resources.getStringArray(R.array.color_array).toList()
-            )
-        }
+        val viewModel: TaskViewModel by viewModels<TaskViewModel> { getVmFactory(TaskFragmentArgs.fromBundle(requireArguments()).projectHistory, TaskFragmentArgs.fromBundle(requireArguments()).projectHistoryPos,resources.getStringArray(R.array.color_array).toList())}
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         val colorAdaptor = TaskColorAdapter(viewModel)

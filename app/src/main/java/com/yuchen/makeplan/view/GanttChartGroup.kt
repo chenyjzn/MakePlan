@@ -49,6 +49,14 @@ class GanttChartGroup : View {
 
     private var taskSelect = -1
 
+    private var colorList1 : List<String> = listOf()
+    private var colorList2 : List<String> = listOf()
+
+    fun setColorList(colorList1 : List<String>,colorList2 : List<String> ){
+        this.colorList1 = colorList1
+        this.colorList2 = colorList2
+    }
+
     var dy = 0f
 
     private val linePaint = Paint().apply {
@@ -689,13 +697,14 @@ class GanttChartGroup : View {
                         else -> throw IllegalArgumentException("wrong scale type")
                     }
                     canvas.drawLine(0f, bottom, width.toFloat(), bottom, linePaint)
-                    canvas.drawText(value.name,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, taskTextPaint)
-                    barPaint.color = Color.parseColor("#${value.color}")
-                    canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,right , bottom,15f,15f, barPaint)
-                    barPaint.color = Color.WHITE
-                    canvas.drawRect(left,top + taskHeight.toFloat()*0.5f ,left + (right - left)*value.completeRate.toFloat()/100f , bottom,barPaint)
+                    val text = "${value.name} ${TimeUtil.taskDate(value.startTimeMillis)} ~ ${TimeUtil.taskDate(value.endTimeMillis)} ${value.completeRate}%"
+                    canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, taskTextPaint)
+                    barPaint.color = Color.parseColor(colorList1[value.color])
+                    canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,right , bottom - 0.1f*taskHeight,15f,15f, barPaint)
+                    barPaint.color = Color.parseColor(colorList2[value.color])
+                    canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,left + (right - left)*value.completeRate.toFloat()/100f , bottom - 0.1f*taskHeight,15f,15f,barPaint)
                     if (index == taskSelect){
-                        canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,right , bottom,15f,15f, taskSelectPaint)
+                        canvas.drawRoundRect(left - 80f,top + taskHeight.toFloat()*0.5f,right +80f, bottom,15f,15f, taskSelectPaint)
                     }
 //                    Log.d("chenyjzn","Task : $index, left = ${left} , right = ${right}, up: ${top + taskHight.toFloat()*0.5f}, down = ${bottom + this.dy}")
                 }
