@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.Project
+import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.ext.removeFrom
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,18 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     }
     val taskSelect: LiveData<Int>
         get() = _taskSelect
+
+    fun setNewTaskCondition(taskPos: Int,task : Task){
+        Log.d("chenyjzn","project $projectPos repo : start ${projectRep[projectPos].taskList[0].startTimeMillis}  end ${projectRep[projectPos].taskList[0].endTimeMillis}")
+        val newProject = projectRep[projectPos].newRefProject()
+        newProject.taskList[taskPos].startTimeMillis = task.startTimeMillis
+        newProject.taskList[taskPos].endTimeMillis = task.endTimeMillis
+        projectRep.removeFrom(projectPos)
+        projectRep.add(newProject)
+        projectPos = projectRep.lastIndex
+        Log.d("chenyjzn","project ${projectRep.lastIndex} repo : start ${projectRep.last().taskList[0].startTimeMillis}  end ${projectRep.last().taskList[0].endTimeMillis}")
+        _project.value = projectRep.last()
+    }
 
     fun setProjectTime(start : Long, end : Long){
         for (i in projectRep){

@@ -19,6 +19,7 @@ import com.yuchen.makeplan.view.GanttChart
 import com.yuchen.makeplan.view.GanttChartGroup
 import java.util.*
 import kotlin.math.hypot
+import kotlin.math.log
 import kotlin.math.pow
 
 
@@ -35,6 +36,7 @@ class GanttFragment : Fragment() {
 
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
+                Log.d("chenyjzn","Project change")
                 binding.ganttChartGroup.setRange(it.startTimeMillis,it.endTimeMillis)
                 binding.ganttChartGroup.setTaskList(it.taskList)
                 binding.ganttChartGroup.invalidate()
@@ -58,6 +60,11 @@ class GanttFragment : Fragment() {
                 Log.d("chenyjzn","Task $taskPos")
                 viewModel.setTaskSelect(taskPos)
             }
+
+            override fun eventTaskModify(taskPos: Int, task: Task) {
+                viewModel.setNewTaskCondition(taskPos,task)
+
+            }
         })
 
         viewModel.navigateToTaskSetting.observe(viewLifecycleOwner, Observer {
@@ -78,7 +85,7 @@ class GanttFragment : Fragment() {
 
         viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
             it?.let {
-                binding.ganttChartGroup.setTaskSelect(it)
+                binding.ganttChartGroup.setTaskPosSelect(it)
                 binding.ganttChartGroup.invalidate()
             }
         })
