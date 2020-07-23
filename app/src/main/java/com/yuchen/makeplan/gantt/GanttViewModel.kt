@@ -43,14 +43,21 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         get() = _taskSelect
 
     fun setNewTaskCondition(taskPos: Int,task : Task){
-        Log.d("chenyjzn","project $projectPos repo : start ${projectRep[projectPos].taskList[0].startTimeMillis}  end ${projectRep[projectPos].taskList[0].endTimeMillis}")
         val newProject = projectRep[projectPos].newRefProject()
         newProject.taskList[taskPos].startTimeMillis = task.startTimeMillis
         newProject.taskList[taskPos].endTimeMillis = task.endTimeMillis
         projectRep.removeFrom(projectPos)
         projectRep.add(newProject)
         projectPos = projectRep.lastIndex
-        Log.d("chenyjzn","project ${projectRep.lastIndex} repo : start ${projectRep.last().taskList[0].startTimeMillis}  end ${projectRep.last().taskList[0].endTimeMillis}")
+        _project.value = projectRep.last()
+    }
+
+    fun setTasksSwap(taskList : MutableList<Task>){
+        val newProject = projectRep[projectPos].newRefProject()
+        newProject.taskList = taskList
+        projectRep.removeFrom(projectPos)
+        projectRep.add(newProject)
+        projectPos = projectRep.lastIndex
         _project.value = projectRep.last()
     }
 

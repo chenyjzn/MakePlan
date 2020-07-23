@@ -30,7 +30,7 @@ class GanttChartGroup : View {
     val timeLineHeight = 50.toPx()
     val taskControl = 40.toPx()
 
-    private var taskList : List<Task>? = null
+    private var taskList : MutableList<Task>? = null
 
     private var timeLineType: Int = 0
 
@@ -50,6 +50,9 @@ class GanttChartGroup : View {
 
     private var taskSelectPos = -1
     private var taskSelectValue : Task? = null
+
+    private var taskLongSelect = -1
+    private var taskLongYPos = 0f
 
     private var colorList1 : List<String> = listOf()
     private var colorList2 : List<String> = listOf()
@@ -97,6 +100,12 @@ class GanttChartGroup : View {
         strokeWidth = 2.toPx().toFloat()
     }
 
+    private val taskLongSelectPaint = Paint().apply {
+        color = Color.BLUE
+//        color = Color.parseColor("#663f3a3a")
+        style = Paint.Style.FILL
+    }
+
     val fontTaskOffsetY = -(taskTextPaint.fontMetrics.top + taskTextPaint.fontMetrics.bottom)/2
     val fontTimeLineOffsetY = -(timeLineTextPaint.fontMetrics.top + timeLineTextPaint.fontMetrics.bottom)/2
 
@@ -121,7 +130,7 @@ class GanttChartGroup : View {
     fun setTaskList(taskList: List<Task>){
         this.taskList = taskList.map {
             it.newRefTask()
-        }
+        }.toMutableList()
     }
 
     fun setProjectTimeByDx(dx : Float, width : Int) : Pair<Long,Long>{
@@ -692,10 +701,47 @@ class GanttChartGroup : View {
         taskList?.let {
             if(it.size > 0){
                 for ((index, value) in it.withIndex()){
-                    val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
-                    val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                    val top = ((index)*taskHeight).toFloat()+timeLineHeight + dy
-                    val bottom = ((index+1)*taskHeight).toFloat()+timeLineHeight + dy
+                    if (index!=taskLongSelect) {
+                        val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
+                        val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
+                        val top = ((index)*taskHeight).toFloat()+timeLineHeight + dy
+                        val bottom = ((index+1)*taskHeight).toFloat()+timeLineHeight + dy
+                        when(timeLineType){
+                            SCALE_HOUR -> {
+                                drawTaskTimeLineByHour(canvas,top,bottom)
+                            }
+                            SCALE_6HOUR ->{
+                                drawTaskTimeLineBy6Hour(canvas,top,bottom)
+                            }
+                            SCALE_DAY -> {
+                                drawTaskTimeLineByDay(canvas,top,bottom)
+                            }
+                            SCALE_WEEK -> {
+                                drawTaskTimeLineByWeek(canvas,top,bottom)
+                            }
+                            SCALE_MONTH -> {
+                                drawTaskTimeLineByMonth(canvas,top,bottom)
+                            }
+                            else -> throw IllegalArgumentException("wrong scale type")
+                        }
+                        canvas.drawLine(0f, bottom, width.toFloat(), bottom, linePaint)
+                        val text = "${value.name} ${TimeUtil.taskDate(value.startTimeMillis)} ~ ${TimeUtil.taskDate(value.endTimeMillis)} ${value.completeRate}%"
+                        canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, taskTextPaint)
+                        if (index == taskSelectPos){
+                            canvas.drawRoundRect(left - taskControl,top + taskHeight.toFloat()*0.5f,right + taskControl, bottom- 0.1f*taskHeight,15f,15f, taskSelectPaint)
+                        }
+                        barPaint.color = Color.parseColor(colorList1[value.color])
+                        canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,right , bottom - 0.1f*taskHeight,15f,15f, barPaint)
+                        barPaint.color = Color.parseColor(colorList2[value.color])
+                        canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,left + (right - left)*value.completeRate.toFloat()/100f , bottom - 0.1f*taskHeight,15f,15f,barPaint)
+                    }
+                }
+                if (taskLongSelect!=-1){
+                    val left = interpolation(startDate,endDate,it[taskLongSelect].startTimeMillis)*width.toFloat()
+                    val right = interpolation(startDate,endDate,it[taskLongSelect].endTimeMillis)*width.toFloat()
+                    val top = taskLongYPos - taskHeight/2 // ((index)*taskHeight).toFloat()+timeLineHeight + dy
+                    val bottom = taskLongYPos + taskHeight/2//((index+1)*taskHeight).toFloat()+timeLineHeight + dy
+                    canvas.drawRect(0f,top,width.toFloat(),bottom,taskLongSelectPaint)
                     when(timeLineType){
                         SCALE_HOUR -> {
                             drawTaskTimeLineByHour(canvas,top,bottom)
@@ -715,17 +761,12 @@ class GanttChartGroup : View {
                         else -> throw IllegalArgumentException("wrong scale type")
                     }
                     canvas.drawLine(0f, bottom, width.toFloat(), bottom, linePaint)
-                    val text = "${value.name} ${TimeUtil.taskDate(value.startTimeMillis)} ~ ${TimeUtil.taskDate(value.endTimeMillis)} ${value.completeRate}%"
+                    val text = "${it[taskLongSelect].name} ${TimeUtil.taskDate(it[taskLongSelect].startTimeMillis)} ~ ${TimeUtil.taskDate(it[taskLongSelect].endTimeMillis)} ${it[taskLongSelect].completeRate}%"
                     canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, taskTextPaint)
-                    if (index == taskSelectPos){
-                        canvas.drawRoundRect(left - taskControl,top + taskHeight.toFloat()*0.5f,right + taskControl, bottom- 0.1f*taskHeight,15f,15f, taskSelectPaint)
-                    }
-                    barPaint.color = Color.parseColor(colorList1[value.color])
+                    barPaint.color = Color.parseColor(colorList1[it[taskLongSelect].color])
                     canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,right , bottom - 0.1f*taskHeight,15f,15f, barPaint)
-                    barPaint.color = Color.parseColor(colorList2[value.color])
-                    canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,left + (right - left)*value.completeRate.toFloat()/100f , bottom - 0.1f*taskHeight,15f,15f,barPaint)
-
-//                    Log.d("chenyjzn","Task : $index, left = ${left} , right = ${right}, up: ${top + taskHight.toFloat()*0.5f}, down = ${bottom + this.dy}")
+                    barPaint.color = Color.parseColor(colorList2[it[taskLongSelect].color])
+                    canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,left + (right - left)*it[taskLongSelect].completeRate.toFloat()/100f , bottom - 0.1f*taskHeight,15f,15f,barPaint)
                 }
             }
         }
@@ -757,11 +798,43 @@ class GanttChartGroup : View {
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
                 val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight
+                Log.d("chenyjzn", "y pos = $y, top =${top} , bottom = ${bottom}")
                 if (x in left..right && y in top..bottom)
                     return index to value
             }
         }
         return -1 to null
+    }
+
+    fun getTaskLongSelect(y : Float) : Int {
+        taskList?.let {
+            for ((index, value) in it.withIndex()){
+                Log.d("chenyjzn", "y pos = $y, top =${((index)*taskHeight).toFloat()+dy+timeLineHeight} , bottom = ${((index+1)*taskHeight).toFloat()+dy+timeLineHeight}")
+                val top = ((index)*taskHeight).toFloat()+dy+timeLineHeight
+                val bottom = ((index+1)*taskHeight).toFloat()+dy+timeLineHeight
+                if (y in top..bottom)
+                    return index
+            }
+        }
+        return -1
+    }
+
+    fun checkTaskSwapByYPos(yPos : Float){
+        taskList?.let {list->
+            for ((index, value) in list.withIndex()){
+                if (index == taskLongSelect)
+                    continue
+//                Log.d("chenyjzn", "y pos = $y, top =${((index)*taskHeight).toFloat()+dy+timeLineHeight} , bottom = ${((index+1)*taskHeight).toFloat()+dy+timeLineHeight}")
+                val top = ((index)*taskHeight).toFloat()+dy+timeLineHeight
+                val bottom = ((index+1)*taskHeight).toFloat()+dy+timeLineHeight
+                if (yPos in top..bottom){
+                    list[taskLongSelect] = list[index].also {
+                        list[index] = list[taskLongSelect]
+                    }
+                    taskLongSelect = index
+                }
+            }
+        }
     }
 
     private var onEventListener: OnEventListener? = null
@@ -774,14 +847,15 @@ class GanttChartGroup : View {
         fun eventZoomDlDr(dl : Float, dr : Float, width : Int)
         fun eventTaskSelect(taskPos: Int, taskValue : Task?)
         fun eventTaskModify(taskPos: Int, task : Task)
+        fun eventTaskSwap(task : MutableList<Task>)
     }
 
     var x0 = 0f
     var y0 = 0f
     var x1 = 0f
     var y1 = 0f
-    var c = Calendar.getInstance()
-    var touchStart = c.timeInMillis
+//    var c = Calendar.getInstance()
+//    var touchStart = c.timeInMillis
     var touchStatus = TouchMode.NONE
 
     fun setTaskTimeOffsetByDx(dx : Float, width : Int) : Long{
@@ -790,21 +864,29 @@ class GanttChartGroup : View {
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
-            Log.d("chenyjzn","check task pos $taskSelectPos && touch mode $touchStatus")
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     if (taskSelectPos== -1) {
                         x0 = event.x
                         y0 = event.y
-                        c = Calendar.getInstance()
-                        touchStart = c.timeInMillis
                         touchStatus = TouchMode.CLICK
+                        handler.postDelayed(Runnable {
+                            if (touchStatus == TouchMode.CLICK){
+                                touchStatus = TouchMode.LONG_CLICK
+                                taskLongSelect = getTaskLongSelect(y0)
+                                taskLongYPos = y0
+                                invalidate()
+                                Log.d("chenyjzn","task long = $taskLongSelect")
+                            }
+                        }, MAX_CLICK_DURATION)
                         return true
                     }else{
                         x0 = event.x
                         y0 = event.y
-                        c = Calendar.getInstance()
-                        touchStart = c.timeInMillis
+                        handler.postDelayed(Runnable {
+                            if (touchStatus == TouchMode.CLICK)
+                                touchStatus = TouchMode.NONE
+                        }, MAX_CLICK_DURATION)
                         touchStatus = checkTaskModeTouchPos(x0,y0)
                         return true
                     }
@@ -865,6 +947,10 @@ class GanttChartGroup : View {
                                 }
                                 invalidate()
                             }
+                        }else if (touchStatus == TouchMode.LONG_CLICK){
+                            taskLongYPos = event.y
+                            checkTaskSwapByYPos(event.y)
+                            invalidate()
                         }
                         x0 = event.x
                         y0 = event.y
@@ -919,16 +1005,19 @@ class GanttChartGroup : View {
                 }
                 MotionEvent.ACTION_UP -> {
                     if (touchStatus == TouchMode.CLICK || touchStatus == TouchMode.TASK_PRE_MOVE) {
-                        c = Calendar.getInstance()
-                        if (c.timeInMillis - touchStart < MAX_CLICK_DURATION) {
-                            val taskPair = getTaskSelect(event.x,event.y)
-                            Log.d("chenyjzn","$taskPair")
-                            onEventListener?.eventTaskSelect(taskPair.first,taskPair.second)
-                        }
+                        val taskPair = getTaskSelect(event.x,event.y)
+                        onEventListener?.eventTaskSelect(taskPair.first,taskPair.second)
                     }else if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT){
                         taskList?.let {
                             onEventListener?.eventTaskModify(taskSelectPos,it[taskSelectPos])
                         }
+                    }else if(touchStatus == TouchMode.LONG_CLICK){
+                        taskLongYPos = 0f
+                        taskLongSelect = -1
+                        taskList?.let {
+                            onEventListener?.eventTaskSwap(it)
+                        }
+                        invalidate()
                     }
                     touchStatus = TouchMode.NONE
                     return false
@@ -950,7 +1039,7 @@ class GanttChartGroup : View {
     }
 
     companion object{
-        const val MAX_CLICK_DURATION = 400
+        const val MAX_CLICK_DURATION = 400L
         enum class TouchMode {
             CLICK,
             LONG_CLICK,
@@ -959,7 +1048,6 @@ class GanttChartGroup : View {
             NONE,
             TASK_LEFT,
             TASK_RIGHT,
-            TASK_DOUBLE,
             TASK_PRE_MOVE,
             TASK_MOVE
         }

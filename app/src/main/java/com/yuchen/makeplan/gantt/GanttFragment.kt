@@ -57,13 +57,16 @@ class GanttFragment : Fragment() {
             }
 
             override fun eventTaskSelect(taskPos: Int, taskValue: Task?) {
-                Log.d("chenyjzn","Task $taskPos")
                 viewModel.setTaskSelect(taskPos)
             }
 
             override fun eventTaskModify(taskPos: Int, task: Task) {
                 viewModel.setNewTaskCondition(taskPos,task)
 
+            }
+
+            override fun eventTaskSwap(task: MutableList<Task>) {
+                viewModel.setTasksSwap(task)
             }
         })
 
