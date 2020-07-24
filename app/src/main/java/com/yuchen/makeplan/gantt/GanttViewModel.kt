@@ -143,6 +143,47 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         _taskTimeScale.value = time
     }
 
+    fun copyTask(){
+        taskSelect.value?.let {
+            val newProject = projectRep[projectPos].newRefProject()
+            val newTask = newProject.taskList[it].newRefTask()
+            newProject.taskList.add(it,newTask)
+            projectRep.removeFrom(projectPos)
+            projectRep.add(newProject)
+            projectPos = projectRep.lastIndex
+            _project.value = projectRep.last()
+            _taskSelect.value =-1
+        }
+    }
+
+    fun swapTaskUp(){
+        taskSelect.value?.let {pos ->
+            val newProject = projectRep[projectPos].newRefProject()
+            newProject.taskList[pos] = newProject.taskList[pos-1].also {
+                newProject.taskList[pos-1] = newProject.taskList[pos]
+            }
+            projectRep.removeFrom(projectPos)
+            projectRep.add(newProject)
+            projectPos = projectRep.lastIndex
+            _project.value = projectRep.last()
+            _taskSelect.value = pos-1
+        }
+    }
+
+    fun swapTaskDown(){
+        taskSelect.value?.let {pos ->
+            val newProject = projectRep[projectPos].newRefProject()
+            newProject.taskList[pos] = newProject.taskList[pos+1].also {
+                newProject.taskList[pos+1] = newProject.taskList[pos]
+            }
+            projectRep.removeFrom(projectPos)
+            projectRep.add(newProject)
+            projectPos = projectRep.lastIndex
+            _project.value = projectRep.last()
+            _taskSelect.value = pos + 1
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()

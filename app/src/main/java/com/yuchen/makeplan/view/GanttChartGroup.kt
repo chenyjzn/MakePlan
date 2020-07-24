@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
@@ -28,9 +29,12 @@ class GanttChartGroup : View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val primaryTextPadding = 4.toPx()
+    private val toolBarTextPadding = 4.toPx()
     private val taskHeight = 50.toPx()
     private val timeLineHeight = 50.toPx()
     private val taskControl = 40.toPx()
+    private val toolBarHeight = 20.toPx()
+    private val extraBottomSpace = 20.toPx()
 
     //Colors
     private val colorTimeLineAxis = resources.getColor(R.color.my_gray_100)
@@ -40,8 +44,11 @@ class GanttChartGroup : View {
     private val colorGanttLineHorizontal = resources.getColor(R.color.my_gray_100)
     private val colorGanttText = resources.getColor(R.color.my_gray_200)
     private val colorGanttBack = resources.getColor(R.color.my_gray_45)
-    private val colorGanttShortSelect = resources.getColor(R.color.blue_gray_300)
-    private val colorGanttLongSelect = resources.getColor(R.color.blue_gray_50)
+    private val colorGanttShortSelect = resources.getColor(R.color.blue_gray_500)
+    private val colorGanttLongSelect = resources.getColor(R.color.blue_gray_800)
+    private val colorToolBarText = resources.getColor(R.color.blue_gray_900)
+    private val colorToolBarBack = resources.getColor(R.color.yellow_600)
+    private val colorToolBarStroke = resources.getColor(R.color.my_gray_100)
 
     private var taskList : MutableList<Task>? = null
 
@@ -143,10 +150,28 @@ class GanttChartGroup : View {
         style = Paint.Style.FILL
     }
 
+    private val toolBarTextPaint = Paint().apply {
+        color = colorToolBarText
+        textSize = 12.toPx().toFloat()
+        textAlign = Paint.Align.CENTER
+    }
+
+    private val toolBarBackPaint = Paint().apply {
+        color = colorToolBarBack
+        style = Paint.Style.FILL
+    }
+
+    private val toolBarStrokePaint = Paint().apply {
+        color = colorToolBarStroke
+        style = Paint.Style.STROKE
+        strokeWidth = 1.toPx().toFloat()
+    }
+
     private val barPaint = Paint()
 
     val fontTaskOffsetY = -(ganttTextPaint.fontMetrics.top + ganttTextPaint.fontMetrics.bottom)/2
     val fontTimeLineOffsetY = -(timeLine2TextPaint.fontMetrics.top + timeLine2TextPaint.fontMetrics.bottom)/2
+    val fontToolBarOffsetY = -(toolBarTextPaint.fontMetrics.top + toolBarTextPaint.fontMetrics.bottom)/2
 
     fun setRange(startTimeMillis: Long, endTimeMillis: Long){
         startDate = startTimeMillis
@@ -200,7 +225,7 @@ class GanttChartGroup : View {
     fun setYPos(dy : Float){
         taskList?.let {
             val allTaskHeight = taskHeight * it.size
-            val ganttHeight = height - timeLineHeight
+            val ganttHeight = height - timeLineHeight - toolBarHeight - extraBottomSpace
             if (ganttHeight >= allTaskHeight) {
                 this.dy = 0f
             }else if (allTaskHeight + this.dy + dy <= ganttHeight){
@@ -750,8 +775,8 @@ class GanttChartGroup : View {
                     if (index!=taskLongSelect) {
                         val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                         val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                        val top = ((index)*taskHeight).toFloat()+timeLineHeight + dy
-                        val bottom = ((index+1)*taskHeight).toFloat()+timeLineHeight + dy
+                        val top = ((index)*taskHeight).toFloat()+timeLineHeight + dy + toolBarHeight
+                        val bottom = ((index+1)*taskHeight).toFloat()+timeLineHeight + dy + toolBarHeight
                         when(timeLineType){
                             SCALE_HOUR -> {
                                 drawTaskTimeLineByHour(canvas,top,bottom)
@@ -772,7 +797,7 @@ class GanttChartGroup : View {
                         }
                         canvas.drawLine(0f, top, width.toFloat(), top, ganttLineHorizontalPaint)
                         canvas.drawLine(0f, bottom, width.toFloat(), bottom, ganttLineHorizontalPaint)
-                        val text = "${value.name} ${TimeUtil.taskDate(value.startTimeMillis)} ~ ${TimeUtil.taskDate(value.endTimeMillis)} ${value.completeRate}%"
+                        val text = "${value.name} | ${value.completeRate}%"
                         canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, ganttTextPaint)
                         if (index == taskSelectPos){
                             canvas.drawRoundRect(left - taskControl,top + taskHeight.toFloat()*0.5f,right + taskControl, bottom- 0.1f*taskHeight,15f,15f, ganttShortSelectPaint)
@@ -809,7 +834,7 @@ class GanttChartGroup : View {
                     }
                     canvas.drawLine(0f, top, width.toFloat(), top, ganttLineHorizontalPaint)
                     canvas.drawLine(0f, bottom, width.toFloat(), bottom, ganttLineHorizontalPaint)
-                    val text = "${it[taskLongSelect].name} ${TimeUtil.taskDate(it[taskLongSelect].startTimeMillis)} ~ ${TimeUtil.taskDate(it[taskLongSelect].endTimeMillis)} ${it[taskLongSelect].completeRate}%"
+                    val text = "${it[taskLongSelect].name} | ${it[taskLongSelect].completeRate}%"
                     canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, ganttTextPaint)
                     barPaint.color = Color.parseColor(colorList1[it[taskLongSelect].color])
                     canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,right , bottom - 0.1f*taskHeight,15f,15f, barPaint)
@@ -820,13 +845,31 @@ class GanttChartGroup : View {
         }
     }
 
+    private fun drawToolBar(canvas: Canvas){
+        canvas.drawRect(0f,timeLineHeight.toFloat(),width.toFloat(),timeLineHeight.toFloat() + toolBarHeight,toolBarBackPaint)
+        canvas.drawRect(0f,timeLineHeight.toFloat(),width.toFloat(),timeLineHeight.toFloat() + toolBarHeight, toolBarStrokePaint)
+        if (taskSelectPos != -1){
+            taskList?.let {
+                toolBarTextPaint.textAlign= Paint.Align.LEFT
+                var text = TimeUtil.millisToGanttToolBarTime(it[taskSelectPos].startTimeMillis)
+                canvas.drawText(text,0f + toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+                toolBarTextPaint.textAlign= Paint.Align.CENTER
+                text = TimeUtil.timeDurationToString(it[taskSelectPos].startTimeMillis,it[taskSelectPos].endTimeMillis)
+                canvas.drawText(text,width.toFloat()/2f,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+                toolBarTextPaint.textAlign= Paint.Align.RIGHT
+                text = TimeUtil.millisToGanttToolBarTime(it[taskSelectPos].endTimeMillis)
+                canvas.drawText(text,width.toFloat() - toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+            }
+        }
+    }
+
     fun checkTaskModeTouchPos(x : Float, y : Float) : TouchMode {
         taskList?.let {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight
-                val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight
+                val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight +toolBarHeight
+                val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight + toolBarHeight
                 if (x in left..right && y in top..bottom && index == taskSelectPos){
                     return TouchMode.TASK_PRE_MOVE
                 }else if(x in left - taskControl..left && y in top..bottom && index == taskSelectPos){
@@ -844,8 +887,8 @@ class GanttChartGroup : View {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight
-                val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight
+                val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight +toolBarHeight
+                val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
                 if (x in left..right && y in top..bottom)
                     return index to value
             }
@@ -856,8 +899,8 @@ class GanttChartGroup : View {
     fun getTaskLongSelect(y : Float) : Int {
         taskList?.let {
             for ((index, value) in it.withIndex()){
-                val top = ((index)*taskHeight).toFloat()+dy+timeLineHeight
-                val bottom = ((index+1)*taskHeight).toFloat()+dy+timeLineHeight
+                val top = ((index)*taskHeight).toFloat()+dy+timeLineHeight + toolBarHeight
+                val bottom = ((index+1)*taskHeight).toFloat()+dy+timeLineHeight + toolBarHeight
                 if (y in top..bottom)
                     return index
             }
@@ -870,8 +913,8 @@ class GanttChartGroup : View {
             for ((index, value) in list.withIndex()){
                 if (index == taskLongSelect)
                     continue
-                val top = ((index)*taskHeight).toFloat()+dy+timeLineHeight
-                val bottom = ((index+1)*taskHeight).toFloat()+dy+timeLineHeight
+                val top = ((index)*taskHeight).toFloat()+dy+timeLineHeight + toolBarHeight
+                val bottom = ((index+1)*taskHeight).toFloat()+dy+timeLineHeight + toolBarHeight
                 if (yPos in top..bottom){
                     list[taskLongSelect] = list[index].also {
                         list[index] = list[taskLongSelect]
@@ -1102,6 +1145,7 @@ class GanttChartGroup : View {
         setTimeLineScale()
         drawGanttChart(canvas)
         drawTimeLine(canvas)
+        drawToolBar(canvas)
     }
 
     companion object{

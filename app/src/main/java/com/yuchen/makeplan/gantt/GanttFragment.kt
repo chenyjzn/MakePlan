@@ -124,6 +124,24 @@ class GanttFragment : Fragment() {
             }
         }
 
+        binding.taskCopy.setOnClickListener {
+            if (viewModel.isTaskSelect() > -1){
+                viewModel.copyTask()
+            }
+        }
+
+        binding.taskUp.setOnClickListener {
+            if (viewModel.isTaskSelect() > -1 && viewModel.isTaskSelect()!=0){
+                viewModel.swapTaskUp()
+            }
+        }
+
+        binding.taskDown.setOnClickListener {
+            if (viewModel.isTaskSelect() > -1 && viewModel.isTaskSelect() != viewModel.projectRep[viewModel.projectPos].taskList.lastIndex){
+                viewModel.swapTaskDown()
+            }
+        }
+
         viewModel.taskTimeScale.observe(viewLifecycleOwner, Observer {
             it?.let {
                 binding.ganttChartGroup.setTaskActionTimeScale(it)

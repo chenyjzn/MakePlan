@@ -41,7 +41,10 @@
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/multi_tab"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:tabIndicatorColor="@color/yellow_400"
+                app:tabSelectedTextColor="@color/yellow_400"
+                app:tabTextColor="@color/my_gray_220"/>
         </androidx.viewpager.widget.ViewPager>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

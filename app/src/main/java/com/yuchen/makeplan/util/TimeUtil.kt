@@ -1,5 +1,8 @@
 package com.yuchen.makeplan.util
 
+import com.yuchen.makeplan.DAY_MILLIS
+import com.yuchen.makeplan.HOUR_MILLIS
+import com.yuchen.makeplan.MINUTE_MILLIS
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -8,6 +11,23 @@ object TimeUtil {
         val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm")
         return simpleDateFormat.format(Date(time))
     }
+
+    fun timeDurationToString(start : Long, end : Long) : String{
+        var duration = end - start
+        var days : Int = (duration/DAY_MILLIS).toInt()
+        duration %= DAY_MILLIS
+        var hours : Int = (duration/ HOUR_MILLIS).toInt()
+        duration%= HOUR_MILLIS
+        var mins : Int = (duration/ MINUTE_MILLIS).toInt()
+
+        return "$days D $hours H $mins M"
+    }
+
+    fun millisToGanttToolBarTime(time: Long) : String{
+        val simpleDateFormat = SimpleDateFormat("EEE MM/dd HH:mm")
+        return simpleDateFormat.format(Date(time))
+    }
+
 
     @JvmStatic
     fun StampToDate(time: Long): String {
