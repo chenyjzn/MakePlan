@@ -9,18 +9,32 @@
     </style>
 
     <style name="MaterialLightNoBarTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Add attributes here -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/indigo_900</item>
+        <item name="colorPrimaryDark">@color/indigo_d</item>
+        <item name="colorAccent">@color/yellow_400</item>
+        <item name="android:colorBackground">@color/gray_900</item>
+        <item name="colorSurface">@color/gray_800</item>
+        <item name="android:textColor">@color/gray_200</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="editTextColor">@color/white</item>
         <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
     </style>
 
     <style name="MaterialNoBarTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <!-- Add attributes here -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/my_gray_60</item>
+        <item name="colorPrimaryVariant">@color/my_gray_75</item>
+        <item name="colorPrimaryDark">@color/my_gray_45</item>
+        <item name="colorSecondary">@color/yellow_400</item>
+        <item name="colorSecondaryVariant">@color/yellow_600</item>
+        <item name="android:colorBackground">@color/my_gray_45</item>
+        <item name="colorSurface">@color/my_gray_60</item>
+        <item name="colorError">@color/red_200</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/blue_gray_900</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnError">@color/black</item>
         <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
     </style>
 
@@ -35,6 +49,13 @@
     <!--To fix rendering in preview -->
     <style name="AppTextAppearance.Button" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="GanttToolToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/my_gray_180</item>
+        <item name="android:backgroundTint">@color/my_gray_90</item>
+        <item name="android:strokeColor">@color/yellow_400</item>
+        <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
     </style>
 
 </resources>

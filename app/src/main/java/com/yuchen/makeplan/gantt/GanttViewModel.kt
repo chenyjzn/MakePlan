@@ -1,6 +1,5 @@
 package com.yuchen.makeplan.gantt
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,6 +40,12 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     }
     val taskSelect: LiveData<Int>
         get() = _taskSelect
+
+    private val _taskTimeScale = MutableLiveData<Int>().apply {
+        value = 0
+    }
+    val taskTimeScale: LiveData<Int>
+        get() = _taskTimeScale
 
     fun setNewTaskCondition(taskPos: Int,task : Task){
         val newProject = projectRep[projectPos].newRefProject()
@@ -132,6 +137,10 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
 
     fun getUndoListArray(): Array<Project>{
         return projectRep.subList(0,projectPos+1).toTypedArray()
+    }
+
+    fun setTaskTimeScale(time : Int){
+        _taskTimeScale.value = time
     }
 
     override fun onCleared() {

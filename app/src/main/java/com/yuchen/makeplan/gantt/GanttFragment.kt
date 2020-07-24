@@ -27,13 +27,12 @@ class GanttFragment : Fragment() {
 
     private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory)}
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "ResourceType")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-
         binding.ganttChartGroup.setColorList(resources.getStringArray(R.array.color_array_1).toList(),resources.getStringArray(R.array.color_array_2).toList())
-
+        binding.viewModel=viewModel
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
                 Log.d("chenyjzn","Project change")
@@ -113,17 +112,23 @@ class GanttFragment : Fragment() {
                 viewModel.saveProject()
         }
 
-        binding.ganttEdit.setOnClickListener {
+        binding.taskEdit.setOnClickListener {
             if (viewModel.isTaskSelect() > -1){
                 viewModel.goToEditTask(viewModel.isTaskSelect())
             }
         }
 
-        binding.ganttDelete.setOnClickListener {
+        binding.taskDelete.setOnClickListener {
             if (viewModel.isTaskSelect() > -1){
                 viewModel.taskRemove(viewModel.isTaskSelect())
             }
         }
+
+        viewModel.taskTimeScale.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                binding.ganttChartGroup.setTaskActionTimeScale(it)
+            }
+        })
 
         return binding.root
     }

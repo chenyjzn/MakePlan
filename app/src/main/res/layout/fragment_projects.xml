@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,6 +53,17 @@
             app:layout_constraintEnd_toEndOf="@+id/projects_recycler"
             app:layout_constraintStart_toStartOf="@+id/projects_recycler"
             app:layout_constraintTop_toTopOf="@+id/projects_recycler" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            app:layout_constraintBottom_toBottomOf="@+id/projects_recycler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
