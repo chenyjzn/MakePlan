@@ -8,84 +8,48 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiProject
+import com.yuchen.makeplan.databinding.FragmentMultiBinding
 import com.yuchen.makeplan.databinding.FragmentMultiProjectsBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 class MultiProjectsFragment : Fragment() {
-
     private val viewModel: MultiProjectsViewModel by viewModels<MultiProjectsViewModel> { getVmFactory() }
-    lateinit var binding: FragmentMultiProjectsBinding
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentMultiProjectsBinding.inflate(inflater, container, false)
+        val binding = FragmentMultiProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-
-        val projectsAdapter = MultiProjectsAdapter()
-        projectsAdapter.setItemClickListener(object : MultiProjectsAdapter.OnClickListener{
-            override fun onProjectClick(project: MultiProject) {
-                viewModel.goToGantt(project)
-            }
-            override fun onProjectLongClick(project: MultiProject) {
-                viewModel.goToProjectSetting(project)
-            }
-        })
-
-        binding.multiProjectsRecycler.adapter = projectsAdapter
-
+        val adapter = MultiProjectsAdapter()
+        binding.multiProjectsRecycler.adapter = adapter
+        binding.multiProjectsRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
-                projectsAdapter.submitList(it)
+                adapter.submitList(it)
             }
         })
-
-        viewModel.navigateToGantt.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiGanttFragment(it))
-                viewModel.goToGanttDone()
+        adapter.setProjectClickListener(object : MultiProjectsAdapter.ProjectClickListener{
+            override fun onProjectClick(project: MultiProject) {
+                this@MultiProjectsFragment.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiGanttFragment(project))
+            }
+            override fun onProjectLongClick(project: MultiProject) {
+                this@MultiProjectsFragment.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(project))
             }
         })
-
-        viewModel.navigateToProjectSetting.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(it))
-                viewModel.goToProjectSettingDone()
-            }
-        })
-
-        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                when(it){
-                    LoadingStatus.LOADING ->{
-                        binding.multiProjectsProgress.visibility = View.VISIBLE
-                    }
-                    LoadingStatus.DONE -> {
-                        binding.multiProjectsProgress.visibility = View.INVISIBLE
-                    }
-                    LoadingStatus.ERROR -> {
-
-                    }
-                }
-            }
-        })
-
-        binding.multiProjectsAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
+        binding.multiProjectsAppBar.setOnMenuItemClickListener {
+            when(it.itemId){
                 R.id.search_project -> {
-                    this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToSearchFragment())
+                    this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToSearchProjectFragment())
                     true
                 }
-                R.id.add_project -> {
+                R.id.add_project-> {
                     this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(null))
                     true
                 }
                 else -> false
             }
         }
-
         return binding.root
     }
-
 }

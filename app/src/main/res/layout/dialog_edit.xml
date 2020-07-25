@@ -45,10 +45,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/project_remove_button"
             app:layout_constraintTop_toTopOf="@+id/project_remove_button" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/project_name_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

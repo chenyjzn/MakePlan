@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_RECEIVE
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_SEND
 import com.yuchen.makeplan.util.UserManager
@@ -12,26 +13,38 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class NotifyItemsViewModel(private val repository: MakePlanRepository,val notifyPos: Int) : ViewModel() {
+class NotifyItemsViewModel(private val repository: MakePlanRepository,val pagerPos: Int) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val projects: LiveData<List<MultiProject>> = if (notifyPos == 0){
-        repository.getMyMultiProjects(COLLECTION_SEND)
-    }else{
-        repository.getMyMultiProjects(COLLECTION_RECEIVE)
+    val projects: LiveData<List<MultiProject>> = when (pagerPos){
+        0 -> repository.getMyMultiProjects(MakePlanRemoteDataSource.FIELD_RECEIVE_UID)
+        1 -> repository.getMyMultiProjects(MakePlanRemoteDataSource.FIELD_SEND_UID)
+        else -> throw IllegalArgumentException("Unknown pager position!!")
     }
 
-    fun confirmInvite(project: MultiProject){
+    fun cancelUserToProject(project:MultiProject){
         coroutineScope.launch {
-            repository.approveUserToMultiProject(project,UserManager.user, COLLECTION_SEND,COLLECTION_RECEIVE)
+            repository.cancelUserToMultiProject(project,UserManager.user,
+                MakePlanRemoteDataSource.FIELD_RECEIVE_UID
+            )
         }
     }
 
-    fun cancelSend(project: MultiProject){
+    fun acceptProjectToUser(project: MultiProject){
         coroutineScope.launch {
-            repository.cancelUserToMultiProject(project,UserManager.user,COLLECTION_RECEIVE,COLLECTION_SEND)
+            repository.approveUserToMultiProject(project,UserManager.user,
+                MakePlanRemoteDataSource.FIELD_SEND_UID
+            )
+        }
+    }
+
+    fun cancelProjectToUser(project: MultiProject){
+        coroutineScope.launch {
+            repository.cancelUserToMultiProject(project,UserManager.user,
+                MakePlanRemoteDataSource.FIELD_SEND_UID
+            )
         }
     }
 

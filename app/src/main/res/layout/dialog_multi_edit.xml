@@ -25,7 +25,6 @@
             android:layout_marginBottom="16dp"
             android:text="Remove"
             android:visibility="@{viewModel.project == null ? View.INVISIBLE : View.VISIBLE}"
-            app:icon="@drawable/ic_delete_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/multi_project_save_button"
             app:layout_constraintHorizontal_bias="0.5"
@@ -40,7 +39,6 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="16dp"
             android:text="Save"
-            app:icon="@drawable/ic_save_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/multi_project_remove_button"
@@ -48,7 +46,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/multi_project_name_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

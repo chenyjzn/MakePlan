@@ -9,11 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemNotifyBinding
 import com.yuchen.makeplan.ext.getVmFactory
-import com.yuchen.makeplan.multiProjects.MultiProjectsViewModel
 
 
 class NotifyItems : Fragment() {
@@ -29,33 +27,45 @@ class NotifyItems : Fragment() {
                 adapter.submitList(it)
             }
         })
-        adapter.setItemClickListener(object : NotifyItemsAdapter.OnClickListener{
+        adapter.setProjectClickListener(object : NotifyItemsAdapter.ProjectClickListener{
             override fun onProjectClick(project: MultiProject) {
-                if (viewModel.notifyPos == 0){
-                    MaterialAlertDialogBuilder(requireNotNull(context))
-                        .setTitle("Cancel send request?")
-                        .setNegativeButton("No") { dialog, which ->
+                when(viewModel.pagerPos){
+                    PAGER_SENDS -> {
+                        MaterialAlertDialogBuilder(requireNotNull(context))
+                            .setTitle("Cancel send request to ${project.name}?")
+                            .setNeutralButton("Cancel") { dialog, which ->
 
-                        }.setPositiveButton("Yes") { dialog, which ->
-                            viewModel.cancelSend(project)
-                        }
-                        .show()
-                }else{
-                    MaterialAlertDialogBuilder(requireNotNull(context))
-                        .setTitle("Confirm project invite request?")
-                        .setNegativeButton("No") { dialog, which ->
+                            }
+                            .setPositiveButton("Yes") { dialog, which ->
+                                viewModel.cancelUserToProject(project)
+                            }.show()
+                    }
+                    PAGER_RECEIVE -> {
+                        MaterialAlertDialogBuilder(requireNotNull(context))
+                            .setTitle("Accept join request to ${project.name}?")
+                            .setNeutralButton("Cancel") { dialog, which ->
 
-                        }.setPositiveButton("Yes") { dialog, which ->
-                            viewModel.confirmInvite(project)
-                        }
-                        .show()
+                            }
+                            .setNegativeButton("No") { dialog, which ->
+                                viewModel.cancelProjectToUser(project)
+                            }.setPositiveButton("Yes") { dialog, which ->
+                                viewModel.acceptProjectToUser(project)
+                            }.show()
+                    }
                 }
             }
             override fun onProjectLongClick(project: MultiProject) {
-
+                when(viewModel.pagerPos){
+                    PAGER_SENDS -> {}
+                    PAGER_RECEIVE -> {}
+                }
             }
         })
-
         return binding.root
+    }
+
+    companion object{
+        const val PAGER_SENDS = 0
+        const val PAGER_RECEIVE = 1
     }
 }

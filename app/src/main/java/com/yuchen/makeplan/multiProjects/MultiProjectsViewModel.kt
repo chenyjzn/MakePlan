@@ -6,44 +6,18 @@ import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_MEMBERS_UID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class MultiProjectsViewModel(private val repository: MakePlanRepository) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val projects: LiveData<List<MultiProject>> = repository.getMyMultiProjects()
-
-    private val _navigateToGantt = MutableLiveData<MultiProject>()
-    val navigateToGantt: LiveData<MultiProject>
-        get() = _navigateToGantt
-
-    private val _navigateToProjectSetting = MutableLiveData<MultiProject>()
-    val navigateToProjectSetting: LiveData<MultiProject>
-        get() = _navigateToProjectSetting
-
-    private val _loadingStatus = MutableLiveData<LoadingStatus>()
-    val loadingStatus: LiveData<LoadingStatus>
-        get() = _loadingStatus
-
-    fun goToGantt(project: MultiProject) {
-        _navigateToGantt.value = project
-    }
-
-    fun goToGanttDone() {
-        _navigateToGantt.value = null
-    }
-
-    fun goToProjectSetting(project: MultiProject?) {
-        _navigateToProjectSetting.value = project
-    }
-
-    fun goToProjectSettingDone() {
-        _navigateToProjectSetting.value = null
-    }
+    val projects: LiveData<List<MultiProject>> = repository.getMyMultiProjects(FIELD_MEMBERS_UID)
 
     override fun onCleared() {
         super.onCleared()

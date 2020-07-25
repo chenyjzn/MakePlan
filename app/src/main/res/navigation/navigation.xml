@@ -154,6 +154,9 @@
         <action
             android:id="@+id/action_multiProjectsFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_multiProjectsFragment_to_searchProjectFragment"
+            app:destination="@id/searchProjectFragment" />
     </fragment>
     <action android:id="@+id/action_global_multiProjectsFragment" app:destination="@id/multiProjectsFragment" />
     <dialog

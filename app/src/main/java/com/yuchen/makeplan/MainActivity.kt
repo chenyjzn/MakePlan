@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment())
                 }
                 R.id.nav_team -> {
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiFragment())
+                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiProjectsFragment())
                 }
                 R.id.nav_notify ->{
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalNotifyFragment())
