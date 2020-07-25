@@ -131,35 +131,35 @@
 
                     <Button
                         android:id="@+id/task_day"
-                        android:textColor="@{viewModel.taskTimeScale == 0 ? @color/yellow_400 : @color/my_gray_180}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(0)}"
-                        android:text="Day" />
+                        android:text="Day"
+                        android:textColor="@{viewModel.taskTimeScale == 0 ? @color/yellow_400 : @color/my_gray_180}" />
 
                     <Button
                         android:id="@+id/task_hour"
-                        android:textColor="@{viewModel.taskTimeScale == 1 ? @color/yellow_400 : @color/my_gray_180}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(1)}"
-                        android:text="Hour" />
+                        android:text="Hour"
+                        android:textColor="@{viewModel.taskTimeScale == 1 ? @color/yellow_400 : @color/my_gray_180}" />
 
                     <Button
                         android:id="@+id/task_15m"
-                        android:textColor="@{viewModel.taskTimeScale == 2 ? @color/yellow_400 : @color/my_gray_180}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(2)}"
-                        android:text="15m" />
+                        android:text="15m"
+                        android:textColor="@{viewModel.taskTimeScale == 2 ? @color/yellow_400 : @color/my_gray_180}" />
 
                     <Button
                         android:id="@+id/task_5m"
-                        android:textColor="@{viewModel.taskTimeScale == 3 ? @color/yellow_400 : @color/my_gray_180}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(3)}"
-                        android:text="5m" />
+                        android:text="5m"
+                        android:textColor="@{viewModel.taskTimeScale == 3 ? @color/yellow_400 : @color/my_gray_180}" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
