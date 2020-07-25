@@ -26,7 +26,7 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
     private val calendarStart = Calendar.getInstance()
     private val calendarEnd = Calendar.getInstance()
 
-    val colorList = application.resources.getStringArray(R.array.color_array).toList()
+    val colorList = application.resources.getStringArray(R.array.color_array_1).toList()
 
     val project: LiveData<MultiProject> = repository.getMultiProject(projectInput)
 

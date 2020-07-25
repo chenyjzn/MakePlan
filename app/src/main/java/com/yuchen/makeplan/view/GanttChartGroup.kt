@@ -38,14 +38,14 @@ class GanttChartGroup : View {
 
     //Colors
     private val colorTimeLineAxis = resources.getColor(R.color.my_gray_100)
-    private val colorTimeLineText = resources.getColor(R.color.my_gray_220)
+    private val colorTimeLineText = resources.getColor(R.color.my_gray_240)
     private val colorTimeLineBack = resources.getColor(R.color.my_gray_60)
-    private val colorGanttLineVertical = resources.getColor(R.color.my_gray_100)
-    private val colorGanttLineHorizontal = resources.getColor(R.color.my_gray_100)
-    private val colorGanttText = resources.getColor(R.color.my_gray_200)
+    private val colorGanttLineVertical = resources.getColor(R.color.my_gray_90)
+    private val colorGanttLineHorizontal = resources.getColor(R.color.my_gray_90)
+    private val colorGanttText = resources.getColor(R.color.my_gray_240)
     private val colorGanttBack = resources.getColor(R.color.my_gray_45)
     private val colorGanttShortSelect = resources.getColor(R.color.blue_gray_500)
-    private val colorGanttLongSelect = resources.getColor(R.color.blue_gray_800)
+    private val colorGanttLongSelect = resources.getColor(R.color.blue_gray_700)
     private val colorToolBarText = resources.getColor(R.color.blue_gray_900)
     private val colorToolBarBack = resources.getColor(R.color.yellow_600)
     private val colorToolBarStroke = resources.getColor(R.color.my_gray_100)
@@ -202,24 +202,39 @@ class GanttChartGroup : View {
     }
 
     fun checkProjectBound(){
-        if(calScale(28 * DAY_MILLIS,startDate,endDate)<=36.0f) {
-            startDate = System.currentTimeMillis()
-            endDate = startDate + 7 * DAY_MILLIS
-        } else if(calScale(HOUR_MILLIS,startDate ,endDate)>=50.0f) {
-            startDate = System.currentTimeMillis()
-            endDate = startDate + 7 * DAY_MILLIS
+        if((endDate - startDate)>=300 * DAY_MILLIS) {
+            startDate = startDate+(endDate-startDate)/2 - 150* DAY_MILLIS
+            endDate = startDate+(endDate-startDate)/2 + 150* DAY_MILLIS
+        } else if((endDate - startDate)<= 4 * HOUR_MILLIS) {
+            startDate = startDate+(endDate-startDate)/2 - 2* HOUR_MILLIS
+            endDate = startDate+(endDate-startDate)/2 + 2* HOUR_MILLIS
         }
+//        if(calScale(28 * DAY_MILLIS,startDate,endDate)<=36.0f) {
+//            startDate = System.currentTimeMillis()
+//            endDate = startDate + 7 * DAY_MILLIS
+//        } else if(calScale(HOUR_MILLIS,startDate ,endDate)>=50.0f) {
+//            startDate = System.currentTimeMillis()
+//            endDate = startDate + 7 * DAY_MILLIS
+//        }
     }
 
     fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int) : Pair<Long,Long> {
         var timeOffsetl = ((endDate - startDate).toFloat() * dl / width.toFloat()).toLong()
         var timeOffsetr = ((endDate - startDate).toFloat() * dr / width.toFloat()).toLong()
-        if(calScale(28 * DAY_MILLIS,startDate + timeOffsetl,endDate - timeOffsetr)<=36.0f) {
-            return startDate  to endDate
-        } else if(calScale(HOUR_MILLIS,startDate + timeOffsetl,endDate - timeOffsetr)>=50.0f) {
-            return startDate to endDate
+        if((endDate - timeOffsetr - startDate - timeOffsetl)>=300 * DAY_MILLIS) {
+
+            return startDate+(endDate-startDate)/2 - 150* DAY_MILLIS to startDate+(endDate-startDate)/2 + 150* DAY_MILLIS
+        } else if((endDate - timeOffsetr - startDate - timeOffsetl)<= 4 * HOUR_MILLIS) {
+            return startDate+(endDate-startDate)/2 - 2* HOUR_MILLIS to startDate+(endDate-startDate)/2 + 2* HOUR_MILLIS
         } else
             return startDate + timeOffsetl to endDate - timeOffsetr
+
+//        if(calScale(28 * DAY_MILLIS,startDate + timeOffsetl,endDate - timeOffsetr)<=36.0f) {
+//            return startDate  to endDate
+//        } else if(calScale(HOUR_MILLIS,startDate + timeOffsetl,endDate - timeOffsetr)>=50.0f) {
+//            return startDate to endDate
+//        } else
+//            return startDate + timeOffsetl to endDate - timeOffsetr
     }
 
     fun setYPos(dy : Float){
@@ -814,24 +829,24 @@ class GanttChartGroup : View {
                     val top = taskLongYPos - taskHeight/2
                     val bottom = taskLongYPos + taskHeight/2
                     canvas.drawRect(0f,top,width.toFloat(),bottom,ganttLongSelectPaint)
-                    when(timeLineType){
-                        SCALE_HOUR -> {
-                            drawTaskTimeLineByHour(canvas,top,bottom)
-                        }
-                        SCALE_6HOUR ->{
-                            drawTaskTimeLineBy6Hour(canvas,top,bottom)
-                        }
-                        SCALE_DAY -> {
-                            drawTaskTimeLineByDay(canvas,top,bottom)
-                        }
-                        SCALE_WEEK -> {
-                            drawTaskTimeLineByWeek(canvas,top,bottom)
-                        }
-                        SCALE_MONTH -> {
-                            drawTaskTimeLineByMonth(canvas,top,bottom)
-                        }
-                        else -> throw IllegalArgumentException("wrong scale type")
-                    }
+//                    when(timeLineType){
+//                        SCALE_HOUR -> {
+//                            drawTaskTimeLineByHour(canvas,top,bottom)
+//                        }
+//                        SCALE_6HOUR ->{
+//                            drawTaskTimeLineBy6Hour(canvas,top,bottom)
+//                        }
+//                        SCALE_DAY -> {
+//                            drawTaskTimeLineByDay(canvas,top,bottom)
+//                        }
+//                        SCALE_WEEK -> {
+//                            drawTaskTimeLineByWeek(canvas,top,bottom)
+//                        }
+//                        SCALE_MONTH -> {
+//                            drawTaskTimeLineByMonth(canvas,top,bottom)
+//                        }
+//                        else -> throw IllegalArgumentException("wrong scale type")
+//                    }
                     canvas.drawLine(0f, top, width.toFloat(), top, ganttLineHorizontalPaint)
                     canvas.drawLine(0f, bottom, width.toFloat(), bottom, ganttLineHorizontalPaint)
                     val text = "${it[taskLongSelect].name} | ${it[taskLongSelect].completeRate}%"

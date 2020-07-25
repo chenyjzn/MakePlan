@@ -25,6 +25,7 @@
         <item name="colorPrimary">@color/my_gray_60</item>
         <item name="colorPrimaryVariant">@color/my_gray_75</item>
         <item name="colorPrimaryDark">@color/my_gray_45</item>
+        <item name="colorAccent">@color/yellow_400</item>
         <item name="colorSecondary">@color/yellow_400</item>
         <item name="colorSecondaryVariant">@color/yellow_600</item>
         <item name="android:colorBackground">@color/my_gray_45</item>
@@ -56,6 +57,15 @@
         <item name="android:backgroundTint">@color/my_gray_90</item>
         <item name="android:strokeColor">@color/yellow_400</item>
         <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
+    </style>
+
+    <style name="datepicker" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/my_gray_60</item>                   <!--header background-->
+        <item name="android:windowBackground">@color/my_gray_45</item>     <!--calendar background-->
+        <item name="android:colorControlActivated">@color/yellow_400</item> <!--selected day-->
+        <item name="android:textColorPrimary">@color/white</item>     <!--days of the month-->
+        <item name="android:textColorSecondary">@color/my_gray_200</item>    <!--days of the week-->
+        <item name="android:textColor">@color/yellow_400</item>
     </style>
 
 </resources>

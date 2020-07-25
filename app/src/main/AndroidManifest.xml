@@ -3,6 +3,9 @@
     package="com.yuchen.makeplan">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -13,7 +16,7 @@
         android:theme="@style/MaterialNoBarTheme"
         android:name=".MakePlanApplication">
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="stateHidden|adjustPan">
+            android:windowSoftInputMode="stateHidden|adjustPan|stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,5 +24,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

@@ -2,6 +2,7 @@ package com.yuchen.makeplan.task
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,27 +17,29 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.databinding.FragmentTaskBinding
 import com.yuchen.makeplan.ext.getVmFactory
 import java.util.*
 
+
 class TaskFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentTaskBinding.inflate(inflater, container, false)
-        val viewModel: TaskViewModel by viewModels<TaskViewModel> { getVmFactory(TaskFragmentArgs.fromBundle(requireArguments()).projectHistory, TaskFragmentArgs.fromBundle(requireArguments()).projectHistoryPos,resources.getStringArray(R.array.color_array).toList())}
+        val viewModel: TaskViewModel by viewModels<TaskViewModel> { getVmFactory(TaskFragmentArgs.fromBundle(requireArguments()).projectHistory, TaskFragmentArgs.fromBundle(requireArguments()).projectHistoryPos,resources.getStringArray(R.array.color_array_1).toList())}
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         val colorAdaptor = TaskColorAdapter(viewModel)
         binding.taskColorRecycler.adapter = colorAdaptor
-        binding.taskColorRecycler.layoutManager =
-            GridLayoutManager(binding.taskColorRecycler.context, 6)
+        binding.taskColorRecycler.layoutManager = GridLayoutManager(binding.taskColorRecycler.context, 5)
         val calendar = Calendar.getInstance()
-
         binding.taskStartDateEdit.setOnClickListener {
             calendar.timeInMillis = viewModel.newStartTimeMillis.value ?: calendar.timeInMillis
             val startDatePickerDialog = DatePickerDialog(
                 requireNotNull(context),
+                R.style.datepicker,
                 object : DatePickerDialog.OnDateSetListener {
                     override fun onDateSet(
                         view: DatePicker?,
@@ -58,6 +61,7 @@ class TaskFragment : Fragment() {
             calendar.timeInMillis = viewModel.newStartTimeMillis.value ?: calendar.timeInMillis
             val startTimePickerDialog = TimePickerDialog(
                 requireNotNull(context),
+                R.style.datepicker,
                 object : TimePickerDialog.OnTimeSetListener {
                     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
                         viewModel.setStartTime(hourOfDay, minute)
@@ -74,6 +78,7 @@ class TaskFragment : Fragment() {
             calendar.timeInMillis = viewModel.newEndTimeMillis.value ?: calendar.timeInMillis
             val endDatePickerDialog = DatePickerDialog(
                 requireNotNull(context),
+                R.style.datepicker,
                 object : DatePickerDialog.OnDateSetListener {
                     override fun onDateSet(
                         view: DatePicker?,
@@ -98,6 +103,7 @@ class TaskFragment : Fragment() {
             calendar.timeInMillis = viewModel.newEndTimeMillis.value ?: calendar.timeInMillis
             val endTimePickerDialog = TimePickerDialog(
                 requireNotNull(context),
+                R.style.datepicker,
                 object : TimePickerDialog.OnTimeSetListener {
                     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
                         viewModel.setEndTime(hourOfDay, minute)

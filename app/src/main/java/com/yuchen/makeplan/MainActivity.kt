@@ -1,27 +1,39 @@
 package com.yuchen.makeplan
 
+import android.app.Activity
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Intent
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.yuchen.makeplan.util.UserManager.auth
-import com.yuchen.makeplan.util.UserManager.googleSignInClient
 import com.yuchen.makeplan.databinding.ActivityMainBinding
 import com.yuchen.makeplan.ext.getVmFactory
 import com.yuchen.makeplan.util.UserManager
+import com.yuchen.makeplan.util.UserManager.auth
+import com.yuchen.makeplan.util.UserManager.googleSignInClient
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 const val SECOND_MILLIS = 1000L
 const val MINUTE_MILLIS = 60000L
@@ -112,8 +124,12 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        binding.addDummyUser.setOnClickListener {
-            viewModel.addDummy()
+        binding.imageView.setOnClickListener {
+            dispatchTakePictureIntent()
+        }
+
+        binding.imageView3.setOnClickListener {
+            dispatchGetPictureIntent()
         }
     }
 
@@ -135,8 +151,22 @@ class MainActivity : AppCompatActivity() {
                 Log.w("chenyjzn", "Google sign in failed", e)
             }
         }
+        if (requestCode == TAKE_PICTURE && resultCode == RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            binding.imageView.setImageBitmap(imageBitmap)
+        }
+        if (requestCode == GET_PICTURE && resultCode == RESULT_OK) {
+            Log.d("chenyjzn","Get Pic ${data?.data}")
+            val selectedImage: Uri? = data?.data
+            Glide.with(binding.imageView3.context)
+                .load(selectedImage)
+                .apply(
+                    RequestOptions().placeholder(R.drawable.ic_broken_image_black_24dp)
+                        .error(R.drawable.ic_broken_image_black_24dp)
+                )
+                .into(binding.imageView3)
+        }
     }
-
     fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
@@ -151,5 +181,23 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val RC_SIGN_IN = 9001
+        private const val TAKE_PICTURE = 1
+        private const val GET_PICTURE = 2
+    }
+
+    private fun dispatchTakePictureIntent() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(takePictureIntent, TAKE_PICTURE)
+            }
+        }
+    }
+
+    private fun dispatchGetPictureIntent() {
+        Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI).also { getPictureIntent ->
+            getPictureIntent.resolveActivity(packageManager)?.also {
+                startActivityForResult(getPictureIntent, GET_PICTURE)
+            }
+        }
     }
 }

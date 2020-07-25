@@ -1,14 +1,21 @@
 package com.yuchen.makeplan.edit
 
+import android.app.Activity
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.yuchen.makeplan.databinding.DialogEditBinding
 import com.yuchen.makeplan.ext.getVmFactory
+
 
 class EditDialog : BottomSheetDialogFragment() {
 
@@ -33,6 +40,12 @@ class EditDialog : BottomSheetDialogFragment() {
                 dismiss()
             }
         })
+
         return binding.root
     }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+    }
+
 }

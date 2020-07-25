@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/add_dummy_user"
+            app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
             app:layout_constraintStart_toStartOf="parent">
 
         </com.google.android.gms.common.SignInButton>
@@ -54,25 +54,26 @@
             app:layout_constraintStart_toStartOf="@+id/nav_fragment"
             app:layout_constraintTop_toTopOf="@+id/nav_fragment" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/main_check_login"
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
-            app:layout_constraintStart_toStartOf="@+id/sign_in_button"
-            app:srcCompat="@drawable/ic_cloud_black_24dp" />
-
-        <Button
-            android:id="@+id/add_dummy_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dummy user"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
-            app:layout_constraintEnd_toEndOf="@+id/nav_fragment"
-            app:layout_constraintStart_toStartOf="@+id/nav_fragment" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_login_progress"
+            app:srcCompat="@drawable/ic_broken_image_black_24dp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/main_login_progress"
+            app:layout_constraintEnd_toStartOf="@+id/main_login_progress"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_broken_image_black_24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
