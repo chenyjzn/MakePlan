@@ -99,10 +99,6 @@ class MainActivity : AppCompatActivity() {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
-                R.id.multiFragment ->{
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.VISIBLE
-                }
                 else ->{
                     binding.bottomNavigationView.visibility = View.GONE
                 }

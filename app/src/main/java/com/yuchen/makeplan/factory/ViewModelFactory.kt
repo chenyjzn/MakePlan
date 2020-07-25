@@ -6,7 +6,6 @@ import com.yuchen.makeplan.MainViewModel
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.multiProjects.MultiProjectsViewModel
 import com.yuchen.makeplan.projects.ProjectsViewModel
-import com.yuchen.makeplan.search.SearchViewModel
 import com.yuchen.makeplan.serachproject.SearchProjectViewModel
 
 class ViewModelFactory constructor(
@@ -18,8 +17,6 @@ class ViewModelFactory constructor(
             when {
                 isAssignableFrom(MainViewModel::class.java) ->
                     MainViewModel(makePlanRepository)
-                isAssignableFrom(SearchViewModel::class.java) ->
-                    SearchViewModel(makePlanRepository)
                 isAssignableFrom(ProjectsViewModel::class.java) ->
                     ProjectsViewModel(makePlanRepository)
                 isAssignableFrom(MultiProjectsViewModel::class.java) ->

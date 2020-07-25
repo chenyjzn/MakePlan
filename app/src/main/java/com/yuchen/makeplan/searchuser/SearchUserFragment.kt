@@ -13,7 +13,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.databinding.FragmentSearchUserBinding
 import com.yuchen.makeplan.ext.getVmFactory
-import com.yuchen.makeplan.users.UsersAdapter
 
 class SearchUserFragment : Fragment() {
 

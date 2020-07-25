@@ -61,11 +61,6 @@
     </dialog>
     <action android:id="@+id/action_global_projectsFragment" app:destination="@id/projectsFragment"/>
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.yuchen.makeplan.search.SearchFragment"
-        android:label="Fragment_search"
-        tools:layout="@layout/fragment_search" />
-    <fragment
         android:id="@+id/multiGanttFragment"
         android:name="com.yuchen.makeplan.multigantt.MultiGanttFragment"
         android:label="fragment_multi_gantt"
@@ -76,15 +71,6 @@
         <action
             android:id="@+id/action_multiGanttFragment_to_multiTaskFragment"
             app:destination="@id/multiTaskFragment" />
-        <action
-            android:id="@+id/action_multiGanttFragment_to_usersFragment"
-            app:destination="@id/usersFragment" />
-        <action
-            android:id="@+id/action_multiGanttFragment_to_joinUserFragment"
-            app:destination="@id/joinUserFragment" />
-        <action
-            android:id="@+id/action_multiGanttFragment_to_inviteUsersFragment"
-            app:destination="@id/inviteUsersFragment" />
         <action
             android:id="@+id/action_multiGanttFragment_to_membersFragment"
             app:destination="@id/membersFragment" />
@@ -108,28 +94,10 @@
             app:nullable="true" />
     </fragment>
     <fragment
-        android:id="@+id/usersFragment"
-        android:name="com.yuchen.makeplan.users.UsersFragment"
-        android:label="fragment_users"
-        tools:layout="@layout/fragment_users" >
-        <argument
-            android:name="project"
-            app:argType="com.yuchen.makeplan.data.MultiProject" />
-    </fragment>
-    <fragment
         android:id="@+id/searchUserFragment"
         android:name="com.yuchen.makeplan.searchuser.SearchUserFragment"
         android:label="fragment_search_user"
         tools:layout="@layout/fragment_search_user" >
-        <argument
-            android:name="project"
-            app:argType="com.yuchen.makeplan.data.MultiProject" />
-    </fragment>
-    <fragment
-        android:id="@+id/joinUserFragment"
-        android:name="com.yuchen.makeplan.joinuser.JoinUserFragment"
-        android:label="fragment_join_user"
-        tools:layout="@layout/fragment_join_user" >
         <argument
             android:name="project"
             app:argType="com.yuchen.makeplan.data.MultiProject" />
@@ -152,9 +120,6 @@
             android:id="@+id/action_multiProjectsFragment_to_multiEditDialog"
             app:destination="@id/multiEditDialog" />
         <action
-            android:id="@+id/action_multiProjectsFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
             android:id="@+id/action_multiProjectsFragment_to_searchProjectFragment"
             app:destination="@id/searchProjectFragment" />
     </fragment>
@@ -170,18 +135,6 @@
             app:nullable="true" />
     </dialog>
     <fragment
-        android:id="@+id/inviteUsersFragment"
-        android:name="com.yuchen.makeplan.inviteusers.InviteUsersFragment"
-        android:label="fragment_invite_users"
-        tools:layout="@layout/fragment_invite_users" >
-        <action
-            android:id="@+id/action_inviteUsersFragment_to_searchUserFragment"
-            app:destination="@id/searchUserFragment" />
-        <argument
-            android:name="project"
-            app:argType="com.yuchen.makeplan.data.MultiProject" />
-    </fragment>
-    <fragment
         android:id="@+id/membersFragment"
         android:name="com.yuchen.makeplan.members.MembersFragment"
         android:label="fragment_members"
@@ -193,25 +146,6 @@
             android:id="@+id/action_membersFragment_to_searchUserFragment"
             app:destination="@id/searchUserFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/multiFragment"
-        android:name="com.yuchen.makeplan.multi.MultiFragment"
-        android:label="fragment_multi"
-        tools:layout="@layout/fragment_multi" >
-        <action
-            android:id="@+id/action_multiFragment_to_multiGanttFragment"
-            app:destination="@id/multiGanttFragment" />
-        <action
-            android:id="@+id/action_multiFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
-            android:id="@+id/action_multiFragment_to_multiEditDialog"
-            app:destination="@id/multiEditDialog" />
-        <action
-            android:id="@+id/action_multiFragment_to_searchProjectFragment"
-            app:destination="@id/searchProjectFragment" />
-    </fragment>
-    <action android:id="@+id/action_global_multiFragment" app:destination="@id/multiFragment" />
     <fragment
         android:id="@+id/searchProjectFragment"
         android:name="com.yuchen.makeplan.serachproject.SearchProjectFragment"

@@ -27,18 +27,6 @@ class MultiGanttFragment : Fragment() {
         val binding = FragmentMultiGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.multiGanttMembers.setOnClickListener {
-            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToUsersFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
-        }
-
-        binding.multiGanttInvite.setOnClickListener {
-            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToInviteUsersFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
-        }
-
-        binding.multiGanttJoin.setOnClickListener {
-            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToJoinUserFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
-        }
-
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
 //                binding.multiGanttTimeLine.setRange(it.startTimeMillis,it.endTimeMillis)

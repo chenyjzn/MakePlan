@@ -31,7 +31,7 @@ class MembersItems : Fragment() {
             it?.let {
                 if (viewModel.pagerPos==0){
                    if(it.filter { it == UserManager.user.uid }.isEmpty()){
-                       parentFragment?.findNavController()?.navigate(MembersFragmentDirections.actionGlobalMultiFragment())
+                       parentFragment?.findNavController()?.navigate(MembersFragmentDirections.actionGlobalMultiProjectsFragment())
                    }
                 }
                 viewModel.setUsersByUidList(it)
