@@ -15,9 +15,7 @@ import com.yuchen.makeplan.databinding.FragmentSearchUserBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 class SearchUserFragment : Fragment() {
-
     private val viewModel: SearchUserViewModel by viewModels<SearchUserViewModel> { getVmFactory(SearchUserFragmentArgs.fromBundle(requireArguments()).project)}
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentSearchUserBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner

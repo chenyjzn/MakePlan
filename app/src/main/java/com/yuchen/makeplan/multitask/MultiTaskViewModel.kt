@@ -53,11 +53,11 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
             taskInput.name
     }
 
-    val newTaskColor = MutableLiveData<String>().apply {
+    val newTaskColorPair = MutableLiveData<Pair<Int,String>>().apply {
         value = if (taskInput == null)
-            colorList.first()
+            0 to colorList[0]
         else
-            taskInput.color
+            taskInput.color to colorList[taskInput.color]
     }
 
     val newTaskCompleteRate = MutableLiveData<Int>().apply {
@@ -75,7 +75,7 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
         val name = newTaskName.value ?: "Project"
         val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis
         val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
-        val color = newTaskColor.value ?: colorList.first()
+        val color = newTaskColorPair.value?.first ?: 0
         var completeRate = newTaskCompleteRate.value ?: 0
         var newTask = MultiTask(startTimeMillis = startTimeMillis, endTimeMillis = endTimeMillis, name = name, color = color, completeRate = completeRate)
         if (taskInput != null) {

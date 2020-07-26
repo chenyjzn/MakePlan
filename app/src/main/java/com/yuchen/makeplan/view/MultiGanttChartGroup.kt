@@ -13,6 +13,7 @@ import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.HOUR_MILLIS
 import com.yuchen.makeplan.MINUTE_MILLIS
 import com.yuchen.makeplan.R
+import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
@@ -50,7 +51,7 @@ class MultiGanttChartGroup : View {
     private val colorToolBarBack = resources.getColor(R.color.yellow_600)
     private val colorToolBarStroke = resources.getColor(R.color.my_gray_100)
 
-    private var taskList : MutableList<Task>? = null
+    private var taskList : MutableList<MultiTask>? = null
 
     private var timeLineType: Int = 0
 
@@ -69,7 +70,7 @@ class MultiGanttChartGroup : View {
     private var endHour: Int = calendar.get(Calendar.HOUR_OF_DAY)
 
     private var taskSelectPos = -1
-    private var taskSelectValue : Task? = null
+    private var taskSelectValue : MultiTask? = null
 
     private var taskLongSelect = -1
     private var taskLongYPos = 0f
@@ -190,10 +191,8 @@ class MultiGanttChartGroup : View {
         invalidate()
     }
 
-    fun setTaskList(taskList: List<Task>){
-        this.taskList = taskList.map {
-            it.newRefTask()
-        }.toMutableList()
+    fun setTaskList(taskList: List<MultiTask>){
+        this.taskList = taskList.toMutableList()
     }
 
     fun setProjectTimeByDx(dx : Float, width : Int) : Pair<Long,Long>{
@@ -281,7 +280,7 @@ class MultiGanttChartGroup : View {
         taskSelectPos = pos
     }
 
-    fun setTaskValueSelect(task:Task?){
+    fun setTaskValueSelect(task:MultiTask?){
         taskSelectValue = task
     }
 
@@ -888,16 +887,16 @@ class MultiGanttChartGroup : View {
                 if (x in left..right && y in top..bottom && index == taskSelectPos){
                     return TouchMode.TASK_PRE_MOVE
                 }else if(x in left - taskControl..left && y in top..bottom && index == taskSelectPos){
-                    return TouchMode.TASK_LEFT
+                    return TouchMode.TASK_PRE_LEFT
                 }else if(x in  right..right+taskControl && y in top..bottom && index == taskSelectPos){
-                    return TouchMode.TASK_RIGHT
+                    return TouchMode.TASK_PRE_RIGHT
                 }
             }
         }
         return TouchMode.CLICK
     }
 
-    fun getTaskSelect(x : Float, y : Float) : Pair<Int,Task?> {
+    fun getTaskSelect(x : Float, y : Float) : Pair<Int,MultiTask?> {
         taskList?.let {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
@@ -948,9 +947,9 @@ class MultiGanttChartGroup : View {
         fun eventChartTime(startTimeMillis: Long,endTimeMillis: Long)
         fun eventMoveDx(dx : Float, width : Int)
         fun eventZoomDlDr(dl : Float, dr : Float, width : Int)
-        fun eventTaskSelect(taskPos: Int, taskValue : Task?)
-        fun eventTaskModify(taskPos: Int, task : Task)
-        fun eventTaskSwap(task : MutableList<Task>)
+        fun eventTaskSelect(taskPos: Int, taskValue : MultiTask?)
+        fun eventTaskModify(taskPos: Int, task : MultiTask)
+        fun eventTaskSwap(task : MutableList<MultiTask>)
     }
 
     var x0 = 0f
@@ -964,6 +963,8 @@ class MultiGanttChartGroup : View {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+
+
         if (event != null) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -972,7 +973,7 @@ class MultiGanttChartGroup : View {
                         y0 = event.y
                         touchStatus = TouchMode.CLICK
                         handler.postDelayed(Runnable {
-                            if (touchStatus == TouchMode.CLICK){
+                            if (touchStatus == TouchMode.CLICK && taskSelectPos== -1){
                                 touchStatus = TouchMode.LONG_CLICK
                                 taskLongSelect = getTaskLongSelect(y0)
                                 taskLongYPos = y0
@@ -983,21 +984,35 @@ class MultiGanttChartGroup : View {
                     }else{
                         x0 = event.x
                         y0 = event.y
+                        touchStatus = checkTaskModeTouchPos(x0,y0)
                         handler.postDelayed(Runnable {
                             if (touchStatus == TouchMode.CLICK)
                                 touchStatus = TouchMode.NONE
                         }, MAX_CLICK_DURATION)
-                        touchStatus = checkTaskModeTouchPos(x0,y0)
                         return true
                     }
                 }
                 MotionEvent.ACTION_POINTER_DOWN -> {
-                    if (touchStatus == TouchMode.CLICK) {
+                    if (touchStatus == TouchMode.CLICK || touchStatus == TouchMode.MOVE || touchStatus == TouchMode.TASK_PRE_MOVE || touchStatus == TouchMode.TASK_PRE_LEFT|| touchStatus == TouchMode.TASK_PRE_RIGHT) {
+                        x0 = event.getX(0)
+                        y0 = event.getY(0)
                         x1 = event.getX(1)
                         y1 = event.getY(1)
                         touchStatus = TouchMode.ZOOM
                         return true
-                    }else{
+                    }else {
+                        if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT) {
+                            taskList?.let {
+                                onEventListener?.eventTaskModify(taskSelectPos, it[taskSelectPos])
+                            }
+                        } else if (touchStatus == TouchMode.LONG_CLICK) {
+                            taskLongYPos = 0f
+                            taskLongSelect = -1
+                            taskList?.let {
+                                onEventListener?.eventTaskSwap(it)
+                            }
+                        }
+                        touchStatus = TouchMode.NONE
                         return false
                     }
                 }
@@ -1039,6 +1054,21 @@ class MultiGanttChartGroup : View {
                                 x0 = event.x
                                 y0 = event.y
                             }
+                        }else if (touchStatus == TouchMode.TASK_PRE_LEFT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                            touchStatus = TouchMode.TASK_LEFT
+                            val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
+                            if(timeOffset/taskActionTimeScale != 0L) {
+                                taskList?.let {
+                                    if (it[taskSelectPos].startTimeMillis + timeOffset >= it[taskSelectPos].endTimeMillis) {
+                                        it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
+                                    } else {
+                                        it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                    }
+                                    invalidate()
+                                }
+                                x0 = event.x
+                                y0 = event.y
+                            }
                         }else if (touchStatus == TouchMode.TASK_LEFT){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
@@ -1047,6 +1077,21 @@ class MultiGanttChartGroup : View {
                                         it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
                                     } else {
                                         it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                    }
+                                    invalidate()
+                                }
+                                x0 = event.x
+                                y0 = event.y
+                            }
+                        }else if (touchStatus == TouchMode.TASK_PRE_RIGHT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                            touchStatus = TouchMode.TASK_RIGHT
+                            val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
+                            if(timeOffset/taskActionTimeScale != 0L) {
+                                taskList?.let {
+                                    if (it[taskSelectPos].endTimeMillis + timeOffset <= it[taskSelectPos].startTimeMillis) {
+                                        it[taskSelectPos].endTimeMillis = it[taskSelectPos].startTimeMillis
+                                    } else {
+                                        it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
                                 }
@@ -1142,6 +1187,19 @@ class MultiGanttChartGroup : View {
                     touchStatus = TouchMode.NONE
                     return false
                 }
+                MotionEvent.ACTION_POINTER_UP -> {
+                    if (touchStatus == TouchMode.ZOOM){
+                        touchStatus = TouchMode.MOVE
+                        if(event.actionIndex == 0){
+                            y0 = event.getY(1)
+                            x0 = event.getX(1)
+                        }else{
+                            y0 = event.getY(0)
+                            x0 = event.getX(0)
+                        }
+                    }
+                    return false
+                }
                 else -> {
                     return true
                 }
@@ -1172,7 +1230,9 @@ class MultiGanttChartGroup : View {
             ZOOM,
             NONE,
             TASK_LEFT,
+            TASK_PRE_LEFT,
             TASK_RIGHT,
+            TASK_PRE_RIGHT,
             TASK_PRE_MOVE,
             TASK_MOVE
         }

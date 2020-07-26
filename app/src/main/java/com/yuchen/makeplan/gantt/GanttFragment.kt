@@ -35,7 +35,6 @@ class GanttFragment : Fragment() {
         binding.viewModel=viewModel
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
-                Log.d("chenyjzn","Project change")
                 binding.ganttChartGroup.setRange(it.startTimeMillis,it.endTimeMillis)
                 binding.ganttChartGroup.setTaskList(it.taskList)
                 binding.ganttChartGroup.invalidate()
@@ -145,6 +144,16 @@ class GanttFragment : Fragment() {
         viewModel.taskTimeScale.observe(viewLifecycleOwner, Observer {
             it?.let {
                 binding.ganttChartGroup.setTaskActionTimeScale(it)
+            }
+        })
+
+        viewModel.taskTimeScale.observe(viewLifecycleOwner, Observer {
+            Log.d("chenyjzn","${binding.task5m.isPressed}, ${binding.task5m.isSelected}")
+            it?.let {
+                binding.taskDay.isSelected = it == 0
+                binding.taskHour.isSelected = it == 1
+                binding.task15m.isSelected = it == 2
+                binding.task5m.isSelected = it == 3
             }
         })
 

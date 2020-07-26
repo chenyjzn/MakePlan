@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.databinding.ItemTaskColorBinding
 
 class TaskColorAdapter(private val viewModel : TaskViewModel) : RecyclerView.Adapter<TaskColorAdapter.TaskColorHolder>() {
-
     inner class TaskColorHolder(var binding: ItemTaskColorBinding) : RecyclerView.ViewHolder(binding.root), LifecycleOwner {
-        fun bind(viewModel: TaskViewModel, position: Int) {
+        fun bind(position: Int) {
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
             binding.colorString = viewModel.colorList[position]
@@ -45,7 +44,7 @@ class TaskColorAdapter(private val viewModel : TaskViewModel) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: TaskColorHolder, position: Int) {
-        holder.bind(viewModel,position)
+        holder.bind(position)
     }
 
     override fun getItemCount(): Int {

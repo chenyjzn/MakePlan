@@ -4,278 +4,283 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.yuchen.makeplan.multitask.MultiTaskViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/multi_task_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Name:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/multi_task_name_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:ems="10"
-            android:hint="Task name"
-            android:inputType="textPersonName"
-            android:text="@={viewModel.newTaskName}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_name"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_name" />
+            <TextView
+                android:id="@+id/multi_task_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Name:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/multi_task_start"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Task Start:"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_name_edit"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_name_edit" />
+            <EditText
+                android:id="@+id/multi_task_name_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:ems="10"
+                android:hint="Task name"
+                android:inputType="textPersonName"
+                android:text="@={viewModel.newTaskName}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_name"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_name" />
 
-        <EditText
-            android:id="@+id/multi_task_start_date_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:ems="10"
-            android:focusable="false"
-            android:hint="Start date"
-            android:inputType="date"
-            android:text="@{viewModel.convertTimeMilliToDateString(viewModel.newStartTimeMillis)}"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_start_time_edit"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_name_edit"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_start" />
+            <TextView
+                android:id="@+id/multi_task_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Task Start:"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_name_edit"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_name_edit" />
 
-        <EditText
-            android:id="@+id/multi_task_start_time_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:ems="10"
-            android:focusable="false"
-            android:hint="Start time"
-            android:inputType="date"
-            android:text="@{viewModel.convertTimeMilliToTimeString(viewModel.newStartTimeMillis)}"
-            app:layout_constraintEnd_toEndOf="@+id/multi_task_name_edit"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_start_date_edit"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_start_date_edit" />
+            <EditText
+                android:id="@+id/multi_task_start_date_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="Start date"
+                android:inputType="date"
+                android:text="@{viewModel.convertTimeMilliToDateString(viewModel.newStartTimeMillis)}"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_start_time_edit"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_name_edit"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_start" />
 
-        <TextView
-            android:id="@+id/multi_task_end_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Task End:"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_start"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_start_date_edit" />
+            <EditText
+                android:id="@+id/multi_task_start_time_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="Start time"
+                android:inputType="date"
+                android:text="@{viewModel.convertTimeMilliToTimeString(viewModel.newStartTimeMillis)}"
+                app:layout_constraintEnd_toEndOf="@+id/multi_task_name_edit"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_start_date_edit"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_start_date_edit" />
 
-        <EditText
-            android:id="@+id/multi_task_end_date_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:ems="10"
-            android:focusable="false"
-            android:hint="End date"
-            android:inputType="date"
-            android:text="@{viewModel.convertTimeMilliToDateString(viewModel.newEndTimeMillis)}"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_end_time_edit"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_end_date"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_end_date" />
+            <TextView
+                android:id="@+id/multi_task_end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Task End:"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_start"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_start_date_edit" />
 
-        <EditText
-            android:id="@+id/multi_task_end_time_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:ems="10"
-            android:focusable="false"
-            android:hint="End time"
-            android:inputType="date"
-            android:text="@{viewModel.convertTimeMilliToTimeString(viewModel.newEndTimeMillis)}"
-            app:layout_constraintEnd_toEndOf="@+id/multi_task_start_time_edit"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_end_date_edit"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_end_date_edit" />
+            <EditText
+                android:id="@+id/multi_task_end_date_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="End date"
+                android:inputType="date"
+                android:text="@{viewModel.convertTimeMilliToDateString(viewModel.newEndTimeMillis)}"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_end_time_edit"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_end_date"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_end_date" />
 
-        <TextView
-            android:id="@+id/multi_task_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Duration:"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_end_date"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_end_time_edit" />
+            <EditText
+                android:id="@+id/multi_task_end_time_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="End time"
+                android:inputType="date"
+                android:text="@{viewModel.convertTimeMilliToTimeString(viewModel.newEndTimeMillis)}"
+                app:layout_constraintEnd_toEndOf="@+id/multi_task_start_time_edit"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_end_date_edit"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_end_date_edit" />
 
-        <EditText
-            android:id="@+id/multi_task_duration_day_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:inputType="number"
-            android:text="@{viewModel.getDurationDays(viewModel.newStartTimeMillis,viewModel.newEndTimeMillis)}"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_day"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_duration" />
+            <TextView
+                android:id="@+id/multi_task_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Duration:"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_end_date"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_end_time_edit" />
 
-        <TextView
-            android:id="@+id/multi_task_duration_day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Day"
-            app:layout_constraintBottom_toBottomOf="@+id/multi_task_duration_day_edit"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_hour_edit"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_duration_day_edit"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_duration_day_edit"
-            app:layout_constraintVertical_bias="0.478" />
+            <EditText
+                android:id="@+id/multi_task_duration_day_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:inputType="number"
+                android:text="@{viewModel.getDurationDays(viewModel.newStartTimeMillis,viewModel.newEndTimeMillis)}"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_day"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_duration" />
 
-        <EditText
-            android:id="@+id/multi_task_duration_hour_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:text="@{viewModel.getDurationHours(viewModel.newStartTimeMillis,viewModel.newEndTimeMillis)}"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_hour"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_duration_day"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_duration_day_edit" />
+            <TextView
+                android:id="@+id/multi_task_duration_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Day"
+                app:layout_constraintBottom_toBottomOf="@+id/multi_task_duration_day_edit"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_hour_edit"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_duration_day_edit"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_duration_day_edit"
+                app:layout_constraintVertical_bias="0.478" />
 
-        <TextView
-            android:id="@+id/multi_task_duration_hour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hour"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_minute_edit"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_duration_hour_edit"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_duration_day" />
+            <EditText
+                android:id="@+id/multi_task_duration_hour_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:text="@{viewModel.getDurationHours(viewModel.newStartTimeMillis,viewModel.newEndTimeMillis)}"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_hour"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_duration_day"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_duration_day_edit" />
 
-        <EditText
-            android:id="@+id/multi_task_duration_minute_edit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:text="@{viewModel.getDurationMinutes(viewModel.newStartTimeMillis,viewModel.newEndTimeMillis)}"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_minute"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_duration_hour"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_duration_hour_edit" />
+            <TextView
+                android:id="@+id/multi_task_duration_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hour"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_minute_edit"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_duration_hour_edit"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_duration_day" />
 
-        <TextView
-            android:id="@+id/multi_task_duration_minute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:text="Minute"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_duration_minute_edit"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_duration_hour" />
+            <EditText
+                android:id="@+id/multi_task_duration_minute_edit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:text="@{viewModel.getDurationMinutes(viewModel.newStartTimeMillis,viewModel.newEndTimeMillis)}"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_duration_minute"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_duration_hour"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_duration_hour_edit" />
 
-        <TextView
-            android:id="@+id/multi_task_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Color:"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_duration"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_complete_rate_bar" />
+            <TextView
+                android:id="@+id/multi_task_duration_minute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="Minute"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_duration_minute_edit"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_duration_hour" />
 
-        <TextView
-            android:id="@+id/multi_task_complete_rate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="%Complete:"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_duration_day_edit"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_duration_day_edit" />
+            <TextView
+                android:id="@+id/multi_task_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Color:"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_duration"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_complete_rate_bar" />
 
-        <SeekBar
-            android:id="@+id/multi_task_complete_rate_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:max="100"
-            android:progress="@={viewModel.newTaskCompleteRate}"
-            app:layout_constraintBottom_toBottomOf="@+id/multi_task_complete_rate_text"
-            app:layout_constraintEnd_toEndOf="@+id/multi_task_end_time_edit"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_complete_rate_text"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_complete_rate" />
+            <TextView
+                android:id="@+id/multi_task_complete_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="%Complete:"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_duration_day_edit"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_duration_day_edit" />
 
-        <TextView
-            android:id="@+id/multi_task_complete_rate_text"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@{@string/int_rate(viewModel.newTaskCompleteRate)}"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_complete_rate"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_complete_rate"
-            tools:text="5%" />
+            <SeekBar
+                android:id="@+id/multi_task_complete_rate_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:progress="@={viewModel.newTaskCompleteRate}"
+                app:layout_constraintBottom_toBottomOf="@+id/multi_task_complete_rate_text"
+                app:layout_constraintEnd_toEndOf="@+id/multi_task_end_time_edit"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_complete_rate_text"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_complete_rate" />
 
-        <Button
-            android:id="@+id/multi_task_cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
-            android:text="@android:string/cancel"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/multi_task_save"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_color_recycler"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_color_recycler" />
+            <TextView
+                android:id="@+id/multi_task_complete_rate_text"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{@string/int_rate(viewModel.newTaskCompleteRate)}"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_complete_rate"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_complete_rate"
+                tools:text="5%" />
 
-        <Button
-            android:id="@+id/multi_task_save"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="Save"
-            app:layout_constraintEnd_toEndOf="@+id/multi_task_color_recycler"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/multi_task_cancel"
-            app:layout_constraintTop_toTopOf="@+id/multi_task_cancel" />
+            <Button
+                android:id="@+id/multi_task_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:text="@android:string/cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/multi_task_save"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_color_recycler"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_color_recycler" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/multi_task_color_recycler"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/multi_task_complete_rate_bar"
-            app:layout_constraintStart_toStartOf="@+id/multi_task_color"
-            app:layout_constraintTop_toBottomOf="@+id/multi_task_color">
+            <Button
+                android:id="@+id/multi_task_save"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="Save"
+                app:layout_constraintEnd_toEndOf="@+id/multi_task_color_recycler"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_cancel"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_cancel" />
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/multi_task_color_recycler"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/multi_task_complete_rate_bar"
+                app:layout_constraintStart_toStartOf="@+id/multi_task_color"
+                app:layout_constraintTop_toBottomOf="@+id/multi_task_color">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

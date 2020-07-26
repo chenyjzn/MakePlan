@@ -36,37 +36,6 @@ class MultiGanttFragment : Fragment() {
             }
         })
 
-        var start = System.currentTimeMillis()
-        var end : Long = start + 7 * DAY_MILLIS
-
-        binding.multiGanttTimeLine.setRange(start,end)
-        binding.multiGanttChart.setRange(start,end)
-
-        viewModel.tasks.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                var fb = 0.0f
-                var max = 0.0f
-                for (i in it){
-                    max += (i.endTimeMillis-i.startTimeMillis)
-                    fb += (i.endTimeMillis-i.startTimeMillis)*(i.completeRate/100f)
-                }
-                if (max == 0.0f)
-                    viewModel.updateProjectCompleteRate(0)
-                else
-                    viewModel.updateProjectCompleteRate ((fb*100f/max).roundToInt())
-
-                binding.multiGanttChart.setTaskList(it)
-                binding.multiGanttChart.invalidate()
-            }
-        })
-
-        viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                binding.multiGanttChart.setTaskSelect(it)
-                binding.multiGanttChart.invalidate()
-            }
-        })
-
         binding.multiGanttAddTask.setOnClickListener {
             if (viewModel.taskSelect.value == null && viewModel.project.value!= null)
                 this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!,null))
@@ -82,26 +51,6 @@ class MultiGanttFragment : Fragment() {
         binding.multiGanttDelete.setOnClickListener {
             if (viewModel.taskSelect.value != null)
                 viewModel.taskRemove()
-        }
-
-        binding.multiGanttChart.setOnEventListener(object : MultiGanttChart.OnEventListener{
-            override fun eventMoveDx(dx: Float, width: Int) {
-                binding.multiGanttTimeLine.setProjectTimeByDx(dx, width)
-                binding.multiGanttTimeLine.invalidate()
-            }
-
-            override fun eventZoomDlDr(dl: Float, dr: Float, width: Int) {
-                binding.multiGanttTimeLine.setProjectTimeByDlDr(dl, dr, width)
-                binding.multiGanttTimeLine.invalidate()
-            }
-
-            override fun eventTaskSelect(task: MultiTask?) {
-                viewModel.setTaskSelect(task)
-            }
-        })
-
-        binding.testButton.setOnClickListener {
-            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMembersFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
         }
 
         return binding.root

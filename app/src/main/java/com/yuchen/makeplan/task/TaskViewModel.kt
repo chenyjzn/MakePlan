@@ -49,7 +49,7 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
 
     val newTaskColorPair = MutableLiveData<Pair<Int,String>>().apply {
         value = if (taskPos == -1)
-            0 to "EF9A9A"
+            0 to colorList[0]
         else
             projectHistory.last().taskList[taskPos].color to colorList[projectHistory.last().taskList[taskPos].color]
     }

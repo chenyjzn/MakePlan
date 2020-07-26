@@ -1,10 +1,7 @@
 package com.yuchen.makeplan.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.DashPathEffect
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -17,6 +14,7 @@ import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
 import com.yuchen.makeplan.util.TimeUtil
+import java.time.format.TextStyle
 import java.util.*
 import kotlin.math.hypot
 import kotlin.math.pow
@@ -30,7 +28,7 @@ class GanttChartGroup : View {
 
     private val primaryTextPadding = 4.toPx()
     private val toolBarTextPadding = 4.toPx()
-    private val taskHeight = 50.toPx()
+    private val taskHeight = 60.toPx()
     private val timeLineHeight = 50.toPx()
     private val taskControl = 40.toPx()
     private val toolBarHeight = 20.toPx()
@@ -135,7 +133,7 @@ class GanttChartGroup : View {
 
     private val ganttTextPaint = Paint().apply {
         color = colorGanttText
-        textSize = 16.toPx().toFloat()
+        textSize = 18.toPx().toFloat()
         textAlign = Paint.Align.LEFT
     }
 
@@ -152,7 +150,8 @@ class GanttChartGroup : View {
 
     private val toolBarTextPaint = Paint().apply {
         color = colorToolBarText
-        textSize = 12.toPx().toFloat()
+        textSize = 15.toPx().toFloat()
+        typeface = Typeface.DEFAULT_BOLD
         textAlign = Paint.Align.CENTER
     }
 
@@ -888,9 +887,9 @@ class GanttChartGroup : View {
                 if (x in left..right && y in top..bottom && index == taskSelectPos){
                     return TouchMode.TASK_PRE_MOVE
                 }else if(x in left - taskControl..left && y in top..bottom && index == taskSelectPos){
-                    return TouchMode.TASK_LEFT
+                    return TouchMode.TASK_PRE_LEFT
                 }else if(x in  right..right+taskControl && y in top..bottom && index == taskSelectPos){
-                    return TouchMode.TASK_RIGHT
+                    return TouchMode.TASK_PRE_RIGHT
                 }
             }
         }
@@ -964,6 +963,8 @@ class GanttChartGroup : View {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+
+
         if (event != null) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -972,7 +973,7 @@ class GanttChartGroup : View {
                         y0 = event.y
                         touchStatus = TouchMode.CLICK
                         handler.postDelayed(Runnable {
-                            if (touchStatus == TouchMode.CLICK){
+                            if (touchStatus == TouchMode.CLICK && taskSelectPos== -1){
                                 touchStatus = TouchMode.LONG_CLICK
                                 taskLongSelect = getTaskLongSelect(y0)
                                 taskLongYPos = y0
@@ -983,21 +984,35 @@ class GanttChartGroup : View {
                     }else{
                         x0 = event.x
                         y0 = event.y
+                        touchStatus = checkTaskModeTouchPos(x0,y0)
                         handler.postDelayed(Runnable {
                             if (touchStatus == TouchMode.CLICK)
                                 touchStatus = TouchMode.NONE
                         }, MAX_CLICK_DURATION)
-                        touchStatus = checkTaskModeTouchPos(x0,y0)
                         return true
                     }
                 }
                 MotionEvent.ACTION_POINTER_DOWN -> {
-                    if (touchStatus == TouchMode.CLICK) {
+                    if (touchStatus == TouchMode.CLICK || touchStatus == TouchMode.MOVE || touchStatus == TouchMode.TASK_PRE_MOVE || touchStatus == TouchMode.TASK_PRE_LEFT|| touchStatus == TouchMode.TASK_PRE_RIGHT) {
+                        x0 = event.getX(0)
+                        y0 = event.getY(0)
                         x1 = event.getX(1)
                         y1 = event.getY(1)
                         touchStatus = TouchMode.ZOOM
                         return true
-                    }else{
+                    }else {
+                        if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT) {
+                            taskList?.let {
+                                onEventListener?.eventTaskModify(taskSelectPos, it[taskSelectPos])
+                            }
+                        } else if (touchStatus == TouchMode.LONG_CLICK) {
+                            taskLongYPos = 0f
+                            taskLongSelect = -1
+                            taskList?.let {
+                                onEventListener?.eventTaskSwap(it)
+                            }
+                        }
+                        touchStatus = TouchMode.NONE
                         return false
                     }
                 }
@@ -1039,6 +1054,21 @@ class GanttChartGroup : View {
                                 x0 = event.x
                                 y0 = event.y
                             }
+                        }else if (touchStatus == TouchMode.TASK_PRE_LEFT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                            touchStatus = TouchMode.TASK_LEFT
+                            val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
+                            if(timeOffset/taskActionTimeScale != 0L) {
+                                taskList?.let {
+                                    if (it[taskSelectPos].startTimeMillis + timeOffset >= it[taskSelectPos].endTimeMillis) {
+                                        it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
+                                    } else {
+                                        it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                    }
+                                    invalidate()
+                                }
+                                x0 = event.x
+                                y0 = event.y
+                            }
                         }else if (touchStatus == TouchMode.TASK_LEFT){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
@@ -1047,6 +1077,21 @@ class GanttChartGroup : View {
                                         it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
                                     } else {
                                         it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                    }
+                                    invalidate()
+                                }
+                                x0 = event.x
+                                y0 = event.y
+                            }
+                        }else if (touchStatus == TouchMode.TASK_PRE_RIGHT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                            touchStatus = TouchMode.TASK_RIGHT
+                            val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
+                            if(timeOffset/taskActionTimeScale != 0L) {
+                                taskList?.let {
+                                    if (it[taskSelectPos].endTimeMillis + timeOffset <= it[taskSelectPos].startTimeMillis) {
+                                        it[taskSelectPos].endTimeMillis = it[taskSelectPos].startTimeMillis
+                                    } else {
+                                        it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
                                 }
@@ -1142,6 +1187,19 @@ class GanttChartGroup : View {
                     touchStatus = TouchMode.NONE
                     return false
                 }
+                MotionEvent.ACTION_POINTER_UP -> {
+                    if (touchStatus == TouchMode.ZOOM){
+                        touchStatus = TouchMode.MOVE
+                        if(event.actionIndex == 0){
+                            y0 = event.getY(1)
+                            x0 = event.getX(1)
+                        }else{
+                            y0 = event.getY(0)
+                            x0 = event.getX(0)
+                        }
+                    }
+                    return false
+                }
                 else -> {
                     return true
                 }
@@ -1172,7 +1230,9 @@ class GanttChartGroup : View {
             ZOOM,
             NONE,
             TASK_LEFT,
+            TASK_PRE_LEFT,
             TASK_RIGHT,
+            TASK_PRE_RIGHT,
             TASK_PRE_MOVE,
             TASK_MOVE
         }

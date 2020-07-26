@@ -64,13 +64,6 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="GanttToolToggleButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textColor">@color/my_gray_180</item>
-        <item name="android:backgroundTint">@color/my_gray_90</item>
-        <item name="android:strokeColor">@color/yellow_400</item>
-        <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
-    </style>
-
     <style name="datepicker" parent="Theme.AppCompat.Dialog">
         <item name="colorAccent">@color/my_gray_60</item>                   <!--header background-->
         <item name="android:windowBackground">@color/my_gray_45</item>     <!--calendar background-->
@@ -78,6 +71,38 @@
         <item name="android:textColorPrimary">@color/white</item>     <!--days of the month-->
         <item name="android:textColorSecondary">@color/my_gray_200</item>    <!--days of the week-->
         <item name="android:textColor">@color/yellow_400</item>
+    </style>
+
+    <style name="GanttToolImageButton">
+        <item name="android:background">@drawable/button_bk_1</item>
+        <item name="android:minWidth">36dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:tint">@drawable/button_tint_1</item>
+        <item name="android:translationZ">2dp</item>
+    </style>
+
+    <style name="GanttToolToggleButtonLeft">
+        <item name="android:background">@drawable/button_bk_toggle_l</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:textColor">@drawable/button_tint_toggle</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="GanttToolToggleButtonCenter">
+        <item name="android:background">@drawable/button_bk_toggle_c</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:textColor">@drawable/button_tint_toggle</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="GanttToolToggleButtonRight">
+        <item name="android:background">@drawable/button_bk_toggle_r</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:textColor">@drawable/button_tint_toggle</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

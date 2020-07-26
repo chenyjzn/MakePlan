@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:background="@color/my_gray_75"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -34,98 +34,124 @@
                     android:id="@+id/gantt_add_task"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:src="@drawable/ic_add_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/gantt_undo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_undo_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/gantt_add_task"
                     app:layout_constraintStart_toEndOf="@+id/gantt_add_task"
-                    app:layout_constraintTop_toTopOf="@+id/gantt_add_task" />
+                    app:layout_constraintTop_toTopOf="@+id/gantt_add_task"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/gantt_redo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_redo_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/gantt_undo"
                     app:layout_constraintStart_toEndOf="@+id/gantt_undo"
-                    app:layout_constraintTop_toTopOf="@+id/gantt_undo" />
+                    app:layout_constraintTop_toTopOf="@+id/gantt_undo"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/gantt_save"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_save_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/gantt_redo"
                     app:layout_constraintStart_toEndOf="@+id/gantt_redo"
-                    app:layout_constraintTop_toTopOf="@+id/gantt_redo" />
+                    app:layout_constraintTop_toTopOf="@+id/gantt_redo"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/task_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:src="@drawable/ic_mode_edit_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.GONE : View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/gantt_save"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/gantt_save"
-                    app:layout_constraintTop_toTopOf="@+id/gantt_save" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/task_copy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_content_copy_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@+id/task_edit"
                     app:layout_constraintStart_toEndOf="@+id/task_edit"
-                    app:layout_constraintTop_toTopOf="@+id/task_edit" />
+                    app:layout_constraintTop_toTopOf="@+id/task_edit"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/task_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_delete_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@+id/task_copy"
                     app:layout_constraintStart_toEndOf="@+id/task_copy"
-                    app:layout_constraintTop_toTopOf="@+id/task_copy" />
+                    app:layout_constraintTop_toTopOf="@+id/task_copy"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/task_up"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_arrow_upward_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@+id/task_delete"
                     app:layout_constraintStart_toEndOf="@+id/task_delete"
-                    app:layout_constraintTop_toTopOf="@+id/task_delete" />
+                    app:layout_constraintTop_toTopOf="@+id/task_delete"
+                    style="@style/GanttToolImageButton" />
 
                 <ImageButton
                     android:id="@+id/task_down"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_arrow_downward_black_24dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@+id/task_up"
                     app:layout_constraintStart_toEndOf="@+id/task_up"
-                    app:layout_constraintTop_toTopOf="@+id/task_up" />
+                    app:layout_constraintTop_toTopOf="@+id/task_up"
+                    style="@style/GanttToolImageButton" />
 
                 <LinearLayout
                     android:id="@+id/task_toggle_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:translationZ="2dp"
                     android:visibility="@{viewModel.taskSelect == -1? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="@+id/task_down"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/task_down"
                     app:layout_constraintTop_toTopOf="@+id/task_down">
 
@@ -135,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(0)}"
                         android:text="Day"
-                        android:textColor="@{viewModel.taskTimeScale == 0 ? @color/yellow_400 : @color/my_gray_180}" />
+                        style="@style/GanttToolToggleButtonLeft" />
 
                     <Button
                         android:id="@+id/task_hour"
@@ -143,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(1)}"
                         android:text="Hour"
-                        android:textColor="@{viewModel.taskTimeScale == 1 ? @color/yellow_400 : @color/my_gray_180}" />
+                        style="@style/GanttToolToggleButtonCenter" />
 
                     <Button
                         android:id="@+id/task_15m"
@@ -151,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(2)}"
                         android:text="15m"
-                        android:textColor="@{viewModel.taskTimeScale == 2 ? @color/yellow_400 : @color/my_gray_180}" />
+                        style="@style/GanttToolToggleButtonCenter" />
 
                     <Button
                         android:id="@+id/task_5m"
@@ -159,7 +185,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="@{() -> viewModel.setTaskTimeScale(3)}"
                         android:text="5m"
-                        android:textColor="@{viewModel.taskTimeScale == 3 ? @color/yellow_400 : @color/my_gray_180}" />
+                        style="@style/GanttToolToggleButtonRight" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

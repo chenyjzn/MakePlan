@@ -31,7 +31,7 @@ class MultiTaskFragment : Fragment() {
         val colorAdaptor = MultiTaskColorAdapter(viewModel)
         binding.multiTaskColorRecycler.adapter = colorAdaptor
         binding.multiTaskColorRecycler.layoutManager =
-            GridLayoutManager(binding.multiTaskColorRecycler.context, 6)
+            GridLayoutManager(binding.multiTaskColorRecycler.context, 5)
         val calendar = Calendar.getInstance()
 
         binding.multiTaskStartDateEdit.setOnClickListener {
@@ -39,12 +39,7 @@ class MultiTaskFragment : Fragment() {
             val startDatePickerDialog = DatePickerDialog(
                 requireNotNull(context),
                 object : DatePickerDialog.OnDateSetListener {
-                    override fun onDateSet(
-                        view: DatePicker?,
-                        year: Int,
-                        month: Int,
-                        dayOfMonth: Int
-                    ) {
+                    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
                         viewModel.setStartDate(year, month, dayOfMonth)
                     }
                 },
