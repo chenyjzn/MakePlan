@@ -4,20 +4,13 @@
 
     <item
         android:id="@+id/cloud_download"
-        android:icon="@drawable/ic_cloud_download_black_24dp"
+        android:icon="@drawable/ic_file_download_black_24dp"
         android:title="Download"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/cloud_upload"
-        android:icon="@drawable/ic_cloud_upload_black_24dp"
+        android:icon="@drawable/ic_file_upload_black_24dp"
         android:title="Upload"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/add_project"
-        android:icon="@drawable/ic_add_black_24dp"
-        android:title="Add project"
-        app:showAsAction="ifRoom" />
-
 </menu>

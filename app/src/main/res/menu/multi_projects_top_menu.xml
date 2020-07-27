@@ -8,10 +8,4 @@
         android:title="Download"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/add_project"
-        android:icon="@drawable/ic_add_black_24dp"
-        android:title="Add project"
-        app:showAsAction="ifRoom" />
-
 </menu>

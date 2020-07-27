@@ -79,8 +79,6 @@ class GanttChartGroup : View {
 
     private var taskActionTimeScale : Long = 0L
 
-    private var firstCreate = true
-
     fun setTaskActionTimeScale(type: Int){
         when(type){
             0 -> taskActionTimeScale = DAY_MILLIS
@@ -208,13 +206,6 @@ class GanttChartGroup : View {
             startDate = startDate+(endDate-startDate)/2 - 2* HOUR_MILLIS
             endDate = startDate+(endDate-startDate)/2 + 2* HOUR_MILLIS
         }
-//        if(calScale(28 * DAY_MILLIS,startDate,endDate)<=36.0f) {
-//            startDate = System.currentTimeMillis()
-//            endDate = startDate + 7 * DAY_MILLIS
-//        } else if(calScale(HOUR_MILLIS,startDate ,endDate)>=50.0f) {
-//            startDate = System.currentTimeMillis()
-//            endDate = startDate + 7 * DAY_MILLIS
-//        }
     }
 
     fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int) : Pair<Long,Long> {
@@ -963,8 +954,6 @@ class GanttChartGroup : View {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-
-
         if (event != null) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -1211,10 +1200,7 @@ class GanttChartGroup : View {
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (firstCreate){
-            checkProjectBound()
-            firstCreate = false
-        }
+        checkProjectBound()
         setTimeLineScale()
         drawGanttChart(canvas)
         drawTimeLine(canvas)

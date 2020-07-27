@@ -11,7 +11,18 @@ data class MultiTask(
     var name: String = "Task",
     var completeRate : Int = 0,
     var color : Int = 0,
-    var taskOwners : List<User> = listOf(),
+    var taskOwners : MutableList<User> = mutableListOf(),
     var toDoList : MutableList<ToDo> = mutableListOf(),
     var firebaseId: String = ""
-) : Parcelable
+) : Parcelable{
+    fun newRefTask(): MultiTask{
+        val newTask = this.copy(toDoList = mutableListOf(),taskOwners = mutableListOf())
+        this.toDoList.map {toDo->
+            newTask.toDoList.add(toDo)
+        }
+        this.taskOwners.map {user->
+            newTask.taskOwners.add(user)
+        }
+        return newTask
+    }
+}

@@ -41,7 +41,7 @@ class ProjectsFragment : Fragment() {
 
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
-                projectsAdapter.appendList(it)
+                projectsAdapter.submitList(it)
                 projectsAdapter.notifyDataSetChanged()
             }
         })
@@ -127,12 +127,12 @@ class ProjectsFragment : Fragment() {
                     }
                     true
                 }
-                R.id.add_project -> {
-                    this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null))
-                    true
-                }
                 else -> false
             }
+        }
+
+        binding.projectsAddProject.setOnClickListener {
+            this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null))
         }
 
         return binding.root

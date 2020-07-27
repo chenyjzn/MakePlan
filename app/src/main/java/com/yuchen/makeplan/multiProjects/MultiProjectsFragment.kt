@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiProject
-import com.yuchen.makeplan.databinding.FragmentMultiBinding
 import com.yuchen.makeplan.databinding.FragmentMultiProjectsBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
@@ -43,13 +42,14 @@ class MultiProjectsFragment : Fragment() {
                     this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToSearchProjectFragment())
                     true
                 }
-                R.id.add_project-> {
-                    this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(null))
-                    true
-                }
                 else -> false
             }
         }
+
+        binding.multiProjectsAddProject.setOnClickListener {
+            this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(null))
+        }
+
         return binding.root
     }
 }

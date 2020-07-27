@@ -22,11 +22,27 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     val taskSelect: LiveData<MultiTask>
         get() = _taskSelect
 
+    private val _taskTimeScale = MutableLiveData<Int>().apply {
+        value = 0
+    }
+    val taskTimeScale: LiveData<Int>
+        get() = _taskTimeScale
+
+    fun setTaskTimeScale(time : Int){
+        _taskTimeScale.value = time
+    }
+
     fun setTaskSelect(task: MultiTask?){
         if (_taskSelect.value != null && _taskSelect.value == task)
             _taskSelect.value = null
         else
             _taskSelect.value = task
+    }
+
+    fun updateTaskToFirebase(task: MultiTask){
+        coroutineScope.launch {
+            repository.updateMultiProjectTask(projectInput,task)
+        }
     }
 
     fun taskSelectClear(){
@@ -47,6 +63,16 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
             coroutineScope.launch {
                 repository.updateMultiProjectCompleteRate(project,completeRate)
                 _taskSelect.value = null
+            }
+        }
+    }
+
+    fun copyTaskToFirebase(){
+        _taskSelect.value?.let {
+            val newTask = it.newRefTask()
+            newTask.firebaseId = ""
+            coroutineScope.launch {
+                repository.updateMultiProjectTask(projectInput,newTask)
             }
         }
     }

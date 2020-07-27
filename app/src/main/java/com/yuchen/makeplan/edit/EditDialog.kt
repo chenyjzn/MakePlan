@@ -18,9 +18,7 @@ import com.yuchen.makeplan.ext.getVmFactory
 
 
 class EditDialog : BottomSheetDialogFragment() {
-
     private val viewModel: EditViewModel by viewModels<EditViewModel> { getVmFactory(EditDialogArgs.fromBundle(requireArguments()).project)}
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DialogEditBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner

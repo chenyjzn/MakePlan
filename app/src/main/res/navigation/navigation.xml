@@ -30,7 +30,7 @@
             app:destination="@id/ganttFragment" />
         <action
             android:id="@+id/action_projectsFragment_to_EditDialog"
-            app:destination="@id/EditDialog" />
+            app:destination="@id/editDialog" />
     </fragment>
     <fragment
         android:id="@+id/taskFragment"
@@ -50,7 +50,7 @@
             app:argType="integer" />
     </fragment>
     <dialog
-        android:id="@+id/EditDialog"
+        android:id="@+id/editDialog"
         android:name="com.yuchen.makeplan.edit.EditDialog"
         android:label="dialog_project_edit"
         tools:layout="@layout/dialog_edit" >

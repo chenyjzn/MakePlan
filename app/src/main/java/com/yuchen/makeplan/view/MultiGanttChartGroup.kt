@@ -1,10 +1,7 @@
 package com.yuchen.makeplan.view
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.DashPathEffect
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -14,14 +11,13 @@ import com.yuchen.makeplan.HOUR_MILLIS
 import com.yuchen.makeplan.MINUTE_MILLIS
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiTask
-import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
 import com.yuchen.makeplan.util.TimeUtil
+import com.yuchen.makeplan.util.TimeUtil.StampToDate
 import java.util.*
 import kotlin.math.hypot
 import kotlin.math.pow
-
 
 class MultiGanttChartGroup : View {
 
@@ -31,7 +27,7 @@ class MultiGanttChartGroup : View {
 
     private val primaryTextPadding = 4.toPx()
     private val toolBarTextPadding = 4.toPx()
-    private val taskHeight = 50.toPx()
+    private val taskHeight = 60.toPx()
     private val timeLineHeight = 50.toPx()
     private val taskControl = 40.toPx()
     private val toolBarHeight = 20.toPx()
@@ -81,8 +77,6 @@ class MultiGanttChartGroup : View {
     private var dy = 0f
 
     private var taskActionTimeScale : Long = 0L
-
-    private var firstCreate = true
 
     fun setTaskActionTimeScale(type: Int){
         when(type){
@@ -136,7 +130,7 @@ class MultiGanttChartGroup : View {
 
     private val ganttTextPaint = Paint().apply {
         color = colorGanttText
-        textSize = 16.toPx().toFloat()
+        textSize = 18.toPx().toFloat()
         textAlign = Paint.Align.LEFT
     }
 
@@ -153,7 +147,8 @@ class MultiGanttChartGroup : View {
 
     private val toolBarTextPaint = Paint().apply {
         color = colorToolBarText
-        textSize = 12.toPx().toFloat()
+        textSize = 15.toPx().toFloat()
+        typeface = Typeface.DEFAULT_BOLD
         textAlign = Paint.Align.CENTER
     }
 
@@ -201,20 +196,11 @@ class MultiGanttChartGroup : View {
     }
 
     fun checkProjectBound(){
-        if((endDate - startDate)>=300 * DAY_MILLIS) {
-            startDate = startDate+(endDate-startDate)/2 - 150* DAY_MILLIS
-            endDate = startDate+(endDate-startDate)/2 + 150* DAY_MILLIS
-        } else if((endDate - startDate)<= 4 * HOUR_MILLIS) {
-            startDate = startDate+(endDate-startDate)/2 - 2* HOUR_MILLIS
-            endDate = startDate+(endDate-startDate)/2 + 2* HOUR_MILLIS
+        if((endDate - startDate)>300 * DAY_MILLIS) {
+            endDate = startDate + 300 * DAY_MILLIS
+        } else if((endDate - startDate)< 4 * HOUR_MILLIS) {
+            endDate = startDate + 4 * HOUR_MILLIS
         }
-//        if(calScale(28 * DAY_MILLIS,startDate,endDate)<=36.0f) {
-//            startDate = System.currentTimeMillis()
-//            endDate = startDate + 7 * DAY_MILLIS
-//        } else if(calScale(HOUR_MILLIS,startDate ,endDate)>=50.0f) {
-//            startDate = System.currentTimeMillis()
-//            endDate = startDate + 7 * DAY_MILLIS
-//        }
     }
 
     fun setProjectTimeByDlDr(dl : Float, dr : Float, width : Int) : Pair<Long,Long> {
@@ -227,13 +213,6 @@ class MultiGanttChartGroup : View {
             return startDate+(endDate-startDate)/2 - 2* HOUR_MILLIS to startDate+(endDate-startDate)/2 + 2* HOUR_MILLIS
         } else
             return startDate + timeOffsetl to endDate - timeOffsetr
-
-//        if(calScale(28 * DAY_MILLIS,startDate + timeOffsetl,endDate - timeOffsetr)<=36.0f) {
-//            return startDate  to endDate
-//        } else if(calScale(HOUR_MILLIS,startDate + timeOffsetl,endDate - timeOffsetr)>=50.0f) {
-//            return startDate to endDate
-//        } else
-//            return startDate + timeOffsetl to endDate - timeOffsetr
     }
 
     fun setYPos(dy : Float){
@@ -274,6 +253,7 @@ class MultiGanttChartGroup : View {
         }else{
             timeLineType = -1
         }
+        Log.d("chenyjzn","cal scale s=${StampToDate(startDate)}, e=${StampToDate(endDate)}, type = $timeLineType")
     }
 
     fun setTaskPosSelect(pos:Int){
@@ -813,7 +793,7 @@ class MultiGanttChartGroup : View {
                         canvas.drawLine(0f, bottom, width.toFloat(), bottom, ganttLineHorizontalPaint)
                         val text = "${value.name} | ${value.completeRate}%"
                         canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, ganttTextPaint)
-                        if (index == taskSelectPos){
+                        if (value == taskSelectValue){
                             canvas.drawRoundRect(left - taskControl,top + taskHeight.toFloat()*0.5f,right + taskControl, bottom- 0.1f*taskHeight,15f,15f, ganttShortSelectPaint)
                         }
                         barPaint.color = Color.parseColor(colorList1[value.color])
@@ -862,33 +842,32 @@ class MultiGanttChartGroup : View {
     private fun drawToolBar(canvas: Canvas){
         canvas.drawRect(0f,timeLineHeight.toFloat(),width.toFloat(),timeLineHeight.toFloat() + toolBarHeight,toolBarBackPaint)
         canvas.drawRect(0f,timeLineHeight.toFloat(),width.toFloat(),timeLineHeight.toFloat() + toolBarHeight, toolBarStrokePaint)
-        if (taskSelectPos != -1){
-            taskList?.let {
-                toolBarTextPaint.textAlign= Paint.Align.LEFT
-                var text = TimeUtil.millisToGanttToolBarTime(it[taskSelectPos].startTimeMillis)
-                canvas.drawText(text,0f + toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
-                toolBarTextPaint.textAlign= Paint.Align.CENTER
-                text = TimeUtil.timeDurationToString(it[taskSelectPos].startTimeMillis,it[taskSelectPos].endTimeMillis)
-                canvas.drawText(text,width.toFloat()/2f,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
-                toolBarTextPaint.textAlign= Paint.Align.RIGHT
-                text = TimeUtil.millisToGanttToolBarTime(it[taskSelectPos].endTimeMillis)
-                canvas.drawText(text,width.toFloat() - toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
-            }
+        taskSelectValue?.let {
+            toolBarTextPaint.textAlign= Paint.Align.LEFT
+            var text = TimeUtil.millisToGanttToolBarTime(it.startTimeMillis)
+            canvas.drawText(text,0f + toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+            toolBarTextPaint.textAlign= Paint.Align.CENTER
+            text = TimeUtil.timeDurationToString(it.startTimeMillis,it.endTimeMillis)
+            canvas.drawText(text,width.toFloat()/2f,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+            toolBarTextPaint.textAlign= Paint.Align.RIGHT
+            text = TimeUtil.millisToGanttToolBarTime(it.endTimeMillis)
+            canvas.drawText(text,width.toFloat() - toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
         }
     }
 
     fun checkTaskModeTouchPos(x : Float, y : Float) : TouchMode {
         taskList?.let {
             for ((index, value) in it.withIndex()){
+//                Log.d("chenyjzn","multi project check task ${value == taskSelectValue} ${value.firebaseId == taskSelectValue?.firebaseId} ${value.firebaseId} , ${taskSelectValue?.firebaseId}")
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
                 val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight +toolBarHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight + toolBarHeight
-                if (x in left..right && y in top..bottom && index == taskSelectPos){
+                if (x in left..right && y in top..bottom && value == taskSelectValue){
                     return TouchMode.TASK_PRE_MOVE
-                }else if(x in left - taskControl..left && y in top..bottom && index == taskSelectPos){
+                }else if(x in left - taskControl..left && y in top..bottom && value == taskSelectValue){
                     return TouchMode.TASK_PRE_LEFT
-                }else if(x in  right..right+taskControl && y in top..bottom && index == taskSelectPos){
+                }else if(x in  right..right+taskControl && y in top..bottom && value == taskSelectValue){
                     return TouchMode.TASK_PRE_RIGHT
                 }
             }
@@ -963,17 +942,15 @@ class MultiGanttChartGroup : View {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-
-
         if (event != null) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (taskSelectPos== -1) {
+                    if (taskSelectValue == null) {
                         x0 = event.x
                         y0 = event.y
                         touchStatus = TouchMode.CLICK
                         handler.postDelayed(Runnable {
-                            if (touchStatus == TouchMode.CLICK && taskSelectPos== -1){
+                            if (touchStatus == TouchMode.CLICK && taskSelectValue == null){
                                 touchStatus = TouchMode.LONG_CLICK
                                 taskLongSelect = getTaskLongSelect(y0)
                                 taskLongYPos = y0
@@ -1002,8 +979,8 @@ class MultiGanttChartGroup : View {
                         return true
                     }else {
                         if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT) {
-                            taskList?.let {
-                                onEventListener?.eventTaskModify(taskSelectPos, it[taskSelectPos])
+                            taskSelectValue?.let {
+                                onEventListener?.eventTaskModify(taskSelectPos, it)
                             }
                         } else if (touchStatus == TouchMode.LONG_CLICK) {
                             taskLongYPos = 0f
@@ -1021,6 +998,7 @@ class MultiGanttChartGroup : View {
                         if (touchStatus == TouchMode.MOVE) {
                             setYPos(event.y - y0)
                             val newTime = setProjectTimeByDx(event.x - x0, width)
+                            setRange(newTime.first,newTime.second)
                             onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.x
                             y0 = event.y
@@ -1028,6 +1006,7 @@ class MultiGanttChartGroup : View {
                             touchStatus = TouchMode.MOVE
                             setYPos(event.y - y0)
                             val newTime =  setProjectTimeByDx(event.x - x0, width)
+                            setRange(newTime.first,newTime.second)
                             onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.x
                             y0 = event.y
@@ -1035,9 +1014,9 @@ class MultiGanttChartGroup : View {
                             touchStatus = TouchMode.TASK_MOVE
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L){
-                                taskList?.let {
-                                    it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
-                                    it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                taskSelectValue?.let {
+                                    it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                    it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     invalidate()
                                 }
                                 x0 = event.x
@@ -1046,9 +1025,9 @@ class MultiGanttChartGroup : View {
                         }else if(touchStatus == TouchMode.TASK_MOVE){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L){
-                                taskList?.let {
-                                    it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
-                                    it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                taskSelectValue?.let {
+                                    it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                    it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     invalidate()
                                 }
                                 x0 = event.x
@@ -1058,11 +1037,11 @@ class MultiGanttChartGroup : View {
                             touchStatus = TouchMode.TASK_LEFT
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskList?.let {
-                                    if (it[taskSelectPos].startTimeMillis + timeOffset >= it[taskSelectPos].endTimeMillis) {
-                                        it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
+                                taskSelectValue?.let {
+                                    if (it.startTimeMillis + timeOffset >= it.endTimeMillis) {
+                                        it.startTimeMillis = it.endTimeMillis
                                     } else {
-                                        it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                        it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
                                 }
@@ -1072,11 +1051,11 @@ class MultiGanttChartGroup : View {
                         }else if (touchStatus == TouchMode.TASK_LEFT){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskList?.let {
-                                    if (it[taskSelectPos].startTimeMillis + timeOffset >= it[taskSelectPos].endTimeMillis) {
-                                        it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
+                                taskSelectValue?.let {
+                                    if (it.startTimeMillis + timeOffset >= it.endTimeMillis) {
+                                        it.startTimeMillis = it.endTimeMillis
                                     } else {
-                                        it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                        it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
                                 }
@@ -1087,11 +1066,11 @@ class MultiGanttChartGroup : View {
                             touchStatus = TouchMode.TASK_RIGHT
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskList?.let {
-                                    if (it[taskSelectPos].endTimeMillis + timeOffset <= it[taskSelectPos].startTimeMillis) {
-                                        it[taskSelectPos].endTimeMillis = it[taskSelectPos].startTimeMillis
+                                taskSelectValue?.let {
+                                    if (it.endTimeMillis + timeOffset <= it.startTimeMillis) {
+                                        it.endTimeMillis = it.startTimeMillis
                                     } else {
-                                        it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                        it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
                                 }
@@ -1101,11 +1080,11 @@ class MultiGanttChartGroup : View {
                         }else if (touchStatus == TouchMode.TASK_RIGHT){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskList?.let {
-                                    if (it[taskSelectPos].endTimeMillis + timeOffset <= it[taskSelectPos].startTimeMillis) {
-                                        it[taskSelectPos].endTimeMillis = it[taskSelectPos].startTimeMillis
+                                taskSelectValue?.let {
+                                    if (it.endTimeMillis + timeOffset <= it.startTimeMillis) {
+                                        it.endTimeMillis = it.startTimeMillis
                                     } else {
-                                        it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                        it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
                                 }
@@ -1159,6 +1138,7 @@ class MultiGanttChartGroup : View {
                                 (oldYR - centerY)
                             )
                             val newTime = setProjectTimeByDlDr(dl, dr, width)
+                            setRange(newTime.first,newTime.second)
                             onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.getX(0)
                             x1 = event.getX(1)
@@ -1173,8 +1153,8 @@ class MultiGanttChartGroup : View {
                         val taskPair = getTaskSelect(event.x,event.y)
                         onEventListener?.eventTaskSelect(taskPair.first,taskPair.second)
                     }else if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT){
-                        taskList?.let {
-                            onEventListener?.eventTaskModify(taskSelectPos,it[taskSelectPos])
+                        taskSelectValue?.let {
+                            onEventListener?.eventTaskModify(taskSelectPos,it)
                         }
                     }else if(touchStatus == TouchMode.LONG_CLICK){
                         taskLongYPos = 0f
@@ -1211,10 +1191,7 @@ class MultiGanttChartGroup : View {
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (firstCreate){
-            checkProjectBound()
-            firstCreate = false
-        }
+        checkProjectBound()
         setTimeLineScale()
         drawGanttChart(canvas)
         drawTimeLine(canvas)

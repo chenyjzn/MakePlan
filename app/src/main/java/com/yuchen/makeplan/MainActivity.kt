@@ -99,6 +99,14 @@ class MainActivity : AppCompatActivity() {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
+                R.id.multiEditDialog ->{
+                    this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+                R.id.editDialog ->{
+                    this.actionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
                 else ->{
                     binding.bottomNavigationView.visibility = View.GONE
                 }
