@@ -21,7 +21,7 @@ class MembersItemsAdapter() : RecyclerView.Adapter<MembersItemsAdapter.UserHolde
     inner class UserHolder(var binding: ItemUserBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             binding.user = user
-            binding.itemUserLayout.setOnClickListener {
+            binding.itemUserCard.setOnClickListener {
                 userClickListener?.userSelect(user)
             }
             binding.executePendingBindings()

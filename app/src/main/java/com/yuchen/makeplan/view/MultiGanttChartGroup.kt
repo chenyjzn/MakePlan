@@ -962,10 +962,10 @@ class MultiGanttChartGroup : View {
                         x0 = event.x
                         y0 = event.y
                         touchStatus = checkTaskModeTouchPos(x0,y0)
-                        handler.postDelayed(Runnable {
-                            if (touchStatus == TouchMode.CLICK)
-                                touchStatus = TouchMode.NONE
-                        }, MAX_CLICK_DURATION)
+//                        handler.postDelayed(Runnable {
+//                            if (touchStatus == TouchMode.CLICK)
+//                                touchStatus = TouchMode.NONE
+//                        }, MAX_CLICK_DURATION)
                         return true
                     }
                 }

@@ -151,4 +151,10 @@
         android:name="com.yuchen.makeplan.serachproject.SearchProjectFragment"
         android:label="fragment_search_project"
         tools:layout="@layout/fragment_search_project" />
+    <dialog
+        android:id="@+id/loginDialog"
+        android:name="com.yuchen.makeplan.login.LoginDialog"
+        android:label="dialog_login"
+        tools:layout="@layout/dialog_login" />
+    <action android:id="@+id/action_global_loginDialog" app:destination="@id/loginDialog" />
 </navigation>

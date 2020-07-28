@@ -11,6 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.MainActivity
+import com.yuchen.makeplan.NavigationDirections
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.FragmentProjectsBinding
@@ -118,12 +119,7 @@ class ProjectsFragment : Fragment() {
                         viewModel.uploadProjects()
                     }
                     else{
-                        val view = binding.projectsBackGround
-                        Snackbar.make(view, "Please login", Snackbar.LENGTH_INDEFINITE)
-                            .setAction("Google Login"){
-                                (activity as MainActivity).signIn()
-                            }
-                            .show()
+                        this.findNavController().navigate(NavigationDirections.actionGlobalLoginDialog())
                     }
                     true
                 }

@@ -29,7 +29,7 @@ class SearchUsersAdapter() : RecyclerView.Adapter<SearchUsersAdapter.UserHolder>
     inner class UserHolder(var binding: ItemUserBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             binding.user = user
-            binding.itemUserLayout.setOnClickListener {
+            binding.itemUserCard.setOnClickListener {
                 onSelectListener?.userSelect(user)
             }
             binding.executePendingBindings()

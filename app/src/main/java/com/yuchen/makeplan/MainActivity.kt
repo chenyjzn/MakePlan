@@ -117,12 +117,25 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.nav_personal ->{
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment())
+                    return@setOnNavigationItemSelectedListener true
                 }
                 R.id.nav_team -> {
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiProjectsFragment())
+                    if (UserManager.isLogIn()) {
+                        findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiProjectsFragment())
+                        return@setOnNavigationItemSelectedListener true
+                    }else{
+                        findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalLoginDialog())
+                        return@setOnNavigationItemSelectedListener false
+                    }
                 }
                 R.id.nav_notify ->{
-                    findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalNotifyFragment())
+                    if (UserManager.isLogIn()){
+                        findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalNotifyFragment())
+                        return@setOnNavigationItemSelectedListener true
+                    }else{
+                        findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalLoginDialog())
+                        return@setOnNavigationItemSelectedListener false
+                    }
                 }
             }
             true
