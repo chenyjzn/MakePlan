@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.databinding.FragmentTaskBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -95,6 +96,7 @@ class TaskFragment : Fragment() {
             )
             viewModel.newStartTimeMillis.value?.let {
                 endDatePickerDialog.datePicker.minDate = it
+                endDatePickerDialog.datePicker.maxDate = it + 999 * DAY_MILLIS
             }
             endDatePickerDialog.show()
         }

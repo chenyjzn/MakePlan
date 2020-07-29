@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.databinding.FragmentMultiTaskBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -86,6 +87,7 @@ class MultiTaskFragment : Fragment() {
             )
             viewModel.newStartTimeMillis.value?.let {
                 endDatePickerDialog.datePicker.minDate = it
+                endDatePickerDialog.datePicker.maxDate = it + 999 * DAY_MILLIS
             }
             endDatePickerDialog.show()
         }

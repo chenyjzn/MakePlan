@@ -861,7 +861,7 @@ class MultiGanttChartGroup : View {
 //                Log.d("chenyjzn","multi project check task ${value == taskSelectValue} ${value.firebaseId == taskSelectValue?.firebaseId} ${value.firebaseId} , ${taskSelectValue?.firebaseId}")
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight +toolBarHeight
+                val top = ((index)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight + toolBarHeight
                 if (x in left..right && y in top..bottom && value == taskSelectValue){
                     return TouchMode.TASK_PRE_MOVE
@@ -880,7 +880,7 @@ class MultiGanttChartGroup : View {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.6f + dy+timeLineHeight +toolBarHeight
+                val top = ((index)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
                 if (x in left..right && y in top..bottom)
                     return index to value
