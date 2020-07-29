@@ -75,10 +75,8 @@ class MultiGanttFragment : Fragment() {
             }
         })
 
-        viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
-            binding.multiGanttChartGroup.setTaskValueSelect(it)
-            binding.multiGanttChartGroup.invalidate()
-        })
+
+        
 
         binding.multiGanttChartGroup.setOnEventListener(object :MultiGanttChartGroup.OnEventListener{
             override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
