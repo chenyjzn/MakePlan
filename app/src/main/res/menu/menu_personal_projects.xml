@@ -9,8 +9,15 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/cloud_manage"
+        android:icon="@drawable/ic_cloud_black_24dp"
+        android:title="Manage"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/cloud_upload"
         android:icon="@drawable/ic_file_upload_black_24dp"
         android:title="Upload"
         app:showAsAction="ifRoom" />
+
 </menu>

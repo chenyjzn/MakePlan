@@ -20,64 +20,78 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
 
     val projects: LiveData<List<Project>> = repository.getAllProjects()
 
-    private val _navigateToGantt = MutableLiveData<Project>()
-    val navigateToGantt: LiveData<Project>
-        get() = _navigateToGantt
+    private val _navToGantt = MutableLiveData<Project>()
+    val navToGantt: LiveData<Project>
+        get() = _navToGantt
 
-    private val _navigateToProjectSetting = MutableLiveData<Project>()
-    val navigateToProjectSetting: LiveData<Project>
-        get() = _navigateToProjectSetting
+    private val _navToSetProject = MutableLiveData<Project>()
+    val navToSetProject: LiveData<Project>
+        get() = _navToSetProject
 
     private val _loadingStatus = MutableLiveData<LoadingStatus>()
     val loadingStatus: LiveData<LoadingStatus>
         get() = _loadingStatus
 
-    private val _notExistProjects = MutableLiveData<List<Project>>()
-    val notExistProjects: LiveData<List<Project>>
-        get() = _notExistProjects
+    private val _notExistProjectsDownload = MutableLiveData<List<Project>>()
+    val notExistProjectsDownload: LiveData<List<Project>>
+        get() = _notExistProjectsDownload
 
-    fun goToGantt(project: Project) {
-        _navigateToGantt.value = project
+    private val _notExistProjectsManage = MutableLiveData<List<Project>>()
+    val notExistProjectsManage: LiveData<List<Project>>
+        get() = _notExistProjectsManage
+
+    private val _isFABCooling = MutableLiveData<Boolean>()
+    val isFABCooling: LiveData<Boolean>
+        get() = _isFABCooling
+
+    fun navToGanttStart(project: Project) {
+        _navToGantt.value = project
     }
 
-    fun goToGanttDone() {
-        _navigateToGantt.value = null
+    fun navToGanttDone() {
+        _navToGantt.value = null
     }
 
-    fun goToProjectSetting(project: Project?) {
-        _navigateToProjectSetting.value = project
+    fun navToSetProjectStart(project: Project) {
+        _navToSetProject.value = project
     }
 
-    fun goToProjectSettingDone() {
-        _navigateToProjectSetting.value = null
+    fun navToSetProjectDone() {
+        _navToSetProject.value = null
     }
 
-    fun resetProjectsDone() {
-        _notExistProjects.value = null
+    fun resetNotExistProjectsDownload() {
+        _notExistProjectsDownload.value = null
+    }
+
+    fun resetNotExistProjectsManage() {
+        _notExistProjectsManage.value = null
     }
 
     fun uploadProjects() {
         coroutineScope.launch {
-            _loadingStatus.value = LoadingStatus.LOADING
             projects.value?.let {
-                val result = repository.uploadPersonalProjectsToFirebase(it)
-                when (result) {
-                    is Result.Success -> {
-                        Log.d("chenyjzn", "uploadProjects OK")
+                if (it.isNotEmpty()) {
+                    _loadingStatus.value = LoadingStatus.LOADING
+                    val result = repository.uploadPersonalProjectsToFirebase(it)
+                    when (result) {
+                        is Result.Success -> {
+                            Log.d("chenyjzn", "uploadProjects OK")
+                        }
+                        is Result.Error -> {
+                            Log.d("chenyjzn", "uploadProjects result = ${result.exception}")
+                        }
+                        is Result.Fail -> {
+                            Log.d("chenyjzn", "uploadProjects result = ${result.error}")
+                        }
                     }
-                    is Result.Error -> {
-                        Log.d("chenyjzn", "uploadProjects result = ${result.exception}")
-                    }
-                    is Result.Fail -> {
-                        Log.d("chenyjzn", "uploadProjects result = ${result.error}")
-                    }
+                    _loadingStatus.value = LoadingStatus.DONE
                 }
-                _loadingStatus.value = LoadingStatus.DONE
             }
         }
     }
 
-    fun downloadProjects() {
+    fun searchAndDownloadProjects() {
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
             val result = repository.downloadPersonalProjectsFromFirebase()
@@ -92,7 +106,7 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
                             notExist = notExist.orEmpty() + listOf(it)
                         }
                     }
-                    _notExistProjects.value = notExist
+                    _notExistProjectsDownload.value = notExist
                 }
                 is Result.Error -> {
                     Log.d("chenyjzn", "downloadProjects result = ${result.exception}")
@@ -105,14 +119,50 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
         }
     }
 
-    fun resetProjects(projects: List<Project>, needSave : BooleanArray){
+    fun manageProjects() {
+        coroutineScope.launch {
+            _loadingStatus.value = LoadingStatus.LOADING
+            val result = repository.downloadPersonalProjectsFromFirebase()
+            when (result) {
+                is Result.Success -> {
+                    Log.d("chenyjzn", "downloadProjects OK")
+                    var notExist : List<Project> = listOf()
+                    result.data.forEach {
+                        if (repository.searchProject(it.id)== null){
+                            notExist = notExist + listOf(it)
+                        }
+                    }
+                    _notExistProjectsManage.value = notExist
+                }
+                is Result.Error -> {
+                    Log.d("chenyjzn", "downloadProjects result = ${result.exception}")
+                }
+                is Result.Fail -> {
+                    Log.d("chenyjzn", "downloadProjects result = ${result.error}")
+                }
+            }
+            _loadingStatus.value = LoadingStatus.DONE
+        }
+    }
+
+    fun resetProjects(projects: List<Project>, needRemove : BooleanArray){
+        coroutineScope.launch {
+            _loadingStatus.value = LoadingStatus.LOADING
+            for (i in 0..projects.lastIndex){
+                if (needRemove[i]){
+                    repository.removeProjectFromFirebase(projects[i].id)
+                }
+            }
+            _loadingStatus.value = LoadingStatus.DONE
+        }
+    }
+
+    fun downloadProjects(projects: List<Project>, needSave : BooleanArray){
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
             for (i in 0..projects.lastIndex){
                 if (needSave[i]){
                     repository.insertProject(projects[i])
-                }else{
-                    repository.removeProjectFromFirebase(projects[i].id)
                 }
             }
             _loadingStatus.value = LoadingStatus.DONE

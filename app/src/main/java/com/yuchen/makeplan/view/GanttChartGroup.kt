@@ -19,7 +19,6 @@ import java.util.*
 import kotlin.math.hypot
 import kotlin.math.pow
 
-
 class GanttChartGroup : View {
 
     constructor(context: Context?) : super(context)
@@ -33,6 +32,7 @@ class GanttChartGroup : View {
     private val taskControl = 40.toPx()
     private val toolBarHeight = 20.toPx()
     private val extraBottomSpace = 20.toPx()
+    private val moveTransPow = 4.toPx().toFloat()
 
     //Colors
     private val colorTimeLineAxis = resources.getColor(R.color.my_gray_100)
@@ -873,7 +873,7 @@ class GanttChartGroup : View {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
+                val top = ((index)*taskHeight).toFloat() + 0.4f*taskHeight  + dy+timeLineHeight +toolBarHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight + toolBarHeight
                 if (x in left..right && y in top..bottom && index == taskSelectPos){
                     return TouchMode.TASK_PRE_MOVE
@@ -892,7 +892,7 @@ class GanttChartGroup : View {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
+                val top = ((index)*taskHeight).toFloat() + 0.4f*taskHeight + dy+timeLineHeight +toolBarHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
                 if (x in left..right && y in top..bottom)
                     return index to value
@@ -1013,14 +1013,14 @@ class GanttChartGroup : View {
                             onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.x
                             y0 = event.y
-                        } else if (touchStatus == TouchMode.CLICK && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f) {
+                        } else if (touchStatus == TouchMode.CLICK && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow) {
                             touchStatus = TouchMode.MOVE
                             setYPos(event.y - y0)
                             val newTime =  setProjectTimeByDx(event.x - x0, width)
                             onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.x
                             y0 = event.y
-                        } else if (touchStatus == TouchMode.TASK_PRE_MOVE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f) {
+                        } else if (touchStatus == TouchMode.TASK_PRE_MOVE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow) {
                             touchStatus = TouchMode.TASK_MOVE
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L){
@@ -1043,7 +1043,7 @@ class GanttChartGroup : View {
                                 x0 = event.x
                                 y0 = event.y
                             }
-                        }else if (touchStatus == TouchMode.TASK_PRE_LEFT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                        }else if (touchStatus == TouchMode.TASK_PRE_LEFT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow){
                             touchStatus = TouchMode.TASK_LEFT
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
@@ -1072,7 +1072,7 @@ class GanttChartGroup : View {
                                 x0 = event.x
                                 y0 = event.y
                             }
-                        }else if (touchStatus == TouchMode.TASK_PRE_RIGHT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                        }else if (touchStatus == TouchMode.TASK_PRE_RIGHT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow){
                             touchStatus = TouchMode.TASK_RIGHT
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {

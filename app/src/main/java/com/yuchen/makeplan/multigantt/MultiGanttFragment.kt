@@ -69,14 +69,30 @@ class MultiGanttFragment : Fragment() {
                     viewModel.updateProjectCompleteRate(0)
                 else
                     viewModel.updateProjectCompleteRate ((fb*100f/max).roundToInt())
-
                 binding.multiGanttChartGroup.setTaskList(it)
+                viewModel.taskSelect.value?.let {id ->
+                    viewModel.tasks.value?.let {list ->
+                        var isTaskAlive = false
+                        for (i in list){
+                            if (i.firebaseId == id){
+                                isTaskAlive = true
+                                break
+                            }
+                        }
+                        if (!isTaskAlive){
+                            viewModel.setTaskSelect(null)
+                        }
+                    }
+                }
                 binding.multiGanttChartGroup.invalidate()
             }
         })
 
-
-        
+        viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
+            Log.d("chenyjzn","task select $it")
+            binding.multiGanttChartGroup.settaskSelectFirebaseId(it)
+            binding.multiGanttChartGroup.invalidate()
+        })
 
         binding.multiGanttChartGroup.setOnEventListener(object :MultiGanttChartGroup.OnEventListener{
             override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
@@ -91,12 +107,12 @@ class MultiGanttFragment : Fragment() {
 
             }
 
-            override fun eventTaskSelect(taskPos: Int, taskValue: MultiTask?) {
-                Log.d("chenyjzn","eventTaskSelect $taskValue")
-                viewModel.setTaskSelect(taskValue)
+            override fun eventTaskSelect(taskFirebaseId: String?) {
+                Log.d("chenyjzn","task event")
+                viewModel.setTaskSelect(taskFirebaseId)
             }
 
-            override fun eventTaskModify(taskPos: Int, task: MultiTask) {
+            override fun eventTaskModify(taskFirebaseId: String?, task: MultiTask) {
                 viewModel.updateTaskToFirebase(task)
             }
 
@@ -112,9 +128,19 @@ class MultiGanttFragment : Fragment() {
         }
 
         binding.multiTaskEdit.setOnClickListener {
-            if (viewModel.taskSelect.value != null && viewModel.project.value!= null){
-                this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!,viewModel.taskSelect.value!!))
-                viewModel.taskSelectClear()
+            viewModel.taskSelect.value?.let {id->
+                viewModel.tasks.value?.let { list ->
+                    viewModel.project.value?.let {project ->
+                        val filterList = list.filter {
+                            it.firebaseId == id
+                        }
+                        if (filterList.isNotEmpty()){
+                            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(project,filterList[0]))
+                            viewModel.taskSelectClear()
+                        }
+                    }
+
+                }
             }
         }
 

@@ -13,6 +13,8 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.databinding.DialogEditBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
@@ -32,6 +34,29 @@ class EditDialog : BottomSheetDialogFragment() {
             viewModel.saveProject()
         }
 
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            when(it){
+                LoadingStatus.LOADING ->{
+                    (activity as MainActivity).showProgress()
+                    binding.projectRemoveButton.isClickable = false
+                    binding.projectSaveButton.isClickable = false
+                    this.isCancelable = false
+                }
+                LoadingStatus.DONE ->{
+                    (activity as MainActivity).hideProgress()
+                    binding.projectRemoveButton.isClickable = false
+                    binding.projectSaveButton.isClickable = false
+                    this.isCancelable = true
+                }
+                LoadingStatus.ERROR ->{
+                    (activity as MainActivity).hideProgress()
+                    binding.projectRemoveButton.isClickable = false
+                    binding.projectSaveButton.isClickable = false
+                    this.isCancelable = true
+                }
+            }
+        })
+
         viewModel.runDismiss.observe(viewLifecycleOwner, Observer {
             it?.let {
                 viewModel.dismissDone()
@@ -41,9 +66,4 @@ class EditDialog : BottomSheetDialogFragment() {
 
         return binding.root
     }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-    }
-
 }

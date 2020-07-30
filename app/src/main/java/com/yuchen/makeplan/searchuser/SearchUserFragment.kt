@@ -5,11 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.databinding.FragmentSearchUserBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -32,6 +35,7 @@ class SearchUserFragment : Fragment() {
                     .show()
             }
         })
+
         binding.searchUserRecycler.adapter = adapter
         binding.searchUserRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         viewModel.users.observe(viewLifecycleOwner, Observer {
@@ -64,11 +68,8 @@ class SearchUserFragment : Fragment() {
                         notMember
                     }
                     adapter.appendList(newList)
+                    adapter.filter.filter(viewModel.filterString)
                 }
-                if (viewModel.myProject.value == null)
-                    adapter.appendList(list)
-
-                adapter.notifyDataSetChanged()
             }
         })
 
@@ -102,25 +103,30 @@ class SearchUserFragment : Fragment() {
                         notMember
                     }
                     adapter.appendList(newList)
-                    adapter.notifyDataSetChanged()
+                    adapter.filter.filter(viewModel.filterString)
                 }
             }
         })
 
-        binding.searchUserSearch.setIconifiedByDefault(true)
-        binding.searchUserSearch.setSubmitButtonEnabled(true)
-        binding.searchUserSearch.onActionViewExpanded()
-        binding.searchUserSearch.setIconifiedByDefault(true)
-        binding.searchUserSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchUserToolbar.setNavigationOnClickListener {
+            this.findNavController().popBackStack()
+        }
+
+        val searchView = binding.searchUserToolbar.menu.findItem(R.id.fun_search).actionView as SearchView
+        searchView.queryHint = "Users Info"
+        val editText = searchView.findViewById<EditText>(R.id.search_src_text)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
+                viewModel.filterString = newText?:""
+                adapter.filter.filter(viewModel.filterString)
                 return true
             }
         })
+
         return binding.root
     }
 }

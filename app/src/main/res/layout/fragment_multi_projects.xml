@@ -60,7 +60,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/multi_projects_top_menu"
+            app:menu="@menu/menu_search"
             app:title="Team Projects" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

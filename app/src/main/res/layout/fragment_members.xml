@@ -19,7 +19,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/search_menu"
+            app:menu="@menu/menu_search"
             app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
             app:title="Team Members" />
 

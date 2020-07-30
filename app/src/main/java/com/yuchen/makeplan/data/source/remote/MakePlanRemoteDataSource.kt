@@ -101,7 +101,7 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
             continuation.resume(Result.Fail("User not login"))
     }
 
-    override suspend fun downloadPersonalProjectsFromFirebase(): Result<List<Project>> = suspendCoroutine {continuation ->
+    override suspend fun downloadPersonalProjectsFromFirebase(): Result<List<Project>> = suspendCoroutine { continuation ->
         auth.currentUser?.let {firebaseUser ->
             FirebaseFirestore.getInstance().collection(COLLECTION_USERS).document(firebaseUser.uid).collection(COLLECTION_PERSONAL_PROJECTS)
                 .get().addOnCompleteListener{task ->

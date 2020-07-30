@@ -3,6 +3,7 @@ package com.yuchen.makeplan.gantt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.data.source.MakePlanRepository
@@ -46,6 +47,10 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     }
     val taskTimeScale: LiveData<Int>
         get() = _taskTimeScale
+
+    private val _loadingStatus = MutableLiveData<LoadingStatus>()
+    val loadingStatus: LiveData<LoadingStatus>
+        get() = _loadingStatus
 
     fun setNewTaskCondition(taskPos: Int,task : Task){
         val newProject = projectRep[projectPos].newRefProject()
@@ -114,9 +119,11 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     fun saveProject(){
         _project.value?.let {
             coroutineScope.launch {
+                _loadingStatus.value = LoadingStatus.LOADING
                 it.updateTime = System.currentTimeMillis()
                 repository.updateProject(it)
                 _projectSaveSuccess.value = true
+                _loadingStatus.value = LoadingStatus.DONE
             }
         }
     }

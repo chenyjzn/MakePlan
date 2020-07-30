@@ -1,13 +1,19 @@
 package com.yuchen.makeplan.projects
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.ItemProjectBinding
 import com.yuchen.makeplan.util.TimeUtil.StampToDate
 
-class ProjectsAdapter : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>(){
+class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>(){
 
     private var projectList: List<Project>? =null
 
@@ -25,9 +31,32 @@ class ProjectsAdapter : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>(){
         fun onProjectLongClick(project: Project)
     }
 
-    inner class ProjectHolder(var binding: ItemProjectBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class ProjectHolder(var binding: ItemProjectBinding): RecyclerView.ViewHolder(binding.root), LifecycleOwner {
         fun bind(project: Project) {
             binding.project = project
+            viewModel.loadingStatus.observe(this, Observer {
+                Log.d("chenyjzn", "Loding = ${it}")
+                it?.let {
+                    when(it){
+                        LoadingStatus.LOADING ->{
+                            binding.itemProjectCard.isEnabled = false
+                        }
+                        LoadingStatus.DONE -> {
+                            binding.itemProjectCard.isEnabled = true
+                        }
+                        LoadingStatus.ERROR -> {
+                            binding.itemProjectCard.isEnabled = true
+                        }
+                    }
+                }
+            })
+
+            viewModel.isFABCooling.observe(this, Observer {
+                it?.let {
+                    binding.itemProjectCard.isEnabled = !it
+                }
+            })
+
             binding.itemProjectCard.setOnClickListener {
                 onClickListener?.onProjectClick(project)
             }
@@ -37,6 +66,24 @@ class ProjectsAdapter : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>(){
             }
             binding.itemProjectEditTime.text = StampToDate(project.updateTime)
             binding.executePendingBindings()
+        }
+
+        private val lifecycleRegistry = LifecycleRegistry(this)
+
+        init {
+            lifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+        }
+
+        fun onAttach() {
+            lifecycleRegistry.currentState = Lifecycle.State.STARTED
+        }
+
+        fun onDetach() {
+            lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        }
+
+        override fun getLifecycle(): Lifecycle {
+            return lifecycleRegistry
         }
     }
 
@@ -52,5 +99,15 @@ class ProjectsAdapter : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>(){
 
     override fun getItemCount(): Int {
         return projectList?.let {it.size} ?: 0
+    }
+
+    override fun onViewAttachedToWindow(holder: ProjectHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onAttach()
+    }
+
+    override fun onViewDetachedFromWindow(holder: ProjectHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDetach()
     }
 }

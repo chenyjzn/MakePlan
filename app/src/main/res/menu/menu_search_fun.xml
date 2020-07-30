@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/search_project"
+    <item android:id="@+id/fun_search"
+        android:title="Search"
         android:icon="@drawable/ic_search_black_24dp"
-        android:title="Download"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.widget.SearchView" />
 
 </menu>

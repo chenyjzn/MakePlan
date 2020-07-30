@@ -74,19 +74,6 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
         }
     }
 
-    fun addDummy(){
-        coroutineScope.launch {
-            addDummyUser()
-        }
-    }
-
-    suspend fun addDummyUser(){
-        val userFirebase = FirebaseFirestore.getInstance().collection("users")
-        val document = userFirebase.document()
-        val user = User("GITA", "GITA@gmail.com", "", document.id)
-        document.set(user)
-    }
-
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()

@@ -1,21 +1,17 @@
 package com.yuchen.makeplan
 
-import android.app.Activity
-import android.content.ContentResolver
-import android.content.ContentValues
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -24,17 +20,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.yuchen.makeplan.databinding.ActivityMainBinding
 import com.yuchen.makeplan.ext.getVmFactory
+import com.yuchen.makeplan.gantt.GanttFragment
 import com.yuchen.makeplan.util.UserManager
 import com.yuchen.makeplan.util.UserManager.auth
 import com.yuchen.makeplan.util.UserManager.googleSignInClient
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 
+const val BUTTON_CLICK_TRAN = 500L
 const val SECOND_MILLIS = 1000L
 const val MINUTE_MILLIS = 60000L
 const val HOUR_MILLIS = 3600000L
@@ -45,13 +40,19 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
+    fun showProgress(){
+        binding.mainLoginProgress.visibility = View.VISIBLE
+    }
+
+    fun hideProgress(){
+        binding.mainLoginProgress.visibility = View.INVISIBLE
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-
-//        val displayMetrics = DisplayMetrics()
-//        this.windowManager.defaultDisplay.getMetrics(displayMetrics)
-//        Log.d("chenyjzn","$displayMetrics")
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -68,22 +69,6 @@ class MainActivity : AppCompatActivity() {
             else
                 signIn()
         }
-
-        viewModel.loadingStatus.observe(this, Observer {
-            it?.let {
-                when(it){
-                    LoadingStatus.LOADING ->{
-                        binding.mainLoginProgress.visibility = View.VISIBLE
-                    }
-                    LoadingStatus.DONE -> {
-                        binding.mainLoginProgress.visibility = View.INVISIBLE
-                    }
-                    LoadingStatus.ERROR -> {
-                        binding.mainLoginProgress.visibility = View.INVISIBLE
-                    }
-                }
-            }
-        })
 
         findNavController(R.id.nav_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             when(destination.id){
@@ -185,8 +170,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
     fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        if (viewModel.loadingStatus.value != LoadingStatus.LOADING) {
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
     }
 
     fun signOut() {
@@ -217,4 +204,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 }

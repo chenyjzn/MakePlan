@@ -1,5 +1,6 @@
 package com.yuchen.makeplan.multigantt
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,8 +19,8 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     val project: LiveData<MultiProject> = repository.getMultiProject(projectInput)
     val tasks:LiveData<List<MultiTask>> = repository.getMultiProjectTasks(projectInput)
 
-    private val _taskSelect = MutableLiveData<MultiTask>()
-    val taskSelect: LiveData<MultiTask>
+    private val _taskSelect = MutableLiveData<String>()
+    val taskSelect: LiveData<String>
         get() = _taskSelect
 
     private val _taskTimeScale = MutableLiveData<Int>().apply {
@@ -32,11 +33,12 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
         _taskTimeScale.value = time
     }
 
-    fun setTaskSelect(task: MultiTask?){
-        if (_taskSelect.value != null && _taskSelect.value == task)
+    fun setTaskSelect(taskId: String?){
+        Log.d("chenyjzn", "setTaskSelect = $taskId")
+        if (_taskSelect.value != null && _taskSelect.value == taskId)
             _taskSelect.value = null
         else
-            _taskSelect.value = task
+            _taskSelect.value = taskId
     }
 
     fun updateTaskToFirebase(task: MultiTask){
@@ -50,10 +52,17 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     }
 
     fun taskRemove(){
-        _taskSelect.value?.let {task ->
-            coroutineScope.launch {
-                repository.removeMultiProjectTask(projectInput,task)
-                _taskSelect.value = null
+        _taskSelect.value?.let {id->
+            tasks.value?.let { list ->
+                val filterList = list.filter {
+                    it.firebaseId == id
+                }
+                if (filterList.isNotEmpty()){
+                    coroutineScope.launch {
+                        repository.removeMultiProjectTask(projectInput,filterList[0])
+                    }
+                }
+
             }
         }
     }
@@ -68,11 +77,19 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     }
 
     fun copyTaskToFirebase(){
-        _taskSelect.value?.let {
-            val newTask = it.newRefTask()
-            newTask.firebaseId = ""
-            coroutineScope.launch {
-                repository.updateMultiProjectTask(projectInput,newTask)
+        _taskSelect.value?.let {id->
+            tasks.value?.let { list ->
+                val filterList = list.filter {
+                    it.firebaseId == id
+                }
+                if (filterList.isNotEmpty()){
+                    val newTask = filterList[0].newRefTask()
+                    newTask.firebaseId = ""
+                    coroutineScope.launch {
+                        repository.updateMultiProjectTask(projectInput,newTask)
+                    }
+                }
+
             }
         }
     }

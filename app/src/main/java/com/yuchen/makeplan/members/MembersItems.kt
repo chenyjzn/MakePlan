@@ -48,22 +48,7 @@ class MembersItems : Fragment() {
             override fun userSelect(user: User) {
                 when(viewModel.pagerPos){
                     PAGER_MEMBERSS -> {
-                        if (!viewModel.isMembersOverOne()){
-                            MaterialAlertDialogBuilder(requireNotNull(context))
-                                .setTitle("You are the last member!!")
-                                .setMessage("If you want to exist this project, please remove the project")
-                                .setPositiveButton("Yes") { dialog, which ->
 
-                                }.show()
-                        }else if(user.uid == UserManager.user.uid){
-                            MaterialAlertDialogBuilder(requireNotNull(context))
-                                .setTitle("Exist this project?")
-                                .setNeutralButton("Cancel") { dialog, which ->
-
-                                }.setPositiveButton("Yes") { dialog, which ->
-                                    viewModel.existProject()
-                                }.show()
-                        }
                     }
                     PAGER_SENDS -> {
                         MaterialAlertDialogBuilder(requireNotNull(context))

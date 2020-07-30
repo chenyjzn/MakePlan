@@ -27,11 +27,12 @@ class MultiGanttChartGroup : View {
 
     private val primaryTextPadding = 4.toPx()
     private val toolBarTextPadding = 4.toPx()
-    private val taskHeight = 60.toPx()
+    private val taskHeight = 80.toPx()
     private val timeLineHeight = 50.toPx()
     private val taskControl = 40.toPx()
     private val toolBarHeight = 20.toPx()
     private val extraBottomSpace = 20.toPx()
+    private val moveTransPow = 4.toPx().toFloat()
 
     //Colors
     private val colorTimeLineAxis = resources.getColor(R.color.my_gray_100)
@@ -65,8 +66,7 @@ class MultiGanttChartGroup : View {
     private var endDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
     private var endHour: Int = calendar.get(Calendar.HOUR_OF_DAY)
 
-    private var taskSelectPos = -1
-    private var taskSelectValue : MultiTask? = null
+    private var taskSelectFirebaseId : String? = null
 
     private var taskLongSelect = -1
     private var taskLongYPos = 0f
@@ -190,6 +190,10 @@ class MultiGanttChartGroup : View {
         this.taskList = taskList.toMutableList()
     }
 
+    fun settaskSelectFirebaseId(id:String?){
+        taskSelectFirebaseId = id
+    }
+
     fun setProjectTimeByDx(dx : Float, width : Int) : Pair<Long,Long>{
         var timeOffset = ((endDate - startDate).toFloat()*dx/width.toFloat()).toLong()
         return startDate - timeOffset to endDate - timeOffset
@@ -253,15 +257,6 @@ class MultiGanttChartGroup : View {
         }else{
             timeLineType = -1
         }
-        Log.d("chenyjzn","cal scale s=${StampToDate(startDate)}, e=${StampToDate(endDate)}, type = $timeLineType")
-    }
-
-    fun setTaskPosSelect(pos:Int){
-        taskSelectPos = pos
-    }
-
-    fun setTaskValueSelect(task:MultiTask?){
-        taskSelectValue = task
     }
 
     fun interpolation(startTime : Long, endTime : Long, actualTime : Long) : Float{
@@ -793,7 +788,7 @@ class MultiGanttChartGroup : View {
                         canvas.drawLine(0f, bottom, width.toFloat(), bottom, ganttLineHorizontalPaint)
                         val text = "${value.name} | ${value.completeRate}%"
                         canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, ganttTextPaint)
-                        if (value == taskSelectValue){
+                        if (value.firebaseId == taskSelectFirebaseId){
                             canvas.drawRoundRect(left - taskControl,top + taskHeight.toFloat()*0.5f,right + taskControl, bottom- 0.1f*taskHeight,15f,15f, ganttShortSelectPaint)
                         }
                         barPaint.color = Color.parseColor(colorList1[value.color])
@@ -842,16 +837,23 @@ class MultiGanttChartGroup : View {
     private fun drawToolBar(canvas: Canvas){
         canvas.drawRect(0f,timeLineHeight.toFloat(),width.toFloat(),timeLineHeight.toFloat() + toolBarHeight,toolBarBackPaint)
         canvas.drawRect(0f,timeLineHeight.toFloat(),width.toFloat(),timeLineHeight.toFloat() + toolBarHeight, toolBarStrokePaint)
-        taskSelectValue?.let {
-            toolBarTextPaint.textAlign= Paint.Align.LEFT
-            var text = TimeUtil.millisToGanttToolBarTime(it.startTimeMillis)
-            canvas.drawText(text,0f + toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
-            toolBarTextPaint.textAlign= Paint.Align.CENTER
-            text = TimeUtil.timeDurationToString(it.startTimeMillis,it.endTimeMillis)
-            canvas.drawText(text,width.toFloat()/2f,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
-            toolBarTextPaint.textAlign= Paint.Align.RIGHT
-            text = TimeUtil.millisToGanttToolBarTime(it.endTimeMillis)
-            canvas.drawText(text,width.toFloat() - toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+        taskSelectFirebaseId?.let{
+            taskList?.let { list ->
+                val filterList = list.filter {
+                    it.firebaseId == taskSelectFirebaseId
+                }
+                if (filterList.isNotEmpty()){
+                    toolBarTextPaint.textAlign= Paint.Align.LEFT
+                    var text = TimeUtil.millisToGanttToolBarTime(filterList[0].startTimeMillis)
+                    canvas.drawText(text,0f + toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+                    toolBarTextPaint.textAlign= Paint.Align.CENTER
+                    text = TimeUtil.timeDurationToString(filterList[0].startTimeMillis,filterList[0].endTimeMillis)
+                    canvas.drawText(text,width.toFloat()/2f,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+                    toolBarTextPaint.textAlign= Paint.Align.RIGHT
+                    text = TimeUtil.millisToGanttToolBarTime(filterList[0].endTimeMillis)
+                    canvas.drawText(text,width.toFloat() - toolBarTextPadding,timeLineHeight + toolBarHeight.toFloat()/2f + fontToolBarOffsetY, toolBarTextPaint)
+                }
+            }
         }
     }
 
@@ -861,13 +863,13 @@ class MultiGanttChartGroup : View {
 //                Log.d("chenyjzn","multi project check task ${value == taskSelectValue} ${value.firebaseId == taskSelectValue?.firebaseId} ${value.firebaseId} , ${taskSelectValue?.firebaseId}")
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
+                val top = ((index)*taskHeight).toFloat() + 0.4f*taskHeight + dy+timeLineHeight +toolBarHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight + toolBarHeight
-                if (x in left..right && y in top..bottom && value == taskSelectValue){
+                if (x in left..right && y in top..bottom && value.firebaseId == taskSelectFirebaseId){
                     return TouchMode.TASK_PRE_MOVE
-                }else if(x in left - taskControl..left && y in top..bottom && value == taskSelectValue){
+                }else if(x in left - taskControl..left && y in top..bottom && value.firebaseId == taskSelectFirebaseId){
                     return TouchMode.TASK_PRE_LEFT
-                }else if(x in  right..right+taskControl && y in top..bottom && value == taskSelectValue){
+                }else if(x in  right..right+taskControl && y in top..bottom && value.firebaseId == taskSelectFirebaseId){
                     return TouchMode.TASK_PRE_RIGHT
                 }
             }
@@ -875,18 +877,18 @@ class MultiGanttChartGroup : View {
         return TouchMode.CLICK
     }
 
-    fun getTaskSelect(x : Float, y : Float) : Pair<Int,MultiTask?> {
+    fun getTaskSelect(x : Float, y : Float) : String? {
         taskList?.let {
             for ((index, value) in it.withIndex()){
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
-                val top = ((index)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
+                val top = ((index)*taskHeight).toFloat() + 0.4f*taskHeight + dy+timeLineHeight +toolBarHeight
                 val bottom = ((index+1)*taskHeight).toFloat() + dy+timeLineHeight +toolBarHeight
                 if (x in left..right && y in top..bottom)
-                    return index to value
+                    return value.firebaseId
             }
         }
-        return -1 to null
+        return null
     }
 
     fun getTaskLongSelect(y : Float) : Int {
@@ -926,8 +928,8 @@ class MultiGanttChartGroup : View {
         fun eventChartTime(startTimeMillis: Long,endTimeMillis: Long)
         fun eventMoveDx(dx : Float, width : Int)
         fun eventZoomDlDr(dl : Float, dr : Float, width : Int)
-        fun eventTaskSelect(taskPos: Int, taskValue : MultiTask?)
-        fun eventTaskModify(taskPos: Int, task : MultiTask)
+        fun eventTaskSelect(taskFirebaseId : String?)
+        fun eventTaskModify(taskFirebaseId : String?, task : MultiTask)
         fun eventTaskSwap(task : MutableList<MultiTask>)
     }
 
@@ -945,18 +947,10 @@ class MultiGanttChartGroup : View {
         if (event != null) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (taskSelectValue == null) {
+                    if (taskSelectFirebaseId == null) {
                         x0 = event.x
                         y0 = event.y
                         touchStatus = TouchMode.CLICK
-                        handler.postDelayed(Runnable {
-                            if (touchStatus == TouchMode.CLICK && taskSelectValue == null){
-                                touchStatus = TouchMode.LONG_CLICK
-                                taskLongSelect = getTaskLongSelect(y0)
-                                taskLongYPos = y0
-                                invalidate()
-                            }
-                        }, MAX_CLICK_DURATION)
                         return true
                     }else{
                         x0 = event.x
@@ -975,8 +969,15 @@ class MultiGanttChartGroup : View {
                         return true
                     }else {
                         if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT) {
-                            taskSelectValue?.let {
-                                onEventListener?.eventTaskModify(taskSelectPos, it)
+                            taskSelectFirebaseId?.let{
+                                taskList?.let {list->
+                                    val filterList = list.filter{
+                                        it.firebaseId == taskSelectFirebaseId
+                                    }
+                                    if (filterList.isNotEmpty()){
+                                        onEventListener?.eventTaskModify(taskSelectFirebaseId,filterList[0])
+                                    }
+                                }
                             }
                         } else if (touchStatus == TouchMode.LONG_CLICK) {
                             taskLongYPos = 0f
@@ -998,7 +999,7 @@ class MultiGanttChartGroup : View {
                             onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.x
                             y0 = event.y
-                        } else if (touchStatus == TouchMode.CLICK && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f) {
+                        } else if (touchStatus == TouchMode.CLICK && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow) {
                             touchStatus = TouchMode.MOVE
                             setYPos(event.y - y0)
                             val newTime =  setProjectTimeByDx(event.x - x0, width)
@@ -1006,14 +1007,20 @@ class MultiGanttChartGroup : View {
                             onEventListener?.eventChartTime(newTime.first,newTime.second)
                             x0 = event.x
                             y0 = event.y
-                        } else if (touchStatus == TouchMode.TASK_PRE_MOVE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f) {
+                        } else if (touchStatus == TouchMode.TASK_PRE_MOVE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow) {
                             touchStatus = TouchMode.TASK_MOVE
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L){
-                                taskSelectValue?.let {
-                                    it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
-                                    it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
-                                    invalidate()
+                                taskSelectFirebaseId?.let{
+                                    taskList?.let {list->
+                                        for(i in list){
+                                            if (i.firebaseId == taskSelectFirebaseId){
+                                                i.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                i.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                invalidate()
+                                            }
+                                        }
+                                    }
                                 }
                                 x0 = event.x
                                 y0 = event.y
@@ -1021,25 +1028,37 @@ class MultiGanttChartGroup : View {
                         }else if(touchStatus == TouchMode.TASK_MOVE){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L){
-                                taskSelectValue?.let {
-                                    it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
-                                    it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
-                                    invalidate()
+                                taskSelectFirebaseId?.let{
+                                    taskList?.let {list->
+                                        for(i in list){
+                                            if (i.firebaseId == taskSelectFirebaseId){
+                                                i.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                i.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                invalidate()
+                                            }
+                                        }
+                                    }
                                 }
                                 x0 = event.x
                                 y0 = event.y
                             }
-                        }else if (touchStatus == TouchMode.TASK_PRE_LEFT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                        }else if (touchStatus == TouchMode.TASK_PRE_LEFT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow){
                             touchStatus = TouchMode.TASK_LEFT
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskSelectValue?.let {
-                                    if (it.startTimeMillis + timeOffset >= it.endTimeMillis) {
-                                        it.startTimeMillis = it.endTimeMillis
-                                    } else {
-                                        it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                taskSelectFirebaseId?.let{
+                                    taskList?.let {list->
+                                        for(i in list){
+                                            if (i.firebaseId == taskSelectFirebaseId){
+                                                if (i.startTimeMillis + timeOffset >= i.endTimeMillis) {
+                                                    i.startTimeMillis = i.endTimeMillis
+                                                } else {
+                                                    i.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                }
+                                                invalidate()
+                                            }
+                                        }
                                     }
-                                    invalidate()
                                 }
                                 x0 = event.x
                                 y0 = event.y
@@ -1047,28 +1066,40 @@ class MultiGanttChartGroup : View {
                         }else if (touchStatus == TouchMode.TASK_LEFT){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskSelectValue?.let {
-                                    if (it.startTimeMillis + timeOffset >= it.endTimeMillis) {
-                                        it.startTimeMillis = it.endTimeMillis
-                                    } else {
-                                        it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                if (taskSelectFirebaseId!=null){
+                                    taskList?.let {list->
+                                        for(i in list){
+                                            if (i.firebaseId == taskSelectFirebaseId){
+                                                if (i.startTimeMillis + timeOffset >= i.endTimeMillis) {
+                                                    i.startTimeMillis = i.endTimeMillis
+                                                } else {
+                                                    i.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                }
+                                                invalidate()
+                                            }
+                                        }
                                     }
-                                    invalidate()
                                 }
                                 x0 = event.x
                                 y0 = event.y
                             }
-                        }else if (touchStatus == TouchMode.TASK_PRE_RIGHT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > 6.0f){
+                        }else if (touchStatus == TouchMode.TASK_PRE_RIGHT && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow){
                             touchStatus = TouchMode.TASK_RIGHT
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskSelectValue?.let {
-                                    if (it.endTimeMillis + timeOffset <= it.startTimeMillis) {
-                                        it.endTimeMillis = it.startTimeMillis
-                                    } else {
-                                        it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                taskSelectFirebaseId?.let{
+                                    taskList?.let {list->
+                                        for(i in list){
+                                            if (i.firebaseId == taskSelectFirebaseId){
+                                                if (i.endTimeMillis + timeOffset <= i.startTimeMillis) {
+                                                    i.endTimeMillis = i.startTimeMillis
+                                                } else {
+                                                    i.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                }
+                                                invalidate()
+                                            }
+                                        }
                                     }
-                                    invalidate()
                                 }
                                 x0 = event.x
                                 y0 = event.y
@@ -1076,13 +1107,19 @@ class MultiGanttChartGroup : View {
                         }else if (touchStatus == TouchMode.TASK_RIGHT){
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
-                                taskSelectValue?.let {
-                                    if (it.endTimeMillis + timeOffset <= it.startTimeMillis) {
-                                        it.endTimeMillis = it.startTimeMillis
-                                    } else {
-                                        it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                taskSelectFirebaseId?.let{
+                                    taskList?.let {list->
+                                        for(i in list){
+                                            if (i.firebaseId == taskSelectFirebaseId){
+                                                if (i.endTimeMillis + timeOffset <= i.startTimeMillis) {
+                                                    i.endTimeMillis = i.startTimeMillis
+                                                } else {
+                                                    i.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
+                                                }
+                                                invalidate()
+                                            }
+                                        }
                                     }
-                                    invalidate()
                                 }
                                 x0 = event.x
                                 y0 = event.y
@@ -1146,11 +1183,18 @@ class MultiGanttChartGroup : View {
                 }
                 MotionEvent.ACTION_UP -> {
                     if (touchStatus == TouchMode.CLICK || touchStatus == TouchMode.TASK_PRE_MOVE) {
-                        val taskPair = getTaskSelect(event.x,event.y)
-                        onEventListener?.eventTaskSelect(taskPair.first,taskPair.second)
+                        val taskId = getTaskSelect(event.x,event.y)
+                        onEventListener?.eventTaskSelect(taskId)
                     }else if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT){
-                        taskSelectValue?.let {
-                            onEventListener?.eventTaskModify(taskSelectPos,it)
+                        if (taskSelectFirebaseId!=null){
+                            taskList?.let {list->
+                                val filterList = list.filter{
+                                    it.firebaseId == taskSelectFirebaseId
+                                }
+                                if (filterList.isNotEmpty()){
+                                    onEventListener?.eventTaskModify(taskSelectFirebaseId,filterList[0])
+                                }
+                            }
                         }
                     }else if(touchStatus == TouchMode.LONG_CLICK){
                         taskLongYPos = 0f

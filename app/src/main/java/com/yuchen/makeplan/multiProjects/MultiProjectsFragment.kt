@@ -1,6 +1,7 @@
 package com.yuchen.makeplan.multiProjects
 
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.BUTTON_CLICK_TRAN
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.FragmentMultiProjectsBinding
@@ -38,7 +39,7 @@ class MultiProjectsFragment : Fragment() {
         })
         binding.multiProjectsAppBar.setOnMenuItemClickListener {
             when(it.itemId){
-                R.id.search_project -> {
+                R.id.search -> {
                     this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToSearchProjectFragment())
                     true
                 }
@@ -48,6 +49,8 @@ class MultiProjectsFragment : Fragment() {
 
         binding.multiProjectsAddProject.setOnClickListener {
             this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(null))
+            binding.multiProjectsAddProject.isClickable = false
+            Handler().postDelayed({ binding.multiProjectsAddProject.isClickable = true}, BUTTON_CLICK_TRAN)
         }
 
         return binding.root

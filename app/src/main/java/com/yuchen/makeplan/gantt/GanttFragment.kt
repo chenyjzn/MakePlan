@@ -3,24 +3,21 @@ package com.yuchen.makeplan.gantt
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.databinding.FragmentGanttBinding
 import com.yuchen.makeplan.ext.getVmFactory
-import com.yuchen.makeplan.view.GanttChart
 import com.yuchen.makeplan.view.GanttChartGroup
-import java.util.*
-import kotlin.math.hypot
-import kotlin.math.log
-import kotlin.math.pow
 
 
 class GanttFragment : Fragment() {
@@ -148,7 +145,6 @@ class GanttFragment : Fragment() {
         })
 
         viewModel.taskTimeScale.observe(viewLifecycleOwner, Observer {
-            Log.d("chenyjzn","${binding.task5m.isPressed}, ${binding.task5m.isSelected}")
             it?.let {
                 binding.taskDay.isSelected = it == 0
                 binding.taskHour.isSelected = it == 1
@@ -157,6 +153,19 @@ class GanttFragment : Fragment() {
             }
         })
 
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            MaterialAlertDialogBuilder(requireNotNull(context))
+                .setTitle("You are going to leave your project!")
+                .setMessage("If you want to save your project, press cancel and save.\nIf you want to leave without save, press leave.")
+                .setNegativeButton("Cancel") { dialog, which ->
+
+                }.setPositiveButton("Leave") { dialog, which ->
+                    this@GanttFragment.findNavController().popBackStack()
+                }.show()
+        }
+
         return binding.root
     }
+
+
 }

@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
+        <import type="com.yuchen.makeplan.LoadingStatus"/>
+        <variable
+            name="viewModel"
+            type="com.yuchen.makeplan.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,14 +35,14 @@
             app:itemIconTint="@drawable/bottom_nav_item_select"
             app:itemTextColor="@drawable/bottom_nav_item_select"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:menu="@menu/bottom_navigation_menu" />
+            app:menu="@menu/menu_bottom_navigation" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -49,11 +53,11 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
-            app:layout_constraintEnd_toEndOf="@+id/nav_fragment"
-            app:layout_constraintStart_toStartOf="@+id/nav_fragment"
-            app:layout_constraintTop_toTopOf="@+id/nav_fragment" />
+            android:visibility="@{viewModel.loadingStatus == LoadingStatus.LOADING ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@+id/main_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/main_layout" />
 
         <ImageView
             android:id="@+id/imageView"

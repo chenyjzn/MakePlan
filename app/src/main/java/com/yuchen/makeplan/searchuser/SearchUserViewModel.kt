@@ -21,6 +21,8 @@ class SearchUserViewModel(private val repository: MakePlanRepository, private va
     val myProject : LiveData<MultiProject> = repository.getMultiProject(project)
     val users: LiveData<List<User>> = repository.getAllUsers()
 
+    var filterString = ""
+
     fun requestProjectToUser(user: User){
         coroutineScope.launch {
             repository.requestUserToMultiProject(project,user, FIELD_SEND_UID)
