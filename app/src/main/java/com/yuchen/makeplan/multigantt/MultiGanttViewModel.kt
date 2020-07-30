@@ -19,8 +19,8 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     val project: LiveData<MultiProject> = repository.getMultiProject(projectInput)
     val tasks:LiveData<List<MultiTask>> = repository.getMultiProjectTasks(projectInput)
 
-    private val _taskSelect = MutableLiveData<String>()
-    val taskSelect: LiveData<String>
+    private val _taskSelect = MutableLiveData<MultiTask>()
+    val taskSelect: LiveData<MultiTask>
         get() = _taskSelect
 
     private val _taskTimeScale = MutableLiveData<Int>().apply {
@@ -33,12 +33,11 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
         _taskTimeScale.value = time
     }
 
-    fun setTaskSelect(taskId: String?){
-        Log.d("chenyjzn", "setTaskSelect = $taskId")
-        if (_taskSelect.value != null && _taskSelect.value == taskId)
+    fun setTaskSelect(task: MultiTask?){
+        if (_taskSelect.value != null && _taskSelect.value == task)
             _taskSelect.value = null
         else
-            _taskSelect.value = taskId
+            _taskSelect.value = task
     }
 
     fun updateTaskToFirebase(task: MultiTask){
@@ -52,17 +51,10 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     }
 
     fun taskRemove(){
-        _taskSelect.value?.let {id->
-            tasks.value?.let { list ->
-                val filterList = list.filter {
-                    it.firebaseId == id
-                }
-                if (filterList.isNotEmpty()){
-                    coroutineScope.launch {
-                        repository.removeMultiProjectTask(projectInput,filterList[0])
-                    }
-                }
-
+        _taskSelect.value?.let {task ->
+            coroutineScope.launch {
+                repository.removeMultiProjectTask(projectInput,task)
+                _taskSelect.value = null
             }
         }
     }
@@ -77,19 +69,11 @@ class MultiGanttViewModel (private val repository: MakePlanRepository, private v
     }
 
     fun copyTaskToFirebase(){
-        _taskSelect.value?.let {id->
-            tasks.value?.let { list ->
-                val filterList = list.filter {
-                    it.firebaseId == id
-                }
-                if (filterList.isNotEmpty()){
-                    val newTask = filterList[0].newRefTask()
-                    newTask.firebaseId = ""
-                    coroutineScope.launch {
-                        repository.updateMultiProjectTask(projectInput,newTask)
-                    }
-                }
-
+        _taskSelect.value?.let {
+            val newTask = it.newRefTask()
+            newTask.firebaseId = ""
+            coroutineScope.launch {
+                repository.updateMultiProjectTask(projectInput,newTask)
             }
         }
     }
