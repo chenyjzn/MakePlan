@@ -80,5 +80,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_broken_image_black_24dp" />
 
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="@+id/main_login_progress"
+            app:layout_constraintEnd_toStartOf="@+id/main_login_progress" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.FirebaseFirestore
-import com.yuchen.makeplan.data.User
+import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_RECEIVE_UID
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_SEND_UID
 import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +23,14 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
     val loadingStatus: LiveData<LoadingStatus>
         get() = _loadingStatus
 
+    val allProject = repository.getAllMultiProjectsWithoutAuth()
+
+    val myNotify = repository.getMyMultiProjects(FIELD_SEND_UID)
+
+    private val _needRestart = MutableLiveData<Boolean>()
+    val needRestart: LiveData<Boolean>
+        get() = _needRestart
+
     fun getUser(){
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
@@ -30,6 +39,7 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
                 is Result.Success ->{
                     Log.d("chenyjzn", "getFireBaseUser OK")
                     UserManager.user = userResult.data
+                    UserManager.loginUser.value = userResult.data
                 }
                 is Result.Error ->{
                     Log.d("chenyjzn", "getFireBaseUser result = ${userResult.exception}")
@@ -54,6 +64,8 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
                         is Result.Success ->{
                             Log.d("chenyjzn", "getFireBaseUser OK")
                             UserManager.user = userResult.data
+                            UserManager.loginUser.value = userResult.data
+//                            setRestartStart()
                         }
                         is Result.Error ->{
                             Log.d("chenyjzn", "getFireBaseUser result = ${userResult.exception}")
@@ -72,6 +84,14 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
             }
             _loadingStatus.value = LoadingStatus.DONE
         }
+    }
+
+    fun setRestartStart(){
+        _needRestart.value = true
+    }
+
+    fun setRestartDone(){
+        _needRestart.value = null
     }
 
     override fun onCleared() {

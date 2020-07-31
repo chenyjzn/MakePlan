@@ -63,6 +63,14 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
+    override fun getMyMultiProjectsMutable(field: String): MutableLiveData<List<MultiProject>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>> {
+        TODO("Not yet implemented")
+    }
+
     override fun getAllMultiProjects(): LiveData<List<MultiProject>> {
         TODO("Not yet implemented")
     }

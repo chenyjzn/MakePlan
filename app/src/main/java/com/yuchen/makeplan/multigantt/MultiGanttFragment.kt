@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.yuchen.makeplan.DAY_MILLIS
+import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.Task
@@ -40,6 +41,52 @@ class MultiGanttFragment : Fragment() {
         var firstCreate = true
         binding.multiGanttChartGroup.setRange(startTime,endTime)
 
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when(it){
+                    LoadingStatus.LOADING ->{
+                        binding.multiGanttMembers.isClickable = false
+                        binding.multiTaskCopy.isClickable = false
+                        binding.multiTaskDelete.isClickable = false
+                        binding.multiTaskEdit.isClickable = false
+                        binding.multiGanttAddTask.isClickable = false
+                        binding.multiTaskDay.isClickable = false
+                        binding.multiTask15m.isClickable = false
+                        binding.multiTask5m.isClickable = false
+                        binding.multiTaskHour.isClickable = false
+                        binding.multiGanttChartGroup.isTouchAble = false
+                        binding.multiGanttProgress.visibility = View.VISIBLE
+                    }
+                    LoadingStatus.DONE -> {
+                        binding.multiGanttMembers.isClickable = true
+                        binding.multiTaskCopy.isClickable = true
+                        binding.multiTaskDelete.isClickable = true
+                        binding.multiTaskEdit.isClickable = true
+                        binding.multiGanttAddTask.isClickable = true
+                        binding.multiTaskDay.isClickable = true
+                        binding.multiTask15m.isClickable = true
+                        binding.multiTask5m.isClickable = true
+                        binding.multiTaskHour.isClickable = true
+                        binding.multiGanttChartGroup.isTouchAble = true
+                        binding.multiGanttProgress.visibility = View.INVISIBLE
+                    }
+                    LoadingStatus.ERROR -> {
+                        binding.multiGanttMembers.isClickable = true
+                        binding.multiTaskCopy.isClickable = true
+                        binding.multiTaskDelete.isClickable = true
+                        binding.multiTaskEdit.isClickable = true
+                        binding.multiGanttAddTask.isClickable = true
+                        binding.multiTaskDay.isClickable = true
+                        binding.multiTask15m.isClickable = true
+                        binding.multiTask5m.isClickable = true
+                        binding.multiTaskHour.isClickable = true
+                        binding.multiGanttChartGroup.isTouchAble = true
+                        binding.multiGanttProgress.visibility = View.INVISIBLE
+                    }
+                }
+            }
+        })
+
         viewModel.tasks.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if(firstCreate){
@@ -57,7 +104,6 @@ class MultiGanttFragment : Fragment() {
                         binding.multiGanttChartGroup.setRange(startTime,endTime)
                     }
                     firstCreate = false
-                    Log.d("chenyjzn","start = ${StampToDate(startTime)}, end = ${StampToDate(endTime)}")
                 }
                 var fb = 0.0f
                 var max = 0.0f
@@ -94,7 +140,6 @@ class MultiGanttFragment : Fragment() {
             }
 
             override fun eventTaskSelect(taskPos: Int, taskValue: MultiTask?) {
-                Log.d("chenyjzn","eventTaskSelect $taskValue")
                 viewModel.setTaskSelect(taskValue)
             }
 

@@ -1,6 +1,7 @@
 package com.yuchen.makeplan.data.source
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.*
@@ -112,6 +113,14 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
 
     override fun getMyMultiProjects(field : String): LiveData<List<MultiProject>> {
         return makePlanRemoteDataSource.getMyMultiProjects(field)
+    }
+
+    override fun getMyMultiProjectsMutable(field: String): MutableLiveData<List<MultiProject>> {
+        return makePlanRemoteDataSource.getMyMultiProjectsMutable(field)
+    }
+
+    override fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>> {
+        return makePlanRemoteDataSource.getAllMultiProjectsWithoutAuth()
     }
 
     override fun getMultiProjectUsers1(

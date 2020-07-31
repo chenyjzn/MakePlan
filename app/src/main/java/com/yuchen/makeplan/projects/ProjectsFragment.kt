@@ -140,7 +140,7 @@ class ProjectsFragment : Fragment() {
         binding.projectsAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.cloud_download -> {
-                    if (UserManager.isLogIn()){
+                    if (UserManager.isLogInFun()){
                         viewModel.searchAndDownloadProjects()
                     }
                     else{
@@ -151,7 +151,7 @@ class ProjectsFragment : Fragment() {
                     true
                 }
                 R.id.cloud_manage -> {
-                    if (UserManager.isLogIn()){
+                    if (UserManager.isLogInFun()){
                         viewModel.manageProjects()
                     }
                     else{
@@ -162,7 +162,7 @@ class ProjectsFragment : Fragment() {
                     true
                 }
                 R.id.cloud_upload -> {
-                    if (UserManager.isLogIn()){
+                    if (UserManager.isLogInFun()){
                         viewModel.uploadProjects()
                     }
                     else{

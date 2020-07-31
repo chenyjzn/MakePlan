@@ -55,6 +55,10 @@ interface MakePlanDataSource{
 
     fun getMyMultiProjects(field : String) : LiveData<List<MultiProject>>
 
+    fun getMyMultiProjectsMutable(field : String) : MutableLiveData<List<MultiProject>>
+
+    fun getAllMultiProjectsWithoutAuth() : LiveData<List<MultiProject>>
+
     fun getMultiProjectUsers1(project: MultiProject, collection: String): LiveData<List<User>>
 
     suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>

@@ -587,6 +587,46 @@ object MakePlanRemoteDataSource :MakePlanDataSource {
         return liveData
     }
 
+    override fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>> {
+        val liveData = MutableLiveData<List<MultiProject>>()
+        FirebaseFirestore.getInstance()
+            .collection(COLLECTION_MULTI_PROJECTS)
+            .addSnapshotListener { snapshot, exception ->
+                exception?.let {
+                    Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                }
+                val list = mutableListOf<MultiProject>()
+                for (document in snapshot!!) {
+                    val project = document.toObject(MultiProject::class.java)
+                    list.add(project)
+                }
+                liveData.value = list
+            }
+        return liveData
+    }
+
+    override fun getMyMultiProjectsMutable(field: String): MutableLiveData<List<MultiProject>> {
+        val liveData = MutableLiveData<List<MultiProject>>()
+        auth.currentUser?.let {firebaseUser ->
+            FirebaseFirestore.getInstance()
+                .collection(COLLECTION_MULTI_PROJECTS)
+                .whereArrayContains(field,firebaseUser.uid)
+                .addSnapshotListener { snapshot, exception ->
+                    exception?.let {
+                        Log.d("chenyjzn","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    }
+                    Log.d("chenyjzn","User team snapshotListener")
+                    val list = mutableListOf<MultiProject>()
+                    for (document in snapshot!!) {
+                        val project = document.toObject(MultiProject::class.java)
+                        list.add(project)
+                    }
+                    liveData.value = list
+                }
+        }
+        return liveData
+    }
+
     override fun getMultiProjectUsers1(project: MultiProject, collection: String): LiveData<List<User>> {
         val liveData = MutableLiveData<List<User>>()
         auth.currentUser?.let {firebaseUser ->

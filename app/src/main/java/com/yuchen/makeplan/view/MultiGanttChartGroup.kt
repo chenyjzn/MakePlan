@@ -34,6 +34,8 @@ class MultiGanttChartGroup : View {
     private val extraBottomSpace = 20.toPx()
     private val moveTransPow = 4.toPx().toFloat()
 
+    var isTouchAble = true
+
     //Colors
     private val colorTimeLineAxis = resources.getColor(R.color.my_gray_100)
     private val colorTimeLineText = resources.getColor(R.color.my_gray_240)
@@ -189,6 +191,20 @@ class MultiGanttChartGroup : View {
 
     fun setTaskList(taskList: List<MultiTask>){
         this.taskList = taskList.toMutableList()
+        if (taskSelectValue!=null){
+            var isTaskAlive = false
+            for (i in taskList){
+                if (i.firebaseId == taskSelectValue?.firebaseId){
+                    isTaskAlive = true
+                    taskSelectValue = i
+                    break
+                }
+            }
+            if (!isTaskAlive){
+                taskSelectValue = null
+                onEventListener?.eventTaskSelect(-1,null)
+            }
+        }
     }
 
     fun setProjectTimeByDx(dx : Float, width : Int) : Pair<Long,Long>{
@@ -943,7 +959,7 @@ class MultiGanttChartGroup : View {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event != null) {
+        if (event != null && isTouchAble) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     if (taskSelectValue == null) {

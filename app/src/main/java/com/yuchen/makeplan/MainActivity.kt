@@ -6,12 +6,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.KeyEvent
-import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -20,11 +19,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.yuchen.makeplan.databinding.ActivityMainBinding
 import com.yuchen.makeplan.ext.getVmFactory
-import com.yuchen.makeplan.gantt.GanttFragment
+import com.yuchen.makeplan.ext.toPx
 import com.yuchen.makeplan.util.UserManager
 import com.yuchen.makeplan.util.UserManager.auth
 import com.yuchen.makeplan.util.UserManager.googleSignInClient
@@ -50,74 +48,71 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
 
+        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         binding.signInButton.setOnClickListener {
-            if (UserManager.isLogIn()) {
+            if (UserManager.isLogInFun()) {
                 signOut()
-            }
-            else
+            } else
                 signIn()
         }
 
         findNavController(R.id.nav_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
-            when(destination.id){
-                R.id.projectsFragment ->{
+            when (destination.id) {
+                R.id.projectsFragment -> {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
-                R.id.multiProjectsFragment ->{
+                R.id.multiProjectsFragment -> {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
-                R.id.notifyFragment ->{
+                R.id.notifyFragment -> {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
-                R.id.multiEditDialog ->{
+                R.id.multiEditDialog -> {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
-                R.id.editDialog ->{
+                R.id.editDialog -> {
                     this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
-                else ->{
+                else -> {
                     binding.bottomNavigationView.visibility = View.GONE
                 }
             }
         }
 
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.nav_personal ->{
+            when (it.itemId) {
+                R.id.nav_personal -> {
                     findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalProjectsFragment())
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.nav_team -> {
-                    if (UserManager.isLogIn()) {
+                    if (UserManager.isLogInFun()) {
                         findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalMultiProjectsFragment())
                         return@setOnNavigationItemSelectedListener true
-                    }else{
+                    } else {
                         findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalLoginDialog())
                         return@setOnNavigationItemSelectedListener false
                     }
                 }
-                R.id.nav_notify ->{
-                    if (UserManager.isLogIn()){
+                R.id.nav_notify -> {
+                    if (UserManager.isLogInFun()) {
                         findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalNotifyFragment())
                         return@setOnNavigationItemSelectedListener true
-                    }else{
+                    } else {
                         findNavController(R.id.nav_fragment).navigate(NavigationDirections.actionGlobalLoginDialog())
                         return@setOnNavigationItemSelectedListener false
                     }
@@ -125,6 +120,74 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        var badge = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_notify)
+        badge.backgroundColor = resources.getColor(R.color.yellow_400)
+        badge.badgeTextColor = resources.getColor(R.color.blue_gray_900)
+        badge.verticalOffset = 3.toPx()
+        badge.horizontalOffset = 3.toPx()
+        badge.isVisible = false
+
+        UserManager.loginUser.observe(this, Observer {
+            if (it == null)
+                badge.isVisible = false
+            it?.let {user ->
+                viewModel.allProject.value?.let {list ->
+                    var count = 0
+                    for (i in list){
+                        for ( j in i.sendUid){
+                            if(j == user.uid){
+                                count ++
+                                break
+                            }
+                        }
+                    }
+                    if (count == 0){
+                        badge.isVisible = false
+                    }else{
+                        badge.isVisible = true
+                        badge.number = count
+                    }
+                }
+            }
+        })
+
+        viewModel.allProject.observe(this, Observer {
+            if (it == null)
+                badge.isVisible = false
+            it?.let {list ->
+                UserManager.loginUser.value?.let {user ->
+                    var count = 0
+                    for (i in list){
+                        for ( j in i.sendUid){
+                            if(j == user.uid){
+                                count ++
+                                break
+                            }
+                        }
+                    }
+                    if (count == 0){
+                        badge.isVisible = false
+                    }else{
+                        badge.isVisible = true
+                        badge.number = count
+                    }
+                }
+            }
+        })
+
+//        viewModel.myNotify.observe(this, Observer {
+//            it?.let {
+//                badge.number = it.size
+//            }
+//        })
+
+//        viewModel.needRestart.observe(this, Observer {
+//            if (it){
+//                viewModel.setRestartDone()
+//                recreate()
+//            }
+//        })
 
         binding.imageView.setOnClickListener {
             dispatchTakePictureIntent()
@@ -179,7 +242,8 @@ class MainActivity : AppCompatActivity() {
     fun signOut() {
         auth.signOut()
         googleSignInClient.signOut().addOnCompleteListener(this) {
-
+//            viewModel.setRestartStart()
+            UserManager.loginUser.value = null
         }
     }
 
