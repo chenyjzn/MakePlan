@@ -12,7 +12,7 @@ class NotifyFragment : Fragment() {
     private lateinit var notifyPagerAdapter: NotifyPagerAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding= FragmentNotifyBinding.inflate(inflater, container, false)
-        val pagerStringList = listOf("Send Request","Receive Request")
+        val pagerStringList = listOf("Send","Receive")
         this.notifyPagerAdapter = NotifyPagerAdapter(childFragmentManager,pagerStringList)
         binding.notifyTab.setupWithViewPager(binding.notifyPager)
         binding.notifyPager.adapter = notifyPagerAdapter

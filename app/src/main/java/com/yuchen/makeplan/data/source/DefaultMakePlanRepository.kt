@@ -47,10 +47,6 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.firebaseAuthWithGoogle(idToken)
     }
 
-    override fun getMyMultiProjects(): LiveData<List<MultiProject>> {
-        return makePlanRemoteDataSource.getMyMultiProjects()
-    }
-
     override fun getAllMultiProjects(): LiveData<List<MultiProject>> {
         return makePlanRemoteDataSource.getAllMultiProjects()
     }
@@ -63,40 +59,20 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.getMultiProjectTasks(project)
     }
 
-    override suspend fun updateMultiProjectTask(
-        project: MultiProject,
-        task: MultiTask
-    ): Result<Boolean> {
+    override suspend fun updateMultiProjectTask(project: MultiProject, task: MultiTask): Result<Boolean> {
         return makePlanRemoteDataSource.updateMultiProjectTask(project, task)
     }
 
-    override suspend fun removeMultiProjectTask(
-        project: MultiProject,
-        task: MultiTask
-    ): Result<Boolean> {
+    override suspend fun removeMultiProjectTask(project: MultiProject, task: MultiTask): Result<Boolean> {
         return makePlanRemoteDataSource.removeMultiProjectTask(project, task)
     }
 
-    override suspend fun updateMultiProjectCompleteRate(
-        project: MultiProject,
-        completeRate: Int
-    ): Result<Boolean> {
+    override suspend fun updateMultiProjectCompleteRate(project: MultiProject, completeRate: Int): Result<Boolean> {
         return makePlanRemoteDataSource.updateMultiProjectCompleteRate(project, completeRate)
-    }
-
-    override fun getMultiProjectUsers1(project: MultiProject): LiveData<List<User>> {
-        return makePlanRemoteDataSource.getMultiProjectUsers1(project)
     }
 
     override fun getAllUsers(): LiveData<List<User>> {
         return makePlanRemoteDataSource.getAllUsers()
-    }
-
-    override suspend fun updateMultiProjectUsers(
-        project: MultiProject,
-        users: List<User>
-    ): Result<Boolean> {
-        return makePlanRemoteDataSource.updateMultiProjectUsers(project, users)
     }
 
     override suspend fun addMultiProject(project: MultiProject): Result<Boolean> {
@@ -115,83 +91,23 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource : MakePlan
         return makePlanRemoteDataSource.getMyMultiProjects(field)
     }
 
-    override fun getMyMultiProjectsMutable(field: String): MutableLiveData<List<MultiProject>> {
-        return makePlanRemoteDataSource.getMyMultiProjectsMutable(field)
-    }
-
     override fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>> {
         return makePlanRemoteDataSource.getAllMultiProjectsWithoutAuth()
     }
 
-    override fun getMultiProjectUsers1(
-        project: MultiProject,
-        collection: String
-    ): LiveData<List<User>> {
-        return makePlanRemoteDataSource.getMultiProjectUsers1(project, collection)
-    }
-
-    override suspend fun approveUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectCollection: String,
-        userCollection: String
-    ): Result<Boolean> {
-        return makePlanRemoteDataSource.approveUserToMultiProject(project, user, projectCollection, userCollection)
-    }
-
-    override suspend fun cancelUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectCollection: String,
-        userCollection: String
-    ): Result<Boolean> {
-        return makePlanRemoteDataSource.cancelUserToMultiProject(project, user, projectCollection, userCollection)
-    }
-
-    override suspend fun requestUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectCollection: String,
-        userCollection: String
-    ): Result<Boolean> {
-        return makePlanRemoteDataSource.requestUserToMultiProject(project, user, projectCollection, userCollection)
-    }
-
-    override suspend fun removeMultiProjectUser(
-        project: MultiProject,
-        user: User
-    ): Result<Boolean> {
-        return makePlanRemoteDataSource.removeMultiProjectUser(project, user)
-    }
-
-    override suspend fun requestUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectField: String
-    ): Result<Boolean> {
+    override suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> {
         return makePlanRemoteDataSource.requestUserToMultiProject(project, user, projectField)
     }
 
-    override suspend fun approveUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectField: String
-    ): Result<Boolean> {
+    override suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> {
         return makePlanRemoteDataSource.approveUserToMultiProject(project, user, projectField)
     }
 
-    override suspend fun cancelUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectField: String
-    ): Result<Boolean> {
+    override suspend fun cancelUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> {
         return makePlanRemoteDataSource.cancelUserToMultiProject(project, user, projectField)
     }
 
-    override suspend fun removeUserToMultiProject(
-        project: MultiProject,
-        user: User
-    ): Result<Boolean> {
+    override suspend fun removeUserToMultiProject(project: MultiProject, user: User): Result<Boolean> {
         return makePlanRemoteDataSource.removeUserToMultiProject(project, user)
     }
 

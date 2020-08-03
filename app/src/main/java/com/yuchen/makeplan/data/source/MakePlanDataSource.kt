@@ -27,8 +27,6 @@ interface MakePlanDataSource{
 
     suspend fun firebaseAuthWithGoogle(idToken: String) : Result<FirebaseUser?>
 
-    fun getMyMultiProjects () : LiveData<List<MultiProject>>
-
     fun getAllMultiProjects () : LiveData<List<MultiProject>>
 
     fun getMultiProject (project: MultiProject) : LiveData<MultiProject>
@@ -41,11 +39,7 @@ interface MakePlanDataSource{
 
     suspend fun updateMultiProjectCompleteRate (project: MultiProject, completeRate : Int) : Result<Boolean>
 
-    fun getMultiProjectUsers1 (project: MultiProject) : LiveData<List<User>>
-
     fun getAllUsers () : LiveData<List<User>>
-
-    suspend fun updateMultiProjectUsers(project: MultiProject, users :List<User>) : Result<Boolean>
 
     suspend fun addMultiProject (project: MultiProject) : Result<Boolean>
 
@@ -55,19 +49,7 @@ interface MakePlanDataSource{
 
     fun getMyMultiProjects(field : String) : LiveData<List<MultiProject>>
 
-    fun getMyMultiProjectsMutable(field : String) : MutableLiveData<List<MultiProject>>
-
     fun getAllMultiProjectsWithoutAuth() : LiveData<List<MultiProject>>
-
-    fun getMultiProjectUsers1(project: MultiProject, collection: String): LiveData<List<User>>
-
-    suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>
-
-    suspend fun cancelUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>
-
-    suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectCollection: String, userCollection:String) : Result<Boolean>
-
-    suspend fun removeMultiProjectUser(project: MultiProject, user :User) : Result<Boolean>
 
     suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String) : Result<Boolean>
 

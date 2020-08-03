@@ -68,8 +68,7 @@ class ProjectsFragment : Fragment() {
                     false
                 }.toBooleanArray()
                 MaterialAlertDialogBuilder(requireNotNull(context))
-                    .setTitle("Do you want to download this projects?")
-                    .setIcon(R.drawable.ic_warning_black_24dp)
+                    .setTitle("Do you want to save this projects from cloud?")
                     .setMultiChoiceItems(multiItems, checkedItems) { dialog, which, checked ->
 
                     }.setPositiveButton("Save") { dialog, which ->
@@ -96,11 +95,11 @@ class ProjectsFragment : Fragment() {
                         false
                     }.toBooleanArray()
                     MaterialAlertDialogBuilder(requireNotNull(context))
-                        .setTitle("Do you want to remove this projects from cloud?")
+                        .setTitle("You are going to remove this projects from cloud?")
                         .setIcon(R.drawable.ic_warning_black_24dp)
                         .setMultiChoiceItems(multiItems, checkedItems) { dialog, which, checked ->
 
-                        }.setPositiveButton("Yes") { dialog, which ->
+                        }.setPositiveButton("Remove") { dialog, which ->
                             viewModel.resetProjects(it,checkedItems)
                         }
                         .show()

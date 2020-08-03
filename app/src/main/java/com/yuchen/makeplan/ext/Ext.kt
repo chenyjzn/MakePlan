@@ -20,13 +20,3 @@ fun MutableList<*>.removeFrom(index:Int) {
         removeAt(this.lastIndex)
     }
 }
-
-fun TextView.setWidthAndPos(){
-
-}
-
-fun List<User>.toUidStringList() : List<String>{
-    return this.map {
-        it.uid
-    }
-}

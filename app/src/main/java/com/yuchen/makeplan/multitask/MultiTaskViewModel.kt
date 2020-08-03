@@ -4,10 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.yuchen.makeplan.DAY_MILLIS
-import com.yuchen.makeplan.HOUR_MILLIS
-import com.yuchen.makeplan.MINUTE_MILLIS
-import com.yuchen.makeplan.R
+import com.yuchen.makeplan.*
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.source.MakePlanRepository
@@ -29,6 +26,10 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
     val colorList = application.resources.getStringArray(R.array.color_array_1).toList()
 
     val project: LiveData<MultiProject> = repository.getMultiProject(projectInput)
+
+    private val _loadingStatus = MutableLiveData<LoadingStatus>()
+    val loadingStatus: LiveData<LoadingStatus>
+        get() = _loadingStatus
 
     val newStartTimeMillis = MutableLiveData<Long>().apply {
         if (taskInput == null)
@@ -82,7 +83,9 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
             newTask.firebaseId = taskInput.firebaseId
         }
         coroutineScope.launch {
+            _loadingStatus.value=LoadingStatus.LOADING
             repository.updateMultiProjectTask(projectInput,newTask)
+            _loadingStatus.value=LoadingStatus.DONE
             _saveTask.value = true
         }
     }

@@ -32,7 +32,6 @@ class MembersFragment : Fragment() {
             this.findNavController().popBackStack()
         }
 
-
         return binding.root
     }
 }

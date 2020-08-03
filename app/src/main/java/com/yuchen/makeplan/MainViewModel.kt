@@ -25,8 +25,6 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
 
     val allProject = repository.getAllMultiProjectsWithoutAuth()
 
-    val myNotify = repository.getMyMultiProjects(FIELD_SEND_UID)
-
     private val _needRestart = MutableLiveData<Boolean>()
     val needRestart: LiveData<Boolean>
         get() = _needRestart

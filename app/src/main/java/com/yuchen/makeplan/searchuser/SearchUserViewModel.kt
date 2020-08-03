@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_RECEIVE
-import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.COLLECTION_SEND
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_SEND_UID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

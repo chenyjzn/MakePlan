@@ -43,9 +43,9 @@ fun Fragment.getVmFactory(project: MultiProject, task: MultiTask?): MultiTaskVie
     return MultiTaskViewModelFactory(repository,project,task,application)
 }
 
-fun Fragment.getVmFactory(pagerPos: Int): MultiItemsViewModelFactory {
+fun Fragment.getVmFactory(pagerPos: Int): NotifyItemsViewModelFactory {
     val repository = (requireContext().applicationContext as MakePlanApplication).makePlanRepository
-    return MultiItemsViewModelFactory(repository,pagerPos)
+    return NotifyItemsViewModelFactory(repository,pagerPos)
 }
 
 fun Fragment.getVmFactory(project: MultiProject,membersPos: Int): MembersItemsViewModelFactory {

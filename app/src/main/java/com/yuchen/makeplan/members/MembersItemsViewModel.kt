@@ -50,20 +50,6 @@ class MembersItemsViewModel(private val repository: MakePlanRepository, private 
         }
     }
 
-    fun isMembersOverOne() : Boolean{
-        usersUid.value?.let{
-            if (it.size > 1)
-                return true
-        }
-        return false
-    }
-
-    fun existProject(){
-        coroutineScope.launch {
-            repository.removeUserToMultiProject(project,UserManager.user)
-        }
-    }
-
     fun cancelProjectToUser(user: User){
         coroutineScope.launch {
             repository.cancelUserToMultiProject(project,user, FIELD_SEND_UID)

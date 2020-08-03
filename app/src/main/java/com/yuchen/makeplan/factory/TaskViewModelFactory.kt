@@ -18,7 +18,6 @@ class TaskViewModelFactory constructor(
             when {
                 isAssignableFrom(TaskViewModel::class.java)->
                     TaskViewModel(makePlanRepository, projectHistory,taskPos,colorList)
-
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

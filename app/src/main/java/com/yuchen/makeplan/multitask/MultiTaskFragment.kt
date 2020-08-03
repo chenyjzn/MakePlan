@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.yuchen.makeplan.DAY_MILLIS
+import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.databinding.FragmentMultiTaskBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -50,6 +51,23 @@ class MultiTaskFragment : Fragment() {
             )
             startDatePickerDialog.show()
         }
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            when(it){
+                LoadingStatus.LOADING ->{
+                    binding.multiTaskCancel.isClickable = false
+                    binding.multiTaskSave.isClickable = false
+                }
+                LoadingStatus.DONE ->{
+                    binding.multiTaskCancel.isClickable = true
+                    binding.multiTaskSave.isClickable = true
+                }
+                LoadingStatus.ERROR ->{
+                    binding.multiTaskCancel.isClickable = true
+                    binding.multiTaskSave.isClickable = true
+                }
+            }
+        })
 
         binding.multiTaskStartTimeEdit.setOnClickListener {
             calendar.timeInMillis = viewModel.newStartTimeMillis.value ?: calendar.timeInMillis
@@ -128,7 +146,6 @@ class MultiTaskFragment : Fragment() {
                 val words = s.toString()
                 if (words != "") {
                     val num = Integer.parseInt(words)
-                    Log.d("chenyjzn", "edit day = $num")
                     if (num in 0..999) {
                         viewModel.setEndByDurationDay(num)
                     } else if (num > 999) {
@@ -153,7 +170,6 @@ class MultiTaskFragment : Fragment() {
                 val words = s.toString()
                 if (words != "") {
                     val num = Integer.parseInt(words)
-                    Log.d("chenyjzn", "edit day = $num")
                     if (num in 0..23) {
                         viewModel.setEndByDurationHour(num)
                     } else {
@@ -178,7 +194,6 @@ class MultiTaskFragment : Fragment() {
                 val words = s.toString()
                 if (words != "") {
                     val num = Integer.parseInt(words)
-                    Log.d("chenyjzn", "edit day = $num")
                     if (num in 0..59) {
                         viewModel.setEndByDurationMinute(num)
                     } else {

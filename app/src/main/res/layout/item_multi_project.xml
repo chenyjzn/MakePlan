@@ -35,7 +35,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/item_multi_project_card_constrain"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal|center_vertical">
 
                 <TextView
                     android:id="@+id/item_multi_project_name"
@@ -44,9 +45,9 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:text="@{project.name}"
+                    android:textColor="@color/my_gray_220"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="@color/my_gray_220"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/item_multi_avatar_image1"
                     app:membersCount="@{project.members.size()}"
@@ -156,9 +157,24 @@
                     app:srcCompat="@drawable/ic_account_circle_black_24dp"
                     app:users="@{project.members}" />
 
+
+                <TextView
+                    android:id="@+id/item_multi_notify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="1"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/badge_text_style" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

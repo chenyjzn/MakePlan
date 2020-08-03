@@ -139,7 +139,10 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         projectRep.add(newProject)
         projectPos = projectRep.lastIndex
         _project.value = projectRep.last()
-        _taskSelect.value =-1
+        _taskSelect.value?.let {
+            if (projectRep.last().taskList.size == it)
+                _taskSelect.value = -1
+        }
     }
 
     fun getUndoListArray(): Array<Project>{
@@ -159,7 +162,6 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
             projectRep.add(newProject)
             projectPos = projectRep.lastIndex
             _project.value = projectRep.last()
-            _taskSelect.value =-1
         }
     }
 

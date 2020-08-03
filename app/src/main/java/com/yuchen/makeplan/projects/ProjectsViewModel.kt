@@ -76,7 +76,7 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
                     val result = repository.uploadPersonalProjectsToFirebase(it)
                     when (result) {
                         is Result.Success -> {
-                            Log.d("chenyjzn", "uploadProjects OK")
+
                         }
                         is Result.Error -> {
                             Log.d("chenyjzn", "uploadProjects result = ${result.exception}")
@@ -97,7 +97,6 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
             val result = repository.downloadPersonalProjectsFromFirebase()
             when (result) {
                 is Result.Success -> {
-                    Log.d("chenyjzn", "downloadProjects OK")
                     var notExist : List<Project>? =null
                     result.data.forEach {
                         if (repository.searchProject(it.id)!= null){
@@ -125,7 +124,6 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
             val result = repository.downloadPersonalProjectsFromFirebase()
             when (result) {
                 is Result.Success -> {
-                    Log.d("chenyjzn", "downloadProjects OK")
                     var notExist : List<Project> = listOf()
                     result.data.forEach {
                         if (repository.searchProject(it.id)== null){

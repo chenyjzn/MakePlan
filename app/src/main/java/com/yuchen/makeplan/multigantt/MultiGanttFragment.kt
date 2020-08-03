@@ -15,11 +15,8 @@ import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiTask
-import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.databinding.FragmentMultiGanttBinding
 import com.yuchen.makeplan.ext.getVmFactory
-import com.yuchen.makeplan.util.TimeUtil.StampToDate
-import com.yuchen.makeplan.view.MultiGanttChart
 import com.yuchen.makeplan.view.MultiGanttChartGroup
 import kotlin.math.max
 import kotlin.math.min
@@ -29,7 +26,6 @@ class MultiGanttFragment : Fragment() {
 
     private val viewModel: MultiGanttViewModel by viewModels<MultiGanttViewModel> { getVmFactory(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject)}
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentMultiGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -55,7 +51,7 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = false
                         binding.multiTaskHour.isClickable = false
                         binding.multiGanttChartGroup.isTouchAble = false
-                        binding.multiGanttProgress.visibility = View.VISIBLE
+//                        binding.multiGanttProgress.visibility = View.VISIBLE
                     }
                     LoadingStatus.DONE -> {
                         binding.multiGanttMembers.isClickable = true
@@ -68,7 +64,7 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = true
                         binding.multiTaskHour.isClickable = true
                         binding.multiGanttChartGroup.isTouchAble = true
-                        binding.multiGanttProgress.visibility = View.INVISIBLE
+//                        binding.multiGanttProgress.visibility = View.INVISIBLE
                     }
                     LoadingStatus.ERROR -> {
                         binding.multiGanttMembers.isClickable = true
@@ -81,8 +77,23 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = true
                         binding.multiTaskHour.isClickable = true
                         binding.multiGanttChartGroup.isTouchAble = true
-                        binding.multiGanttProgress.visibility = View.INVISIBLE
+//                        binding.multiGanttProgress.visibility = View.INVISIBLE
                     }
+                }
+            }
+        })
+
+        viewModel.project.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                val count = it.receiveUid.size
+                if (count == 0){
+                    binding.multiGanttNotify.visibility = View.INVISIBLE
+                }else if (count >= 999){
+                    binding.multiGanttNotify.visibility = View.VISIBLE
+                    binding.multiGanttNotify.text = "999+"
+                }else{
+                    binding.multiGanttNotify.visibility = View.VISIBLE
+                    binding.multiGanttNotify.text=count.toString()
                 }
             }
         })

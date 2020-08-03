@@ -21,7 +21,4 @@ class LoginDialog : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-    }
 }

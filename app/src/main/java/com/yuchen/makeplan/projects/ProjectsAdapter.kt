@@ -35,7 +35,6 @@ class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<P
         fun bind(project: Project) {
             binding.project = project
             viewModel.loadingStatus.observe(this, Observer {
-                Log.d("chenyjzn", "Loding = ${it}")
                 it?.let {
                     when(it){
                         LoadingStatus.LOADING ->{

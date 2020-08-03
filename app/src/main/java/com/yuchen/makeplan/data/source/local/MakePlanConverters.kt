@@ -10,7 +10,7 @@ import com.yuchen.makeplan.data.User
 
 class MakePlanConverters {
     @TypeConverter
-    fun convertTaskListToJson(listTask: MutableList<Task>): String? {
+    fun convertTaskListToJson(listTask: MutableList<Task>?): String? {
         listTask?.let {
             return Moshi.Builder().build().adapter<MutableList<Task>>(MutableList::class.java).toJson(listTask)
         }
@@ -28,7 +28,7 @@ class MakePlanConverters {
     }
 
     @TypeConverter
-    fun convertToDoListToJson(listToDo: MutableList<ToDo>): String? {
+    fun convertToDoListToJson(listToDo: MutableList<ToDo>?): String? {
         listToDo?.let {
             return Moshi.Builder().build().adapter<MutableList<ToDo>>(MutableList::class.java).toJson(listToDo)
         }
@@ -46,7 +46,7 @@ class MakePlanConverters {
     }
 
     @TypeConverter
-    fun convertUserListToJson(listUser: MutableList<User>): String? {
+    fun convertUserListToJson(listUser: MutableList<User>?): String? {
         listUser?.let {
             return Moshi.Builder().build().adapter<MutableList<User>>(MutableList::class.java).toJson(listUser)
         }
@@ -64,7 +64,7 @@ class MakePlanConverters {
     }
 
     @TypeConverter
-    fun convertStringListToJson(listString: MutableList<String>): String? {
+    fun convertStringListToJson(listString: MutableList<String>?): String? {
         listString?.let {
             return Moshi.Builder().build().adapter<MutableList<String>>(MutableList::class.java).toJson(listString)
         }

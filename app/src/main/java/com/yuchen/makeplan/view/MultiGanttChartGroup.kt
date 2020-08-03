@@ -44,8 +44,9 @@ class MultiGanttChartGroup : View {
     private val colorGanttLineHorizontal = resources.getColor(R.color.my_gray_90)
     private val colorGanttText = resources.getColor(R.color.my_gray_240)
     private val colorGanttBack = resources.getColor(R.color.my_gray_45)
-    private val colorGanttShortSelect = resources.getColor(R.color.blue_gray_500)
-    private val colorGanttLongSelect = resources.getColor(R.color.blue_gray_700)
+    private val colorGanttShortSelect = resources.getColor(R.color.my_gray_180)
+    private val colorGanttShortSelectLine = resources.getColor(R.color.my_gray_75)
+    private val colorGanttLongSelect = resources.getColor(R.color.my_gray_100)
     private val colorToolBarText = resources.getColor(R.color.blue_gray_900)
     private val colorToolBarBack = resources.getColor(R.color.yellow_600)
     private val colorToolBarStroke = resources.getColor(R.color.my_gray_100)
@@ -139,7 +140,12 @@ class MultiGanttChartGroup : View {
 
     private val ganttShortSelectPaint = Paint().apply {
         color = colorGanttShortSelect
-        style = Paint.Style.FILL_AND_STROKE
+        style = Paint.Style.FILL
+    }
+
+    private val ganttShortSelectLinePaint = Paint().apply {
+        color = colorGanttShortSelectLine
+        style = Paint.Style.STROKE
         strokeWidth = 2.toPx().toFloat()
     }
 
@@ -270,7 +276,6 @@ class MultiGanttChartGroup : View {
         }else{
             timeLineType = -1
         }
-        Log.d("chenyjzn","cal scale s=${StampToDate(startDate)}, e=${StampToDate(endDate)}, type = $timeLineType")
     }
 
     fun setTaskPosSelect(pos:Int){
@@ -812,6 +817,12 @@ class MultiGanttChartGroup : View {
                         canvas.drawText(text,left,top + taskHeight.toFloat()*0.25f + fontTaskOffsetY, ganttTextPaint)
                         if (value == taskSelectValue){
                             canvas.drawRoundRect(left - taskControl,top + taskHeight.toFloat()*0.5f,right + taskControl, bottom- 0.1f*taskHeight,15f,15f, ganttShortSelectPaint)
+                            canvas.drawLine(left - taskControl + 30,top + taskHeight.toFloat()*0.5f + 15,left - taskControl + 30,bottom- 0.1f*taskHeight-15,ganttShortSelectLinePaint)
+                            canvas.drawLine(left - taskControl + 40,top + taskHeight.toFloat()*0.5f + 15,left - taskControl + 40,bottom- 0.1f*taskHeight-15,ganttShortSelectLinePaint)
+                            canvas.drawLine(left - taskControl + 50,top + taskHeight.toFloat()*0.5f + 15,left - taskControl + 50,bottom- 0.1f*taskHeight-15,ganttShortSelectLinePaint)
+                            canvas.drawLine(right + taskControl - 30,top + taskHeight.toFloat()*0.5f + 15,right + taskControl - 30,bottom- 0.1f*taskHeight-15,ganttShortSelectLinePaint)
+                            canvas.drawLine(right + taskControl - 40,top + taskHeight.toFloat()*0.5f + 15,right + taskControl - 40,bottom- 0.1f*taskHeight-15,ganttShortSelectLinePaint)
+                            canvas.drawLine(right + taskControl - 50,top + taskHeight.toFloat()*0.5f + 15,right + taskControl - 50,bottom- 0.1f*taskHeight-15,ganttShortSelectLinePaint)
                         }
                         barPaint.color = Color.parseColor(colorList1[value.color])
                         canvas.drawRoundRect(left,top + taskHeight.toFloat()*0.5f,right , bottom - 0.1f*taskHeight,15f,15f, barPaint)
@@ -875,7 +886,6 @@ class MultiGanttChartGroup : View {
     fun checkTaskModeTouchPos(x : Float, y : Float) : TouchMode {
         taskList?.let {
             for ((index, value) in it.withIndex()){
-//                Log.d("chenyjzn","multi project check task ${value == taskSelectValue} ${value.firebaseId == taskSelectValue?.firebaseId} ${value.firebaseId} , ${taskSelectValue?.firebaseId}")
                 val left = interpolation(startDate,endDate,value.startTimeMillis)*width.toFloat()
                 val right = interpolation(startDate,endDate,value.endTimeMillis)*width.toFloat()
                 val top = ((index)*taskHeight).toFloat() + taskHeight.toFloat()*0.4f + dy+timeLineHeight +toolBarHeight

@@ -142,7 +142,6 @@ class TaskFragment : Fragment() {
                 val words = s.toString()
                 if (words != "") {
                     val num = Integer.parseInt(words)
-                    Log.d("chenyjzn", "edit day = $num")
                     if (num in 0..999) {
                         viewModel.setEndByDurationDay(num)
                     } else if (num > 999) {
@@ -167,7 +166,6 @@ class TaskFragment : Fragment() {
                 val words = s.toString()
                 if (words != "") {
                     val num = Integer.parseInt(words)
-                    Log.d("chenyjzn", "edit day = $num")
                     if (num in 0..23) {
                         viewModel.setEndByDurationHour(num)
                     } else {
@@ -192,7 +190,6 @@ class TaskFragment : Fragment() {
                 val words = s.toString()
                 if (words != "") {
                     val num = Integer.parseInt(words)
-                    Log.d("chenyjzn", "edit day = $num")
                     if (num in 0..59) {
                         viewModel.setEndByDurationMinute(num)
                     } else {

@@ -94,6 +94,18 @@
                     app:layout_constraintStart_toEndOf="@+id/multi_task_copy"
                     app:layout_constraintTop_toTopOf="@+id/multi_task_copy" />
 
+                <TextView
+                    android:id="@+id/multi_gantt_notify"
+                    style="@style/badge_text_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="999"
+                    android:visibility="invisible"
+                    android:translationZ="2dp"
+                    app:layout_constraintEnd_toEndOf="@+id/multi_gantt_members"
+                    app:layout_constraintStart_toEndOf="@+id/multi_gantt_members"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <LinearLayout
                     android:id="@+id/multi_task_toggle_button"
                     android:layout_width="wrap_content"
@@ -157,6 +169,7 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/multi_gantt_chart_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

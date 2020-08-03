@@ -24,7 +24,6 @@ class GanttFragment : Fragment() {
 
     private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory)}
 
-    @SuppressLint("ClickableViewAccessibility", "ResourceType")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -41,14 +40,6 @@ class GanttFragment : Fragment() {
         binding.ganttChartGroup.setOnEventListener(object : GanttChartGroup.OnEventListener{
             override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
                 viewModel.setProjectTime(startTimeMillis,endTimeMillis)
-            }
-
-            override fun eventMoveDx(dx: Float, width: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun eventZoomDlDr(dl: Float, dr: Float, width: Int) {
-                TODO("Not yet implemented")
             }
 
             override fun eventTaskSelect(taskPos: Int, taskValue: Task?) {
@@ -156,7 +147,7 @@ class GanttFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             MaterialAlertDialogBuilder(requireNotNull(context))
                 .setTitle("You are going to leave your project!")
-                .setMessage("If you want to save your project, press cancel and save.\nIf you want to leave without save, press leave.")
+                .setMessage("Press cancel to save your project.\nPress leave to continue leave.")
                 .setNegativeButton("Cancel") { dialog, which ->
 
                 }.setPositiveButton("Leave") { dialog, which ->
@@ -166,6 +157,5 @@ class GanttFragment : Fragment() {
 
         return binding.root
     }
-
 
 }
