@@ -47,6 +47,10 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
         value = calendarEnd.timeInMillis
     }
 
+    private val _newDuration = MutableLiveData<Long>()
+    val newDuration: LiveData<Long>
+        get() = _newDuration
+
     val newTaskName = MutableLiveData<String>().apply {
         value = if (taskInput == null)
             "New Task"
@@ -71,6 +75,14 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
     private val _saveTask = MutableLiveData<Boolean>()
     val saveTask: LiveData<Boolean>
         get() = _saveTask
+
+    fun setNewDuration(){
+        newStartTimeMillis.value?.let {start ->
+            newEndTimeMillis.value?.let {end ->
+                _newDuration.value = end - start
+            }
+        }
+    }
 
     fun updateTaskToFirebase(){
         val name = newTaskName.value ?: "Project"

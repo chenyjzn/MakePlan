@@ -1056,9 +1056,7 @@ class GanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskList?.let {
-                                    if (it[taskSelectPos].startTimeMillis + timeOffset >= it[taskSelectPos].endTimeMillis) {
-                                        it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
-                                    } else {
+                                    if (it[taskSelectPos].startTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) + 5 * MINUTE_MILLIS <= it[taskSelectPos].endTimeMillis) {
                                         it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
@@ -1070,9 +1068,7 @@ class GanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskList?.let {
-                                    if (it[taskSelectPos].startTimeMillis + timeOffset >= it[taskSelectPos].endTimeMillis) {
-                                        it[taskSelectPos].startTimeMillis = it[taskSelectPos].endTimeMillis
-                                    } else {
+                                    if (it[taskSelectPos].startTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) + 5 * MINUTE_MILLIS <= it[taskSelectPos].endTimeMillis) {
                                         it[taskSelectPos].startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
@@ -1085,9 +1081,7 @@ class GanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskList?.let {
-                                    if (it[taskSelectPos].endTimeMillis + timeOffset <= it[taskSelectPos].startTimeMillis) {
-                                        it[taskSelectPos].endTimeMillis = it[taskSelectPos].startTimeMillis
-                                    } else {
+                                    if (it[taskSelectPos].endTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) - 5 * MINUTE_MILLIS >= it[taskSelectPos].startTimeMillis) {
                                         it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
@@ -1099,9 +1093,7 @@ class GanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskList?.let {
-                                    if (it[taskSelectPos].endTimeMillis + timeOffset <= it[taskSelectPos].startTimeMillis) {
-                                        it[taskSelectPos].endTimeMillis = it[taskSelectPos].startTimeMillis
-                                    } else {
+                                    if (it[taskSelectPos].endTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) - 5 * MINUTE_MILLIS >= it[taskSelectPos].startTimeMillis) {
                                         it[taskSelectPos].endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()

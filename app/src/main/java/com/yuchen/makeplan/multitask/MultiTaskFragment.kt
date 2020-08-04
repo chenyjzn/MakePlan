@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MINUTE_MILLIS
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.databinding.FragmentMultiTaskBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -212,6 +213,33 @@ class MultiTaskFragment : Fragment() {
         binding.multiTaskSave.setOnClickListener {
             viewModel.updateTaskToFirebase()
         }
+
+        viewModel.newStartTimeMillis.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                viewModel.setNewDuration()
+            }
+        })
+
+        viewModel.newEndTimeMillis.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                viewModel.setNewDuration()
+            }
+        })
+
+        viewModel.newDuration.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                if (it < 5L * MINUTE_MILLIS){
+                    binding.multiTaskSave.isClickable = false
+                    binding.multiTaskDurationWarning.visibility = View.VISIBLE
+                    binding.multiTaskDuration.setTextColor(resources.getColor(R.color.red_200))
+                }else{
+                    binding.multiTaskSave.isClickable = true
+                    binding.multiTaskDurationWarning.visibility = View.INVISIBLE
+                    binding.multiTaskDuration.setTextColor(resources.getColor(R.color.my_gray_180))
+                }
+            }
+        })
+
         return binding.root
     }
 

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.yuchen.makeplan.DAY_MILLIS
+import com.yuchen.makeplan.MINUTE_MILLIS
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.databinding.FragmentTaskBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -208,6 +209,33 @@ class TaskFragment : Fragment() {
         binding.taskSave.setOnClickListener {
             viewModel.addTaskToNewProject()
         }
+
+        viewModel.newStartTimeMillis.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                viewModel.setNewDuration()
+            }
+        })
+
+        viewModel.newEndTimeMillis.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                viewModel.setNewDuration()
+            }
+        })
+
+        viewModel.newDuration.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                if (it < 5L * MINUTE_MILLIS){
+                    binding.taskSave.isClickable = false
+                    binding.taskDurationWarning.visibility = View.VISIBLE
+                    binding.taskDuration.setTextColor(resources.getColor(R.color.red_200))
+                }else{
+                    binding.taskSave.isClickable = true
+                    binding.taskDurationWarning.visibility = View.INVISIBLE
+                    binding.taskDuration.setTextColor(resources.getColor(R.color.my_gray_180))
+                }
+            }
+        })
+
         return binding.root
     }
 }

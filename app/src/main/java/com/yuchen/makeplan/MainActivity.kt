@@ -1,14 +1,17 @@
 package com.yuchen.makeplan
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -26,6 +29,11 @@ import com.yuchen.makeplan.ext.toPx
 import com.yuchen.makeplan.util.UserManager
 import com.yuchen.makeplan.util.UserManager.auth
 import com.yuchen.makeplan.util.UserManager.googleSignInClient
+import java.io.File
+import java.io.IOException
+import java.io.OutputStreamWriter
+import java.text.SimpleDateFormat
+import java.util.*
 
 const val BUTTON_CLICK_TRAN = 500L
 const val SECOND_MILLIS = 1000L
@@ -58,12 +66,6 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        binding.signInButton.setOnClickListener {
-            if (UserManager.isLogInFun()) {
-                signOut()
-            } else
-                signIn()
-        }
 
         findNavController(R.id.nav_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
@@ -128,6 +130,18 @@ class MainActivity : AppCompatActivity() {
         badge.horizontalOffset = 3.toPx()
         badge.isVisible = false
 
+//        viewModel.notifyProjects.observe(this, Observer {
+//            if (it == null)
+//                badge.isVisible = false
+//            it?.let {
+//                if (it.isNotEmpty()){
+//                    badge.isVisible =true
+//                    badge.number = it.size
+//                }else if (it.isEmpty())
+//                    badge.isVisible = false
+//            }
+//        })
+
         UserManager.loginUser.observe(this, Observer {
             if (it == null)
                 badge.isVisible = false
@@ -176,25 +190,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        viewModel.myNotify.observe(this, Observer {
-//            it?.let {
-//                badge.number = it.size
-//            }
-//        })
-
-//        viewModel.needRestart.observe(this, Observer {
-//            if (it){
-//                viewModel.setRestartDone()
-//                recreate()
-//            }
-//        })
-
-        binding.imageView.setOnClickListener {
-            dispatchTakePictureIntent()
-        }
-
-        binding.imageView3.setOnClickListener {
-            dispatchGetPictureIntent()
+        binding.signInButton.setOnClickListener {
+            if (UserManager.isLogInFun()) {
+                signOut()
+            } else
+                signIn()
         }
     }
 
@@ -216,21 +216,6 @@ class MainActivity : AppCompatActivity() {
                 Log.w("chenyjzn", "Google sign in failed", e)
             }
         }
-        if (requestCode == TAKE_PICTURE && resultCode == RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            binding.imageView.setImageBitmap(imageBitmap)
-        }
-        if (requestCode == GET_PICTURE && resultCode == RESULT_OK) {
-            Log.d("chenyjzn","Get Pic ${data?.data}")
-            val selectedImage: Uri? = data?.data
-            Glide.with(binding.imageView3.context)
-                .load(selectedImage)
-                .apply(
-                    RequestOptions().placeholder(R.drawable.ic_broken_image_black_24dp)
-                        .error(R.drawable.ic_broken_image_black_24dp)
-                )
-                .into(binding.imageView3)
-        }
     }
     fun signIn() {
         if (viewModel.loadingStatus.value != LoadingStatus.LOADING) {
@@ -242,31 +227,12 @@ class MainActivity : AppCompatActivity() {
     fun signOut() {
         auth.signOut()
         googleSignInClient.signOut().addOnCompleteListener(this) {
-//            viewModel.setRestartStart()
             UserManager.loginUser.value = null
         }
     }
 
     companion object {
         private const val RC_SIGN_IN = 9001
-        private const val TAKE_PICTURE = 1
-        private const val GET_PICTURE = 2
-    }
-
-    private fun dispatchTakePictureIntent() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                startActivityForResult(takePictureIntent, TAKE_PICTURE)
-            }
-        }
-    }
-
-    private fun dispatchGetPictureIntent() {
-        Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI).also { getPictureIntent ->
-            getPictureIntent.resolveActivity(packageManager)?.also {
-                startActivityForResult(getPictureIntent, GET_PICTURE)
-            }
-        }
     }
 
 }

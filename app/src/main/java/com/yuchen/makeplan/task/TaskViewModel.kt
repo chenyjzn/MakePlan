@@ -1,6 +1,7 @@
 package com.yuchen.makeplan.task
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.DAY_MILLIS
@@ -40,6 +41,10 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
         value = calendarEnd.timeInMillis
     }
 
+    private val _newDuration = MutableLiveData<Long>()
+    val newDuration: LiveData<Long>
+        get() = _newDuration
+
     val newTaskName = MutableLiveData<String>().apply {
         value = if (taskPos == -1)
             "New Task"
@@ -64,6 +69,14 @@ class TaskViewModel (private val repository: MakePlanRepository, private val pro
     private val _newProject = MutableLiveData<MutableList<Project>>()
     val newProject: LiveData<MutableList<Project>>
         get() = _newProject
+
+    fun setNewDuration(){
+        newStartTimeMillis.value?.let {start ->
+            newEndTimeMillis.value?.let {end ->
+                _newDuration.value = end - start
+            }
+        }
+    }
 
     fun addTaskToNewProject(){
             val newProject = projectRep.last().newRefProject()

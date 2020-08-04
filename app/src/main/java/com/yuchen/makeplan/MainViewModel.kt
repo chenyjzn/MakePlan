@@ -24,10 +24,7 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
         get() = _loadingStatus
 
     val allProject = repository.getAllMultiProjectsWithoutAuth()
-
-    private val _needRestart = MutableLiveData<Boolean>()
-    val needRestart: LiveData<Boolean>
-        get() = _needRestart
+    val notifyProjects = repository.getMyMultiProjects(FIELD_SEND_UID)
 
     fun getUser(){
         coroutineScope.launch {
@@ -63,7 +60,6 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
                             Log.d("chenyjzn", "getFireBaseUser OK")
                             UserManager.user = userResult.data
                             UserManager.loginUser.value = userResult.data
-//                            setRestartStart()
                         }
                         is Result.Error ->{
                             Log.d("chenyjzn", "getFireBaseUser result = ${userResult.exception}")
@@ -82,14 +78,6 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
             }
             _loadingStatus.value = LoadingStatus.DONE
         }
-    }
-
-    fun setRestartStart(){
-        _needRestart.value = true
-    }
-
-    fun setRestartDone(){
-        _needRestart.value = null
     }
 
     override fun onCleared() {

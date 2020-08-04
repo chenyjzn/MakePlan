@@ -1065,9 +1065,7 @@ class MultiGanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskSelectValue?.let {
-                                    if (it.startTimeMillis + timeOffset >= it.endTimeMillis) {
-                                        it.startTimeMillis = it.endTimeMillis
-                                    } else {
+                                    if (it.startTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) + 5 * MINUTE_MILLIS <= it.endTimeMillis) {
                                         it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
@@ -1079,9 +1077,7 @@ class MultiGanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskSelectValue?.let {
-                                    if (it.startTimeMillis + timeOffset >= it.endTimeMillis) {
-                                        it.startTimeMillis = it.endTimeMillis
-                                    } else {
+                                    if (it.startTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) + 5 * MINUTE_MILLIS <= it.endTimeMillis) {
                                         it.startTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
@@ -1094,9 +1090,7 @@ class MultiGanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskSelectValue?.let {
-                                    if (it.endTimeMillis + timeOffset <= it.startTimeMillis) {
-                                        it.endTimeMillis = it.startTimeMillis
-                                    } else {
+                                    if (it.endTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) - 5 * MINUTE_MILLIS >= it.startTimeMillis) {
                                         it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()
@@ -1108,9 +1102,7 @@ class MultiGanttChartGroup : View {
                             val timeOffset =  setTaskTimeOffsetByDx(event.x - x0, width)
                             if(timeOffset/taskActionTimeScale != 0L) {
                                 taskSelectValue?.let {
-                                    if (it.endTimeMillis + timeOffset <= it.startTimeMillis) {
-                                        it.endTimeMillis = it.startTimeMillis
-                                    } else {
+                                    if (it.endTimeMillis + taskActionTimeScale*(timeOffset/taskActionTimeScale) - 5 * MINUTE_MILLIS >= it.startTimeMillis) {
                                         it.endTimeMillis += taskActionTimeScale*(timeOffset/taskActionTimeScale)
                                     }
                                     invalidate()

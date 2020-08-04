@@ -42,7 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:visibility="invisible"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -58,27 +59,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/main_layout" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_login_progress"
-            app:srcCompat="@drawable/ic_broken_image_black_24dp" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/main_login_progress"
-            app:layout_constraintEnd_toStartOf="@+id/main_login_progress"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_broken_image_black_24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
