@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_RECEIVE_UID
-import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_SEND_UID
 import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +21,6 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
         get() = _loadingStatus
 
     val allProject = repository.getAllMultiProjectsWithoutAuth()
-    val notifyProjects = repository.getMyMultiProjects(FIELD_SEND_UID)
 
     fun getUser(){
         coroutineScope.launch {
