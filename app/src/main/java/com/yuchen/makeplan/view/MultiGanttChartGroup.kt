@@ -1,5 +1,6 @@
 package com.yuchen.makeplan.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -67,7 +68,6 @@ class MultiGanttChartGroup : View {
     private var endDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
     private var endHour: Int = calendar.get(Calendar.HOUR_OF_DAY)
 
-    private var taskSelectPos = -1
     private var taskSelectValue: MultiTask? = null
 
     private var taskLongSelect = -1
@@ -206,7 +206,7 @@ class MultiGanttChartGroup : View {
             }
             if (!isTaskAlive) {
                 taskSelectValue = null
-                onEventListener?.eventTaskSelect(-1, null)
+                onEventListener?.eventTaskSelect(null)
             }
         }
     }
@@ -840,12 +840,8 @@ class MultiGanttChartGroup : View {
     }
 
     interface OnEventListener {
-        fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long)
-        fun eventMoveDx(dx: Float, width: Int)
-        fun eventZoomDlDr(dl: Float, dr: Float, width: Int)
-        fun eventTaskSelect(taskPos: Int, taskValue: MultiTask?)
-        fun eventTaskModify(taskPos: Int, task: MultiTask)
-        fun eventTaskSwap(task: MutableList<MultiTask>)
+        fun eventTaskSelect(taskValue: MultiTask?)
+        fun eventTaskModify(task: MultiTask)
     }
 
     var x0 = 0f
@@ -858,6 +854,7 @@ class MultiGanttChartGroup : View {
         return ((endDate - startDate).toFloat() * dx / width.toFloat()).toLong()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event != null && isTouchAble) {
             when (event.actionMasked) {
@@ -885,7 +882,7 @@ class MultiGanttChartGroup : View {
                     } else {
                         if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT) {
                             taskSelectValue?.let {
-                                onEventListener?.eventTaskModify(taskSelectPos, it)
+                                onEventListener?.eventTaskModify(it)
                             }
                         }
                         touchStatus = TouchMode.NONE
@@ -898,7 +895,6 @@ class MultiGanttChartGroup : View {
                             setYPos(event.y - y0)
                             val newTime = setProjectTimeByDx(event.x - x0, width)
                             setRange(newTime.first, newTime.second)
-                            onEventListener?.eventChartTime(newTime.first, newTime.second)
                             x0 = event.x
                             y0 = event.y
                         } else if (touchStatus == TouchMode.CLICK && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow) {
@@ -906,7 +902,6 @@ class MultiGanttChartGroup : View {
                             setYPos(event.y - y0)
                             val newTime = setProjectTimeByDx(event.x - x0, width)
                             setRange(newTime.first, newTime.second)
-                            onEventListener?.eventChartTime(newTime.first, newTime.second)
                             x0 = event.x
                             y0 = event.y
                         } else if (touchStatus == TouchMode.TASK_PRE_MOVE && (event.y - y0).pow(2) + (event.x - x0).pow(2) > moveTransPow) {
@@ -1018,7 +1013,6 @@ class MultiGanttChartGroup : View {
                             val dr = hypot(newXR - centerX, nerYR - centerY) - hypot((oldXR - centerX), (oldYR - centerY))
                             val newTime = setProjectTimeByDlDr(dl, dr, width)
                             setRange(newTime.first, newTime.second)
-                            onEventListener?.eventChartTime(newTime.first, newTime.second)
                             x0 = event.getX(0)
                             x1 = event.getX(1)
                             y0 = event.getY(0)
@@ -1030,10 +1024,10 @@ class MultiGanttChartGroup : View {
                 MotionEvent.ACTION_UP -> {
                     if (touchStatus == TouchMode.CLICK || touchStatus == TouchMode.TASK_PRE_MOVE) {
                         val taskPair = getTaskSelect(event.x, event.y)
-                        onEventListener?.eventTaskSelect(taskPair.first, taskPair.second)
+                        onEventListener?.eventTaskSelect(taskPair.second)
                     } else if (touchStatus == TouchMode.TASK_MOVE || touchStatus == TouchMode.TASK_LEFT || touchStatus == TouchMode.TASK_RIGHT) {
                         taskSelectValue?.let {
-                            onEventListener?.eventTaskModify(taskSelectPos, it)
+                            onEventListener?.eventTaskModify(it)
                         }
                     }
                     touchStatus = TouchMode.NONE
@@ -1070,7 +1064,6 @@ class MultiGanttChartGroup : View {
     }
 
     companion object {
-        const val MAX_CLICK_DURATION = 400L
 
         enum class TouchMode {
             CLICK,

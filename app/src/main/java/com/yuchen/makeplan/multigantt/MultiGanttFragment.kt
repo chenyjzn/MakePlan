@@ -139,30 +139,14 @@ class MultiGanttFragment : Fragment() {
 
         binding.multiGanttChartGroup.setOnEventListener(object :
             MultiGanttChartGroup.OnEventListener {
-            override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
 
-            }
-
-            override fun eventMoveDx(dx: Float, width: Int) {
-
-            }
-
-            override fun eventZoomDlDr(dl: Float, dr: Float, width: Int) {
-
-            }
-
-            override fun eventTaskSelect(taskPos: Int, taskValue: MultiTask?) {
+            override fun eventTaskSelect(taskValue: MultiTask?) {
                 viewModel.setTaskSelect(taskValue)
             }
 
-            override fun eventTaskModify(taskPos: Int, task: MultiTask) {
+            override fun eventTaskModify(task: MultiTask) {
                 viewModel.updateTaskToFirebase(task)
             }
-
-            override fun eventTaskSwap(task: MutableList<MultiTask>) {
-
-            }
-
         })
 
         binding.multiGanttAddTask.setOnClickListener {
