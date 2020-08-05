@@ -8,15 +8,14 @@ import com.yuchen.makeplan.members.MembersItemsViewModel
 
 class MembersItemsViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
-    private val project : MultiProject,
-    private val membersPos : Int
+    private val project: MultiProject,
+    private val membersPos: Int
 ) : ViewModelProvider.NewInstanceFactory() {
-
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {
                 isAssignableFrom(MembersItemsViewModel::class.java) ->
-                    MembersItemsViewModel(makePlanRepository, project,membersPos)
+                    MembersItemsViewModel(makePlanRepository, project, membersPos)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

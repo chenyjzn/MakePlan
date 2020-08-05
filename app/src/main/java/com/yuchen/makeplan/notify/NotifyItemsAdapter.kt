@@ -4,14 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.data.MultiProject
-import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
-import com.yuchen.makeplan.databinding.ItemUserBinding
-import com.yuchen.makeplan.util.TimeUtil.StampToDate
+import com.yuchen.makeplan.util.TimeUtil.stampToDate
 
 class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjectHolder>() {
 
-    private var projectList: List<MultiProject>? =null
+    private var projectList: List<MultiProject>? = null
 
     fun submitList(projectList: List<MultiProject>) {
         this.projectList = projectList
@@ -28,7 +26,8 @@ class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjec
         fun onProjectLongClick(project: MultiProject)
     }
 
-    inner class MultiProjectHolder(var binding: ItemMultiProjectBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class MultiProjectHolder(var binding: ItemMultiProjectBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(project: MultiProject) {
             binding.project = project
             binding.itemMultiProjectCard.setOnClickListener {
@@ -38,13 +37,19 @@ class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjec
                 projectClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemMultiProjectEditTime.text = StampToDate(project.updateTime)
+            binding.itemMultiProjectEditTime.text = stampToDate(project.updateTime)
             binding.executePendingBindings()
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiProjectHolder {
-        return MultiProjectHolder(ItemMultiProjectBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return MultiProjectHolder(
+            ItemMultiProjectBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: MultiProjectHolder, position: Int) {
@@ -54,6 +59,6 @@ class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjec
     }
 
     override fun getItemCount(): Int {
-        return projectList?.let {it.size} ?: 0
+        return projectList?.let { it.size } ?: 0
     }
 }

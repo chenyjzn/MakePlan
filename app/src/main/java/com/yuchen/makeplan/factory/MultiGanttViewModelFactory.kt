@@ -9,9 +9,8 @@ import com.yuchen.makeplan.searchuser.SearchUserViewModel
 
 class MultiGanttViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
-    private val project : MultiProject
+    private val project: MultiProject
 ) : ViewModelProvider.NewInstanceFactory() {
-
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {

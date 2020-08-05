@@ -10,12 +10,11 @@ class MultiEditViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
     private val project: MultiProject?
 ) : ViewModelProvider.NewInstanceFactory() {
-
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {
                 isAssignableFrom(MultiEditViewModel::class.java) ->
-                    MultiEditViewModel(makePlanRepository,project)
+                    MultiEditViewModel(makePlanRepository, project)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

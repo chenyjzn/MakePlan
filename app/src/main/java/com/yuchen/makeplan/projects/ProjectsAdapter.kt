@@ -1,6 +1,5 @@
 package com.yuchen.makeplan.projects
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
@@ -11,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.ItemProjectBinding
-import com.yuchen.makeplan.util.TimeUtil.StampToDate
+import com.yuchen.makeplan.util.TimeUtil.stampToDate
 
-class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>(){
+class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>() {
 
-    private var projectList: List<Project>? =null
+    private var projectList: List<Project>? = null
 
     fun submitList(projectList: List<Project>) {
         this.projectList = projectList
@@ -31,13 +30,13 @@ class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<P
         fun onProjectLongClick(project: Project)
     }
 
-    inner class ProjectHolder(var binding: ItemProjectBinding): RecyclerView.ViewHolder(binding.root), LifecycleOwner {
+    inner class ProjectHolder(var binding: ItemProjectBinding) : RecyclerView.ViewHolder(binding.root), LifecycleOwner {
         fun bind(project: Project) {
             binding.project = project
             viewModel.loadingStatus.observe(this, Observer {
                 it?.let {
-                    when(it){
-                        LoadingStatus.LOADING ->{
+                    when (it) {
+                        LoadingStatus.LOADING -> {
                             binding.itemProjectCard.isEnabled = false
                         }
                         LoadingStatus.DONE -> {
@@ -63,7 +62,7 @@ class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<P
                 onClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemProjectEditTime.text = StampToDate(project.updateTime)
+            binding.itemProjectEditTime.text = stampToDate(project.updateTime)
             binding.executePendingBindings()
         }
 
@@ -97,7 +96,7 @@ class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<P
     }
 
     override fun getItemCount(): Int {
-        return projectList?.let {it.size} ?: 0
+        return projectList?.let { it.size } ?: 0
     }
 
     override fun onViewAttachedToWindow(holder: ProjectHolder) {

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -17,22 +16,23 @@ import com.yuchen.makeplan.databinding.ItemMembersBinding
 import com.yuchen.makeplan.ext.getVmFactory
 import com.yuchen.makeplan.util.UserManager
 
-
 class MembersItems : Fragment() {
-    private val viewModel: MembersItemsViewModel by viewModels<MembersItemsViewModel> { getVmFactory(arguments?.getParcelable("project")?:MultiProject(),arguments?.getInt("object")?:0) }
+    private val viewModel: MembersItemsViewModel by viewModels<MembersItemsViewModel> { getVmFactory(arguments?.getParcelable("project") ?: MultiProject(), arguments?.getInt("object") ?: 0) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ItemMembersBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         val adapter = MembersItemsAdapter()
         binding.membersRecycler.adapter = adapter
-        binding.membersRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        binding.membersRecycler.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         viewModel.usersUid.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (viewModel.pagerPos==0){
-                   if(it.filter { it == UserManager.user.uid }.isEmpty()){
-                       parentFragment?.findNavController()?.navigate(MembersFragmentDirections.actionGlobalMultiProjectsFragment())
-                   }
+                if (viewModel.pagerPos == 0) {
+                    if (it.filter { it == UserManager.user.uid }.isEmpty()) {
+                        parentFragment?.findNavController()?.navigate(MembersFragmentDirections.actionGlobalMultiProjectsFragment())
+                    }
                 }
                 viewModel.setUsersByUidList(it)
             }
@@ -44,10 +44,10 @@ class MembersItems : Fragment() {
             }
         })
 
-        adapter.setUserClickListener(object : MembersItemsAdapter.UserClickListener{
+        adapter.setUserClickListener(object : MembersItemsAdapter.UserClickListener {
             override fun userSelect(user: User) {
-                when(viewModel.pagerPos){
-                    PAGER_MEMBERSS -> {
+                when (viewModel.pagerPos) {
+                    PAGER_MEMBERS -> {
 
                     }
                     PAGER_SENDS -> {
@@ -77,8 +77,8 @@ class MembersItems : Fragment() {
         return binding.root
     }
 
-    companion object{
-        const val PAGER_MEMBERSS = 0
+    companion object {
+        const val PAGER_MEMBERS = 0
         const val PAGER_SENDS = 1
         const val PAGER_RECEIVE = 2
     }

@@ -6,14 +6,12 @@ import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.data.source.MakePlanRepository
-import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class EditViewModel(private val repository: MakePlanRepository, val project: Project?) :
-    ViewModel() {
+class EditViewModel(private val repository: MakePlanRepository, val project: Project?) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)

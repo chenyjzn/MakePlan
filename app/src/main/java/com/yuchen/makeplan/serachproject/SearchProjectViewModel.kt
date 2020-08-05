@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SearchProjectViewModel (private val repository: MakePlanRepository) : ViewModel(){
+class SearchProjectViewModel(private val repository: MakePlanRepository) : ViewModel() {
     val projects: LiveData<List<MultiProject>> = repository.getAllMultiProjects()
 
     private var viewModelJob = Job()
@@ -19,9 +19,9 @@ class SearchProjectViewModel (private val repository: MakePlanRepository) : View
 
     var filterString = ""
 
-    fun requestUserToProject(project: MultiProject){
+    fun requestUserToProject(project: MultiProject) {
         coroutineScope.launch {
-            repository.requestUserToMultiProject(project,UserManager.user, FIELD_RECEIVE_UID)
+            repository.requestUserToMultiProject(project, UserManager.user, FIELD_RECEIVE_UID)
         }
     }
 

@@ -87,7 +87,7 @@ class GanttChartGroup : View {
         }
     }
 
-    fun setColorList(colorList1 : List<String>,colorList2 : List<String> ){
+    fun setColorList(colorList1 : List<String>,colorList2 : List<String>){
         this.colorList1 = colorList1
         this.colorList2 = colorList2
     }
@@ -990,7 +990,7 @@ class GanttChartGroup : View {
                     }
                 }
                 MotionEvent.ACTION_POINTER_DOWN -> {
-                    if (touchStatus == TouchMode.CLICK || touchStatus == TouchMode.MOVE || touchStatus == TouchMode.TASK_PRE_MOVE || touchStatus == TouchMode.TASK_PRE_LEFT|| touchStatus == TouchMode.TASK_PRE_RIGHT) {
+                    if (touchStatus == TouchMode.CLICK || touchStatus == TouchMode.MOVE || touchStatus == TouchMode.TASK_PRE_MOVE || touchStatus == TouchMode.TASK_PRE_LEFT || touchStatus == TouchMode.TASK_PRE_RIGHT) {
                         x0 = event.getX(0)
                         y0 = event.getY(0)
                         x1 = event.getX(1)

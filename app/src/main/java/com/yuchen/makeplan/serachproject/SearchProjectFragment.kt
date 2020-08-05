@@ -19,11 +19,11 @@ import com.yuchen.makeplan.ext.getVmFactory
 
 class SearchProjectFragment : Fragment() {
     private val viewModel: SearchProjectViewModel by viewModels<SearchProjectViewModel> { getVmFactory() }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentSearchProjectBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         val adapter = SearchProjectAdapter()
-        adapter.setItemClickListener(object : SearchProjectAdapter.OnClickListener{
+        adapter.setItemClickListener(object : SearchProjectAdapter.OnClickListener {
             override fun onProjectClick(project: MultiProject) {
                 MaterialAlertDialogBuilder(requireNotNull(context))
                     .setTitle("Send join request to ${project.name}?")
@@ -34,15 +34,16 @@ class SearchProjectFragment : Fragment() {
                     }
                     .show()
             }
+
             override fun onProjectLongClick(project: MultiProject) {
                 TODO("Not yet implemented")
             }
         })
 
         binding.searchProjectRecycler.adapter = adapter
-        binding.searchProjectRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        binding.searchProjectRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         viewModel.projects.observe(viewLifecycleOwner, Observer {
-            it?.let{
+            it?.let {
                 adapter.appendList(it)
                 adapter.filter.filter(viewModel.filterString)
             }
@@ -61,7 +62,7 @@ class SearchProjectFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                viewModel.filterString = newText?:""
+                viewModel.filterString = newText ?: ""
                 adapter.filter.filter(viewModel.filterString)
                 return true
             }

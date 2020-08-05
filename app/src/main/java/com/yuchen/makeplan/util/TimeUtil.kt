@@ -12,37 +12,32 @@ object TimeUtil {
         return simpleDateFormat.format(Date(time))
     }
 
-    fun timeDurationToString(start : Long, end : Long) : String{
+    fun timeDurationToString(start: Long, end: Long): String {
         var duration = end - start
-        var days : Int = (duration/DAY_MILLIS).toInt()
+        var days: Int = (duration / DAY_MILLIS).toInt()
         duration %= DAY_MILLIS
-        var hours : Int = (duration/ HOUR_MILLIS).toInt()
-        duration%= HOUR_MILLIS
-        var mins : Int = (duration/ MINUTE_MILLIS).toInt()
+        var hours: Int = (duration / HOUR_MILLIS).toInt()
+        duration %= HOUR_MILLIS
+        var mins: Int = (duration / MINUTE_MILLIS).toInt()
 
         return "$days D $hours H $mins M"
     }
 
-    fun millisToGanttToolBarTime(time: Long) : String{
+    fun millisToGanttToolBarTime(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("EEE MM/dd HH:mm")
         return simpleDateFormat.format(Date(time))
     }
 
 
     @JvmStatic
-    fun StampToDate(time: Long): String {
-        // 進來的time以秒為單位，Date輸入為毫秒為單位，要注意
-
+    fun stampToDate(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-
         return simpleDateFormat.format(Date(time))
     }
 
     @JvmStatic
-    fun DateToStamp(date: String): Long {
+    fun dateToStamp(date: String): Long {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-
-        /// 輸出為毫秒為單位
         return simpleDateFormat.parse(date).time
     }
 

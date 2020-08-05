@@ -13,20 +13,22 @@ import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemNotifyBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
-
 class NotifyItems : Fragment() {
     private val viewModel: NotifyItemsViewModel by viewModels<NotifyItemsViewModel> { getVmFactory(arguments?.getInt("object")?:0) }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ItemNotifyBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
         val adapter = NotifyItemsAdapter()
         binding.itemNotifyRecycler.adapter = adapter
         binding.itemNotifyRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
         })
+
         adapter.setProjectClickListener(object : NotifyItemsAdapter.ProjectClickListener{
             override fun onProjectClick(project: MultiProject) {
                 when(viewModel.pagerPos){
@@ -61,6 +63,7 @@ class NotifyItems : Fragment() {
                 }
             }
         })
+
         return binding.root
     }
 

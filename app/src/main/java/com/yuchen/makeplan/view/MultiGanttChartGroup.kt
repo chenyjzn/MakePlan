@@ -3,7 +3,6 @@ package com.yuchen.makeplan.view
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import com.yuchen.makeplan.DAY_MILLIS
@@ -14,7 +13,6 @@ import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.ext.toDp
 import com.yuchen.makeplan.ext.toPx
 import com.yuchen.makeplan.util.TimeUtil
-import com.yuchen.makeplan.util.TimeUtil.StampToDate
 import java.util.*
 import kotlin.math.hypot
 import kotlin.math.pow

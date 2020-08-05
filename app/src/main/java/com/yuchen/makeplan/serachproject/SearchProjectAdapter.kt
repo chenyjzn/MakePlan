@@ -7,40 +7,41 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
-import com.yuchen.makeplan.util.TimeUtil.StampToDate
+import com.yuchen.makeplan.util.TimeUtil.stampToDate
 import com.yuchen.makeplan.util.UserManager
 
-class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProjectHolder>(),Filterable {
+class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProjectHolder>(),
+    Filterable {
 
     private var projectSourceList: List<MultiProject>? = null
-    private var projectFilteredList: List<MultiProject>? =null
+    private var projectFilteredList: List<MultiProject>? = null
 
     fun appendList(projectList: List<MultiProject>) {
-        val excludeSource= projectList.filter {
-            var notMember = true
-            for (i in it.membersUid){
+        val excludeSource = projectList.filter {
+            var isNotMember = true
+            for (i in it.membersUid) {
                 if (i == UserManager.user.uid) {
-                    notMember = false
+                    isNotMember = false
                     break
                 }
             }
-            if (notMember) {
+            if (isNotMember) {
                 for (i in it.sendUid) {
                     if (i == UserManager.user.uid) {
-                        notMember = false
+                        isNotMember = false
                         break
                     }
                 }
             }
-            if (notMember) {
+            if (isNotMember) {
                 for (i in it.receiveUid) {
                     if (i == UserManager.user.uid) {
-                        notMember = false
+                        isNotMember = false
                         break
                     }
                 }
             }
-            notMember
+            isNotMember
         }
         this.projectSourceList = excludeSource
         this.projectFilteredList = excludeSource
@@ -56,7 +57,8 @@ class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProj
         fun onProjectLongClick(project: MultiProject)
     }
 
-    inner class MultiProjectHolder(var binding: ItemMultiProjectBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class MultiProjectHolder(var binding: ItemMultiProjectBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(project: MultiProject) {
             binding.project = project
             binding.itemMultiProjectCard.setOnClickListener {
@@ -66,7 +68,7 @@ class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProj
                 onClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemMultiProjectEditTime.text = StampToDate(project.updateTime)
+            binding.itemMultiProjectEditTime.text = stampToDate(project.updateTime)
             binding.executePendingBindings()
         }
     }
@@ -82,29 +84,32 @@ class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProj
     }
 
     override fun getItemCount(): Int {
-        return projectFilteredList?.let {it.size} ?: 0
+        return projectFilteredList?.let { it.size } ?: 0
     }
 
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                var filteredList : List<MultiProject>?
+                var filteredList: List<MultiProject>?
                 val charString: String = constraint.toString()
                 if (charString.isEmpty()) {
                     filteredList = projectSourceList
                 } else {
                     filteredList = projectSourceList?.filter {
-                        var haveProjectName = it.name.toUpperCase().contains(charString.toUpperCase())
+                        var haveProjectName =
+                            it.name.toUpperCase().contains(charString.toUpperCase())
                         var haveUser = false
                         var notMember = true
-                        for (i in it.members){
+                        for (i in it.members) {
                             if (i.uid == UserManager.user.uid) {
                                 notMember = false
                                 break
                             }
-                            haveUser = haveUser || i.displayName.toUpperCase().contains(charString.toUpperCase()) || i.email.toUpperCase().contains(charString.toUpperCase())
+                            haveUser = haveUser || i.displayName.toUpperCase()
+                                .contains(charString.toUpperCase()) || i.email.toUpperCase()
+                                .contains(charString.toUpperCase())
                         }
-                        (haveUser||haveProjectName)&&notMember
+                        (haveUser || haveProjectName) && notMember
                     }
                 }
                 val filterResults: FilterResults = FilterResults()

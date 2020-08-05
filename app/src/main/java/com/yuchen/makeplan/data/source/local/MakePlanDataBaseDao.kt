@@ -1,7 +1,6 @@
 package com.yuchen.makeplan.data.source.local
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import com.yuchen.makeplan.data.Project
 
@@ -17,7 +16,7 @@ interface MakePlanDataBaseDao {
     fun removeProject(project: Project)
 
     @Query("SELECT * FROM project_list ORDER BY project_update_time DESC")
-    fun getAllProjects():LiveData<List<Project>>
+    fun getAllProjects(): LiveData<List<Project>>
 
     @Query("SELECT * FROM project_list WHERE id = :id")
     fun searchProject(id: Long): Project?

@@ -13,15 +13,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MultiEditViewModel(private val repository: MakePlanRepository, val project: MultiProject?) :
-    ViewModel() {
+class MultiEditViewModel(private val repository: MakePlanRepository, val project: MultiProject?) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    var liveProject : LiveData<MultiProject> = if (project != null) {
+    var liveProject: LiveData<MultiProject> = if (project != null) {
         repository.getMultiProject(project)
-    }else{
+    } else {
         MutableLiveData<MultiProject>()
     }
 
@@ -48,14 +47,14 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
                 val result = repository.addMultiProject(newProject)
-                when(result){
-                    is com.yuchen.makeplan.Result.Success ->{
+                when (result) {
+                    is com.yuchen.makeplan.Result.Success -> {
 
                     }
-                    is com.yuchen.makeplan.Result.Error ->{
+                    is com.yuchen.makeplan.Result.Error -> {
                         Log.d("chenyjzn", "getFireBaseUser result = ${result.exception}")
                     }
-                    is com.yuchen.makeplan.Result.Fail ->{
+                    is com.yuchen.makeplan.Result.Fail -> {
                         Log.d("chenyjzn", "getFireBaseUser result = ${result.error}")
                     }
                 }
@@ -75,7 +74,7 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
 
     }
 
-    fun leaveProject(){
+    fun leaveProject() {
         project?.let { project ->
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING

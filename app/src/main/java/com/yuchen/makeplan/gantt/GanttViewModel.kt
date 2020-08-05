@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GanttViewModel (private val repository: MakePlanRepository , private val projectHistory : Array<Project>) : ViewModel() {
+class GanttViewModel(private val repository: MakePlanRepository, private val projectHistory: Array<Project>) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -22,7 +22,7 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     val projectSaveSuccess: LiveData<Boolean>
         get() = _projectSaveSuccess
 
-    var projectRep : MutableList<Project> = projectHistory.toMutableList()
+    var projectRep: MutableList<Project> = projectHistory.toMutableList()
 
     private val _project = MutableLiveData<Project>().apply {
         value = projectRep.last()
@@ -52,7 +52,7 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
     val loadingStatus: LiveData<LoadingStatus>
         get() = _loadingStatus
 
-    fun setNewTaskCondition(taskPos: Int,task : Task){
+    fun setNewTaskCondition(taskPos: Int, task: Task) {
         val newProject = projectRep[projectPos].newRefProject()
         newProject.taskList[taskPos].startTimeMillis = task.startTimeMillis
         newProject.taskList[taskPos].endTimeMillis = task.endTimeMillis
@@ -62,7 +62,7 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         _project.value = projectRep.last()
     }
 
-    fun setTasksSwap(taskList : MutableList<Task>){
+    fun setTasksSwap(taskList: MutableList<Task>) {
         val newProject = projectRep[projectPos].newRefProject()
         newProject.taskList = taskList
         projectRep.removeFrom(projectPos)
@@ -71,52 +71,52 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         _project.value = projectRep.last()
     }
 
-    fun setProjectTime(start : Long, end : Long){
-        for (i in projectRep){
+    fun setProjectTime(start: Long, end: Long) {
+        for (i in projectRep) {
             i.startTimeMillis = start
             i.endTimeMillis = end
         }
         _project.value = projectRep[projectPos]
     }
 
-    fun isTaskSelect():Int{
-        return _taskSelect.value?:-1
+    fun isTaskSelect(): Int {
+        return _taskSelect.value ?: -1
     }
 
-    fun setTaskSelect(taskPos: Int){
+    fun setTaskSelect(taskPos: Int) {
         if (_taskSelect.value != -1 && _taskSelect.value == taskPos)
             _taskSelect.value = -1
         else
             _taskSelect.value = taskPos
     }
 
-    fun goToAddTask(){
+    fun goToAddTask() {
         _navigateToTaskSetting.value = -1
     }
 
-    fun goToEditTask(pos : Int){
+    fun goToEditTask(pos: Int) {
         _navigateToTaskSetting.value = pos
     }
 
-    fun goToTaskDone(){
+    fun goToTaskDone() {
         _navigateToTaskSetting.value = null
     }
 
-    fun unDoAction(){
-        if (projectPos!=0){
-            projectPos-=1
+    fun unDoAction() {
+        if (projectPos != 0) {
+            projectPos -= 1
             _project.value = projectRep[projectPos]
         }
     }
 
-    fun reDoAction(){
-        if (projectPos!=projectRep.lastIndex){
-            projectPos+=1
+    fun reDoAction() {
+        if (projectPos != projectRep.lastIndex) {
+            projectPos += 1
             _project.value = projectRep[projectPos]
         }
     }
 
-    fun saveProject(){
+    fun saveProject() {
         _project.value?.let {
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
@@ -128,11 +128,11 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         }
     }
 
-    fun saveProjectDone(){
+    fun saveProjectDone() {
         _projectSaveSuccess.value = null
     }
 
-    fun taskRemove(pos : Int){
+    fun taskRemove(pos: Int) {
         val newProject = projectRep[projectPos].newRefProject()
         newProject.taskList.removeAt(pos)
         projectRep.removeFrom(projectPos)
@@ -145,19 +145,19 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         }
     }
 
-    fun getUndoListArray(): Array<Project>{
-        return projectRep.subList(0,projectPos+1).toTypedArray()
+    fun getUndoListArray(): Array<Project> {
+        return projectRep.subList(0, projectPos + 1).toTypedArray()
     }
 
-    fun setTaskTimeScale(time : Int){
+    fun setTaskTimeScale(time: Int) {
         _taskTimeScale.value = time
     }
 
-    fun copyTask(){
+    fun copyTask() {
         taskSelect.value?.let {
             val newProject = projectRep[projectPos].newRefProject()
             val newTask = newProject.taskList[it].newRefTask()
-            newProject.taskList.add(it,newTask)
+            newProject.taskList.add(it, newTask)
             projectRep.removeFrom(projectPos)
             projectRep.add(newProject)
             projectPos = projectRep.lastIndex
@@ -165,25 +165,25 @@ class GanttViewModel (private val repository: MakePlanRepository , private val p
         }
     }
 
-    fun swapTaskUp(){
-        taskSelect.value?.let {pos ->
+    fun swapTaskUp() {
+        taskSelect.value?.let { pos ->
             val newProject = projectRep[projectPos].newRefProject()
-            newProject.taskList[pos] = newProject.taskList[pos-1].also {
-                newProject.taskList[pos-1] = newProject.taskList[pos]
+            newProject.taskList[pos] = newProject.taskList[pos - 1].also {
+                newProject.taskList[pos - 1] = newProject.taskList[pos]
             }
             projectRep.removeFrom(projectPos)
             projectRep.add(newProject)
             projectPos = projectRep.lastIndex
             _project.value = projectRep.last()
-            _taskSelect.value = pos-1
+            _taskSelect.value = pos - 1
         }
     }
 
-    fun swapTaskDown(){
-        taskSelect.value?.let {pos ->
+    fun swapTaskDown() {
+        taskSelect.value?.let { pos ->
             val newProject = projectRep[projectPos].newRefProject()
-            newProject.taskList[pos] = newProject.taskList[pos+1].also {
-                newProject.taskList[pos+1] = newProject.taskList[pos]
+            newProject.taskList[pos] = newProject.taskList[pos + 1].also {
+                newProject.taskList[pos + 1] = newProject.taskList[pos]
             }
             projectRep.removeFrom(projectPos)
             projectRep.add(newProject)

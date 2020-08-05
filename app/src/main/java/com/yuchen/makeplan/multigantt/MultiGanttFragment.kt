@@ -1,13 +1,10 @@
 package com.yuchen.makeplan.multigantt
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -24,23 +21,26 @@ import kotlin.math.roundToInt
 
 class MultiGanttFragment : Fragment() {
 
-    private val viewModel: MultiGanttViewModel by viewModels<MultiGanttViewModel> { getVmFactory(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject)}
+    private val viewModel: MultiGanttViewModel by viewModels<MultiGanttViewModel> { getVmFactory(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentMultiGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.multiGanttChartGroup.setColorList(resources.getStringArray(R.array.color_array_1).toList(),resources.getStringArray(R.array.color_array_2).toList())
+        binding.multiGanttChartGroup.setColorList(
+            resources.getStringArray(R.array.color_array_1).toList(),
+            resources.getStringArray(R.array.color_array_2).toList()
+        )
         binding.viewModel = viewModel
 
         var startTime = System.currentTimeMillis()
         var endTime = startTime + 7 * DAY_MILLIS
         var firstCreate = true
-        binding.multiGanttChartGroup.setRange(startTime,endTime)
+        binding.multiGanttChartGroup.setRange(startTime, endTime)
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             it?.let {
-                when(it){
-                    LoadingStatus.LOADING ->{
+                when (it) {
+                    LoadingStatus.LOADING -> {
                         binding.multiGanttMembers.isClickable = false
                         binding.multiTaskCopy.isClickable = false
                         binding.multiTaskDelete.isClickable = false
@@ -86,46 +86,46 @@ class MultiGanttFragment : Fragment() {
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val count = it.receiveUid.size
-                if (count == 0){
+                if (count == 0) {
                     binding.multiGanttNotify.visibility = View.INVISIBLE
-                }else if (count >= 999){
+                } else if (count >= 999) {
                     binding.multiGanttNotify.visibility = View.VISIBLE
                     binding.multiGanttNotify.text = "999+"
-                }else{
+                } else {
                     binding.multiGanttNotify.visibility = View.VISIBLE
-                    binding.multiGanttNotify.text=count.toString()
+                    binding.multiGanttNotify.text = count.toString()
                 }
             }
         })
 
         viewModel.tasks.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if(firstCreate){
+                if (firstCreate) {
                     if (it.isEmpty()) {
                         startTime = System.currentTimeMillis()
                         endTime = startTime + 7 * DAY_MILLIS
-                        binding.multiGanttChartGroup.setRange(startTime,endTime)
-                    }else{
+                        binding.multiGanttChartGroup.setRange(startTime, endTime)
+                    } else {
                         startTime = Long.MAX_VALUE
                         endTime = 0L
-                        for (i in it){
+                        for (i in it) {
                             startTime = min(startTime, i.startTimeMillis)
-                            endTime = max(endTime,i.endTimeMillis)
+                            endTime = max(endTime, i.endTimeMillis)
                         }
-                        binding.multiGanttChartGroup.setRange(startTime,endTime)
+                        binding.multiGanttChartGroup.setRange(startTime, endTime)
                     }
                     firstCreate = false
                 }
                 var fb = 0.0f
                 var max = 0.0f
-                for (i in it){
-                    max += (i.endTimeMillis-i.startTimeMillis)
-                    fb += (i.endTimeMillis-i.startTimeMillis)*(i.completeRate/100f)
+                for (i in it) {
+                    max += (i.endTimeMillis - i.startTimeMillis)
+                    fb += (i.endTimeMillis - i.startTimeMillis) * (i.completeRate / 100f)
                 }
                 if (max == 0.0f)
                     viewModel.updateProjectCompleteRate(0)
                 else
-                    viewModel.updateProjectCompleteRate ((fb*100f/max).roundToInt())
+                    viewModel.updateProjectCompleteRate((fb * 100f / max).roundToInt())
 
                 binding.multiGanttChartGroup.setTaskList(it)
                 binding.multiGanttChartGroup.invalidate()
@@ -137,7 +137,8 @@ class MultiGanttFragment : Fragment() {
             binding.multiGanttChartGroup.invalidate()
         })
 
-        binding.multiGanttChartGroup.setOnEventListener(object :MultiGanttChartGroup.OnEventListener{
+        binding.multiGanttChartGroup.setOnEventListener(object :
+            MultiGanttChartGroup.OnEventListener {
             override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
 
             }
@@ -165,13 +166,13 @@ class MultiGanttFragment : Fragment() {
         })
 
         binding.multiGanttAddTask.setOnClickListener {
-            if (viewModel.taskSelect.value == null && viewModel.project.value!= null)
-                this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!,null))
+            if (viewModel.taskSelect.value == null && viewModel.project.value != null)
+                this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!, null))
         }
 
         binding.multiTaskEdit.setOnClickListener {
-            if (viewModel.taskSelect.value != null && viewModel.project.value!= null){
-                this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!,viewModel.taskSelect.value!!))
+            if (viewModel.taskSelect.value != null && viewModel.project.value != null) {
+                this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!, viewModel.taskSelect.value!!))
                 viewModel.taskSelectClear()
             }
         }

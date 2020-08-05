@@ -15,7 +15,12 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MultiTaskViewModel (private val repository: MakePlanRepository, private val projectInput: MultiProject, private val taskInput: MultiTask?, application: Application) : AndroidViewModel(application) {
+class MultiTaskViewModel(
+    private val repository: MakePlanRepository,
+    private val projectInput: MultiProject,
+    private val taskInput: MultiTask?,
+    application: Application
+) : AndroidViewModel(application) {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -52,13 +57,10 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
         get() = _newDuration
 
     val newTaskName = MutableLiveData<String>().apply {
-        value = if (taskInput == null)
-            "New Task"
-        else
-            taskInput.name
+        value = taskInput?.name ?: "New Task"
     }
 
-    val newTaskColorPair = MutableLiveData<Pair<Int,String>>().apply {
+    val newTaskColorPair = MutableLiveData<Pair<Int, String>>().apply {
         value = if (taskInput == null)
             0 to colorList[0]
         else
@@ -66,89 +68,104 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
     }
 
     val newTaskCompleteRate = MutableLiveData<Int>().apply {
-        value = if (taskInput == null)
-            0
-        else
-            taskInput.completeRate
+        value = taskInput?.completeRate ?: 0
     }
 
     private val _saveTask = MutableLiveData<Boolean>()
     val saveTask: LiveData<Boolean>
         get() = _saveTask
 
-    fun setNewDuration(){
-        newStartTimeMillis.value?.let {start ->
-            newEndTimeMillis.value?.let {end ->
+    fun setNewDuration() {
+        newStartTimeMillis.value?.let { start ->
+            newEndTimeMillis.value?.let { end ->
                 _newDuration.value = end - start
             }
         }
     }
 
-    fun updateTaskToFirebase(){
+    fun updateTaskToFirebase() {
         val name = newTaskName.value ?: "Project"
         val startTimeMillis = newStartTimeMillis.value ?: calendarStart.timeInMillis
         val endTimeMillis = newEndTimeMillis.value ?: calendarEnd.timeInMillis
         val color = newTaskColorPair.value?.first ?: 0
-        var completeRate = newTaskCompleteRate.value ?: 0
-        var newTask = MultiTask(startTimeMillis = startTimeMillis, endTimeMillis = endTimeMillis, name = name, color = color, completeRate = completeRate)
+        val completeRate = newTaskCompleteRate.value ?: 0
+        val newTask = MultiTask(
+            startTimeMillis = startTimeMillis,
+            endTimeMillis = endTimeMillis,
+            name = name,
+            color = color,
+            completeRate = completeRate
+        )
         if (taskInput != null) {
             newTask.firebaseId = taskInput.firebaseId
         }
         coroutineScope.launch {
-            _loadingStatus.value=LoadingStatus.LOADING
-            repository.updateMultiProjectTask(projectInput,newTask)
-            _loadingStatus.value=LoadingStatus.DONE
+            _loadingStatus.value = LoadingStatus.LOADING
+            repository.updateMultiProjectTask(projectInput, newTask)
+            _loadingStatus.value = LoadingStatus.DONE
             _saveTask.value = true
         }
     }
 
-    fun saveTaskDone(){
+    fun saveTaskDone() {
         _saveTask.value = null
     }
 
-    fun setStartDate(year: Int, month: Int, dayOfMonth: Int){
-        calendarStart.set(year,month,dayOfMonth)
+    fun setStartDate(year: Int, month: Int, dayOfMonth: Int) {
+        calendarStart.set(year, month, dayOfMonth)
         newStartTimeMillis.value = calendarStart.timeInMillis
 
         if (calendarStart.timeInMillis > calendarEnd.timeInMillis)
             setEndTimeByTimeMillis(calendarStart.timeInMillis)
     }
 
-    fun setStartTime(hourOfDay: Int, minute: Int){
-        calendarStart.set(calendarStart.get(Calendar.YEAR),calendarStart.get(Calendar.MONTH),calendarStart.get(Calendar.DAY_OF_MONTH),hourOfDay,minute)
+    fun setStartTime(hourOfDay: Int, minute: Int) {
+        calendarStart.set(
+            calendarStart.get(Calendar.YEAR),
+            calendarStart.get(Calendar.MONTH),
+            calendarStart.get(Calendar.DAY_OF_MONTH),
+            hourOfDay,
+            minute
+        )
         newStartTimeMillis.value = calendarStart.timeInMillis
 
         if (calendarStart.timeInMillis > calendarEnd.timeInMillis)
             setEndTimeByTimeMillis(calendarStart.timeInMillis)
     }
 
-    fun setEndDate(year: Int, month: Int, dayOfMonth: Int){
-        calendarEnd.set(year,month,dayOfMonth)
+    fun setEndDate(year: Int, month: Int, dayOfMonth: Int) {
+        calendarEnd.set(year, month, dayOfMonth)
         if (calendarEnd.timeInMillis < calendarStart.timeInMillis)
             calendarEnd.timeInMillis = calendarStart.timeInMillis
 
         newEndTimeMillis.value = calendarEnd.timeInMillis
     }
 
-    fun setEndTime(hourOfDay: Int, minute: Int){
-        calendarEnd.set(calendarEnd.get(Calendar.YEAR),calendarEnd.get(Calendar.MONTH),calendarEnd.get(Calendar.DAY_OF_MONTH),hourOfDay,minute)
+    fun setEndTime(hourOfDay: Int, minute: Int) {
+        calendarEnd.set(
+            calendarEnd.get(Calendar.YEAR),
+            calendarEnd.get(Calendar.MONTH),
+            calendarEnd.get(Calendar.DAY_OF_MONTH),
+            hourOfDay,
+            minute
+        )
         if (calendarEnd.timeInMillis < calendarStart.timeInMillis)
             calendarEnd.timeInMillis = calendarStart.timeInMillis
 
         newEndTimeMillis.value = calendarEnd.timeInMillis
     }
 
-    fun setEndTimeByTimeMillis(timeMillis : Long){
+    fun setEndTimeByTimeMillis(timeMillis: Long) {
         newEndTimeMillis.value = timeMillis
         calendarEnd.timeInMillis = timeMillis
     }
 
     fun convertTimeMilliToDateString(value: Long?): String {
         val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
-        if (value == null)
-            return value.toString()
+        return if (value == null)
+            value.toString()
         else
-            return simpleDateFormat.format(value)
+            simpleDateFormat.format(value)
     }
 
     fun convertTimeMilliToTimeString(value: Long?): String {
@@ -159,7 +176,7 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
             return simpleDateFormat.format(value)
     }
 
-    fun setEndByDurationDay(day : Int){
+    fun setEndByDurationDay(day: Int) {
         val oldDuration = calendarEnd.timeInMillis - calendarStart.timeInMillis
         val newDuration = oldDuration - (oldDuration / DAY_MILLIS) * DAY_MILLIS + day * DAY_MILLIS
         newStartTimeMillis.value?.let {
@@ -168,34 +185,34 @@ class MultiTaskViewModel (private val repository: MakePlanRepository, private va
         }
     }
 
-    fun setEndByDurationHour(hour : Int){
+    fun setEndByDurationHour(hour: Int) {
         val oldDuration = calendarEnd.timeInMillis - calendarStart.timeInMillis
-        val newDuration = oldDuration - (((oldDuration) % DAY_MILLIS)/HOUR_MILLIS) * HOUR_MILLIS + hour * HOUR_MILLIS
+        val newDuration = oldDuration - (((oldDuration) % DAY_MILLIS) / HOUR_MILLIS) * HOUR_MILLIS + hour * HOUR_MILLIS
         newStartTimeMillis.value?.let {
             newEndTimeMillis.value = it + newDuration
             calendarEnd.timeInMillis = it + newDuration
         }
     }
 
-    fun setEndByDurationMinute(minute : Int){
+    fun setEndByDurationMinute(minute: Int) {
         val oldDuration = calendarEnd.timeInMillis - calendarStart.timeInMillis
-        val newDuration = oldDuration - ((((oldDuration) % DAY_MILLIS)% HOUR_MILLIS)/ MINUTE_MILLIS) * MINUTE_MILLIS + minute * MINUTE_MILLIS
+        val newDuration = oldDuration - ((((oldDuration) % DAY_MILLIS) % HOUR_MILLIS) / MINUTE_MILLIS) * MINUTE_MILLIS + minute * MINUTE_MILLIS
         newStartTimeMillis.value?.let {
             newEndTimeMillis.value = it + newDuration
             calendarEnd.timeInMillis = it + newDuration
         }
     }
 
-    fun getDurationDays(start : Long , end : Long) : String{
+    fun getDurationDays(start: Long, end: Long): String {
         return ((end - start) / DAY_MILLIS).toString()
     }
 
-    fun getDurationHours(start : Long , end : Long) : String{
-        return (((end - start) % DAY_MILLIS)/ HOUR_MILLIS).toString()
+    fun getDurationHours(start: Long, end: Long): String {
+        return (((end - start) % DAY_MILLIS) / HOUR_MILLIS).toString()
     }
 
-    fun getDurationMinutes(start : Long , end : Long) : String{
-        return ((((end - start) % DAY_MILLIS)% HOUR_MILLIS)/ MINUTE_MILLIS).toString()
+    fun getDurationMinutes(start: Long, end: Long): String {
+        return ((((end - start) % DAY_MILLIS) % HOUR_MILLIS) / MINUTE_MILLIS).toString()
     }
 
     override fun onCleared() {

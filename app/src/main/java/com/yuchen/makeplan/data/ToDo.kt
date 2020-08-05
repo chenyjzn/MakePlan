@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ToDo(
-    val name : String = "ToDo",
-    var isFinish : Boolean = false
+    val name: String = "ToDo",
+    var isFinish: Boolean = false
 ) : Parcelable

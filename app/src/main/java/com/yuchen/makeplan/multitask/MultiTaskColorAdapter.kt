@@ -7,9 +7,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.databinding.ItemMultiTaskColorBinding
-import com.yuchen.makeplan.databinding.ItemTaskColorBinding
 
-class MultiTaskColorAdapter(private val viewModel : MultiTaskViewModel) : RecyclerView.Adapter<MultiTaskColorAdapter.TaskColorHolder>() {
+class MultiTaskColorAdapter(private val viewModel: MultiTaskViewModel) : RecyclerView.Adapter<MultiTaskColorAdapter.TaskColorHolder>() {
+
     class TaskColorHolder(var binding: ItemMultiTaskColorBinding) : RecyclerView.ViewHolder(binding.root), LifecycleOwner {
         fun bind(viewModel: MultiTaskViewModel, position: Int) {
             binding.lifecycleOwner = this
@@ -45,7 +45,7 @@ class MultiTaskColorAdapter(private val viewModel : MultiTaskViewModel) : Recycl
     }
 
     override fun onBindViewHolder(holder: TaskColorHolder, position: Int) {
-        holder.bind(viewModel,position)
+        holder.bind(viewModel, position)
     }
 
     override fun getItemCount(): Int {

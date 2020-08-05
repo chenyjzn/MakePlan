@@ -14,7 +14,7 @@ import com.yuchen.makeplan.ext.getVmFactory
 
 class MultiEditDialog : BottomSheetDialogFragment() {
 
-    private val viewModel: MultiEditViewModel by viewModels<MultiEditViewModel> { getVmFactory(MultiEditDialogArgs.fromBundle(requireArguments()).project)}
+    private val viewModel: MultiEditViewModel by viewModels<MultiEditViewModel> { getVmFactory(MultiEditDialogArgs.fromBundle(requireArguments()).project) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = DialogMultiEditBinding.inflate(inflater, container, false)
@@ -23,9 +23,9 @@ class MultiEditDialog : BottomSheetDialogFragment() {
 
         binding.multiProjectRemoveButton.setOnClickListener {
             viewModel.liveProject.value?.let {
-                if (it.members.size > 1){
+                if (it.members.size > 1) {
                     viewModel.leaveProject()
-                }else{
+                } else {
                     viewModel.removeProject()
                 }
             }
@@ -36,20 +36,20 @@ class MultiEditDialog : BottomSheetDialogFragment() {
         }
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
-            when(it){
-                LoadingStatus.LOADING ->{
+            when (it) {
+                LoadingStatus.LOADING -> {
                     (activity as MainActivity).showProgress()
                     binding.multiProjectRemoveButton.isClickable = false
                     binding.multiProjectSaveButton.isClickable = false
                     this.isCancelable = false
                 }
-                LoadingStatus.DONE ->{
+                LoadingStatus.DONE -> {
                     (activity as MainActivity).hideProgress()
                     binding.multiProjectRemoveButton.isClickable = true
                     binding.multiProjectSaveButton.isClickable = true
                     this.isCancelable = true
                 }
-                LoadingStatus.ERROR ->{
+                LoadingStatus.ERROR -> {
                     (activity as MainActivity).hideProgress()
                     binding.multiProjectRemoveButton.isClickable = true
                     binding.multiProjectSaveButton.isClickable = true

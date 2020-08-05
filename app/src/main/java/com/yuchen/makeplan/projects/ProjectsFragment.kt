@@ -19,7 +19,6 @@ import com.yuchen.makeplan.util.UserManager
 
 class ProjectsFragment : Fragment() {
 
-
     private val viewModel: ProjectsViewModel by viewModels<ProjectsViewModel> { getVmFactory() }
     lateinit var binding: FragmentProjectsBinding
 
@@ -28,10 +27,11 @@ class ProjectsFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val projectsAdapter = ProjectsAdapter(viewModel)
-        projectsAdapter.setItemClickListener(object : ProjectsAdapter.OnClickListener{
+        projectsAdapter.setItemClickListener(object : ProjectsAdapter.OnClickListener {
             override fun onProjectClick(project: Project) {
                 viewModel.navToGanttStart(project)
             }
+
             override fun onProjectLongClick(project: Project) {
                 viewModel.navToSetProjectStart(project)
             }
@@ -47,14 +47,20 @@ class ProjectsFragment : Fragment() {
         })
         viewModel.navToGantt.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(arrayOf(it),0))
+                this.findNavController().navigate(
+                    ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(
+                        arrayOf(it),
+                        0
+                    )
+                )
                 viewModel.navToGanttDone()
             }
         })
 
         viewModel.navToSetProject.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(it))
+                this.findNavController()
+                    .navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(it))
                 viewModel.navToSetProjectDone()
             }
         })
@@ -72,7 +78,7 @@ class ProjectsFragment : Fragment() {
                     .setMultiChoiceItems(multiItems, checkedItems) { dialog, which, checked ->
 
                     }.setPositiveButton("Save") { dialog, which ->
-                        viewModel.downloadProjects(it,checkedItems)
+                        viewModel.downloadProjects(it, checkedItems)
                     }
                     .show()
                 viewModel.resetNotExistProjectsDownload()
@@ -81,13 +87,14 @@ class ProjectsFragment : Fragment() {
 
         viewModel.notExistProjectsManage.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it.isEmpty()){
+                if (it.isEmpty()) {
                     MaterialAlertDialogBuilder(requireNotNull(context))
                         .setTitle("Cloud do not have extra project")
                         .setPositiveButton("Yes") { dialog, which ->
+
                         }
                         .show()
-                }else{
+                } else {
                     val multiItems = it.map {
                         it.name
                     }.toTypedArray()
@@ -100,7 +107,7 @@ class ProjectsFragment : Fragment() {
                         .setMultiChoiceItems(multiItems, checkedItems) { dialog, which, checked ->
 
                         }.setPositiveButton("Remove") { dialog, which ->
-                            viewModel.resetProjects(it,checkedItems)
+                            viewModel.resetProjects(it, checkedItems)
                         }
                         .show()
                 }
@@ -110,8 +117,8 @@ class ProjectsFragment : Fragment() {
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             it?.let {
-                when(it){
-                    LoadingStatus.LOADING ->{
+                when (it) {
+                    LoadingStatus.LOADING -> {
                         binding.projectsProgress.visibility = View.VISIBLE
                         binding.projectsAddProject.isClickable = false
                         binding.projectsAppBar.menu.findItem(R.id.cloud_download).isEnabled = false
@@ -139,35 +146,32 @@ class ProjectsFragment : Fragment() {
         binding.projectsAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.cloud_download -> {
-                    if (UserManager.isLogInFun()){
+                    if (UserManager.isLogInFun()) {
                         viewModel.searchAndDownloadProjects()
-                    }
-                    else{
+                    } else {
                         this.findNavController().navigate(NavigationDirections.actionGlobalLoginDialog())
                         menuItem.isEnabled = false
-                        Handler().postDelayed({ menuItem.isEnabled = true}, BUTTON_CLICK_TRAN)
+                        Handler().postDelayed({ menuItem.isEnabled = true }, BUTTON_CLICK_TRAN)
                     }
                     true
                 }
                 R.id.cloud_manage -> {
-                    if (UserManager.isLogInFun()){
+                    if (UserManager.isLogInFun()) {
                         viewModel.manageProjects()
-                    }
-                    else{
+                    } else {
                         this.findNavController().navigate(NavigationDirections.actionGlobalLoginDialog())
                         menuItem.isEnabled = false
-                        Handler().postDelayed({ menuItem.isEnabled = true}, BUTTON_CLICK_TRAN)
+                        Handler().postDelayed({ menuItem.isEnabled = true }, BUTTON_CLICK_TRAN)
                     }
                     true
                 }
                 R.id.cloud_upload -> {
-                    if (UserManager.isLogInFun()){
+                    if (UserManager.isLogInFun()) {
                         viewModel.uploadProjects()
-                    }
-                    else{
+                    } else {
                         this.findNavController().navigate(NavigationDirections.actionGlobalLoginDialog())
                         menuItem.isEnabled = false
-                        Handler().postDelayed({ menuItem.isEnabled = true}, BUTTON_CLICK_TRAN)
+                        Handler().postDelayed({ menuItem.isEnabled = true }, BUTTON_CLICK_TRAN)
                     }
                     true
                 }
@@ -178,8 +182,12 @@ class ProjectsFragment : Fragment() {
         binding.projectsAddProject.setOnClickListener {
             this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null))
             binding.projectsAddProject.isClickable = false
-            Handler().postDelayed({ binding.projectsAddProject.isClickable = true}, BUTTON_CLICK_TRAN)
+            Handler().postDelayed(
+                { binding.projectsAddProject.isClickable = true },
+                BUTTON_CLICK_TRAN
+            )
         }
+
         return binding.root
     }
 }

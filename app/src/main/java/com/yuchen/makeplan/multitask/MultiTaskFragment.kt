@@ -1,17 +1,13 @@
 package com.yuchen.makeplan.multitask
 
-
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -28,24 +24,23 @@ import java.util.*
 class MultiTaskFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentMultiTaskBinding.inflate(inflater, container, false)
-        val viewModel: MultiTaskViewModel by viewModels<MultiTaskViewModel> { getVmFactory(MultiTaskFragmentArgs.fromBundle(requireArguments()).project,MultiTaskFragmentArgs.fromBundle(requireArguments()).task) }
+        val viewModel: MultiTaskViewModel by viewModels<MultiTaskViewModel> {
+            getVmFactory(
+                MultiTaskFragmentArgs.fromBundle(requireArguments()).project,
+                MultiTaskFragmentArgs.fromBundle(requireArguments()).task
+            )
+        }
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         val colorAdaptor = MultiTaskColorAdapter(viewModel)
         binding.multiTaskColorRecycler.adapter = colorAdaptor
-        binding.multiTaskColorRecycler.layoutManager =
-            GridLayoutManager(binding.multiTaskColorRecycler.context, 5)
+        binding.multiTaskColorRecycler.layoutManager = GridLayoutManager(binding.multiTaskColorRecycler.context, 5)
         val calendar = Calendar.getInstance()
 
         binding.multiTaskStartDateEdit.setOnClickListener {
             calendar.timeInMillis = viewModel.newStartTimeMillis.value ?: calendar.timeInMillis
-            val startDatePickerDialog = DatePickerDialog(
-                requireNotNull(context),
-                object : DatePickerDialog.OnDateSetListener {
-                    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-                        viewModel.setStartDate(year, month, dayOfMonth)
-                    }
-                },
+            val startDatePickerDialog = DatePickerDialog(requireNotNull(context),
+                DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth -> viewModel.setStartDate(year, month, dayOfMonth) },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
@@ -54,16 +49,16 @@ class MultiTaskFragment : Fragment() {
         }
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
-            when(it){
-                LoadingStatus.LOADING ->{
+            when (it) {
+                LoadingStatus.LOADING -> {
                     binding.multiTaskCancel.isClickable = false
                     binding.multiTaskSave.isClickable = false
                 }
-                LoadingStatus.DONE ->{
+                LoadingStatus.DONE -> {
                     binding.multiTaskCancel.isClickable = true
                     binding.multiTaskSave.isClickable = true
                 }
-                LoadingStatus.ERROR ->{
+                LoadingStatus.ERROR -> {
                     binding.multiTaskCancel.isClickable = true
                     binding.multiTaskSave.isClickable = true
                 }
@@ -74,11 +69,7 @@ class MultiTaskFragment : Fragment() {
             calendar.timeInMillis = viewModel.newStartTimeMillis.value ?: calendar.timeInMillis
             val startTimePickerDialog = TimePickerDialog(
                 requireNotNull(context),
-                object : TimePickerDialog.OnTimeSetListener {
-                    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                        viewModel.setStartTime(hourOfDay, minute)
-                    }
-                },
+                TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute -> viewModel.setStartTime(hourOfDay, minute) },
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
                 false
@@ -90,16 +81,7 @@ class MultiTaskFragment : Fragment() {
             calendar.timeInMillis = viewModel.newEndTimeMillis.value ?: calendar.timeInMillis
             val endDatePickerDialog = DatePickerDialog(
                 requireNotNull(context),
-                object : DatePickerDialog.OnDateSetListener {
-                    override fun onDateSet(
-                        view: DatePicker?,
-                        year: Int,
-                        month: Int,
-                        dayOfMonth: Int
-                    ) {
-                        viewModel.setEndDate(year, month, dayOfMonth)
-                    }
-                },
+                DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth -> viewModel.setEndDate(year, month, dayOfMonth) },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
@@ -115,11 +97,7 @@ class MultiTaskFragment : Fragment() {
             calendar.timeInMillis = viewModel.newEndTimeMillis.value ?: calendar.timeInMillis
             val endTimePickerDialog = TimePickerDialog(
                 requireNotNull(context),
-                object : TimePickerDialog.OnTimeSetListener {
-                    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                        viewModel.setEndTime(hourOfDay, minute)
-                    }
-                },
+                TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute -> viewModel.setEndTime(hourOfDay, minute) },
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
                 false
@@ -228,11 +206,11 @@ class MultiTaskFragment : Fragment() {
 
         viewModel.newDuration.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it < 5L * MINUTE_MILLIS){
+                if (it < 5L * MINUTE_MILLIS) {
                     binding.multiTaskSave.isClickable = false
                     binding.multiTaskDurationWarning.visibility = View.VISIBLE
                     binding.multiTaskDuration.setTextColor(resources.getColor(R.color.red_200))
-                }else{
+                } else {
                     binding.multiTaskSave.isClickable = true
                     binding.multiTaskDurationWarning.visibility = View.INVISIBLE
                     binding.multiTaskDuration.setTextColor(resources.getColor(R.color.my_gray_180))

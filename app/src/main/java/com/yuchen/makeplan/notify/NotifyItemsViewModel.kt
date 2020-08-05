@@ -11,36 +11,39 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class NotifyItemsViewModel(private val repository: MakePlanRepository,val pagerPos: Int) : ViewModel() {
+class NotifyItemsViewModel(private val repository: MakePlanRepository, val pagerPos: Int) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val projects: LiveData<List<MultiProject>> = when (pagerPos){
+    val projects: LiveData<List<MultiProject>> = when (pagerPos) {
         0 -> repository.getMyMultiProjects(MakePlanRemoteDataSource.FIELD_RECEIVE_UID)
         1 -> repository.getMyMultiProjects(MakePlanRemoteDataSource.FIELD_SEND_UID)
         else -> throw IllegalArgumentException("Unknown pager position!!")
     }
 
-    fun cancelUserToProject(project:MultiProject){
+    fun cancelUserToProject(project: MultiProject) {
         coroutineScope.launch {
-            repository.cancelUserToMultiProject(project,UserManager.user,
+            repository.cancelUserToMultiProject(
+                project, UserManager.user,
                 MakePlanRemoteDataSource.FIELD_RECEIVE_UID
             )
         }
     }
 
-    fun acceptProjectToUser(project: MultiProject){
+    fun acceptProjectToUser(project: MultiProject) {
         coroutineScope.launch {
-            repository.approveUserToMultiProject(project,UserManager.user,
+            repository.approveUserToMultiProject(
+                project, UserManager.user,
                 MakePlanRemoteDataSource.FIELD_SEND_UID
             )
         }
     }
 
-    fun cancelProjectToUser(project: MultiProject){
+    fun cancelProjectToUser(project: MultiProject) {
         coroutineScope.launch {
-            repository.cancelUserToMultiProject(project,UserManager.user,
+            repository.cancelUserToMultiProject(
+                project, UserManager.user,
                 MakePlanRemoteDataSource.FIELD_SEND_UID
             )
         }

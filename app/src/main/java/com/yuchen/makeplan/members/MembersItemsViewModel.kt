@@ -11,18 +11,17 @@ import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_MEMBERS_UID
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_RECEIVE_UID
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_SEND_UID
-import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MembersItemsViewModel(private val repository: MakePlanRepository, private val project: MultiProject, val pagerPos : Int) : ViewModel() {
+class MembersItemsViewModel(private val repository: MakePlanRepository, private val project: MultiProject, val pagerPos: Int) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val usersUid: LiveData<List<String>> = when(pagerPos){
+    val usersUid: LiveData<List<String>> = when (pagerPos) {
         0 -> repository.getMultiProjectUsersUid(project, FIELD_MEMBERS_UID)
         1 -> repository.getMultiProjectUsersUid(project, FIELD_SEND_UID)
         2 -> repository.getMultiProjectUsersUid(project, FIELD_RECEIVE_UID)
@@ -33,38 +32,38 @@ class MembersItemsViewModel(private val repository: MakePlanRepository, private 
     val users: LiveData<List<User>>
         get() = _users
 
-    fun setUsersByUidList(uidList:List<String>){
+    fun setUsersByUidList(uidList: List<String>) {
         coroutineScope.launch {
             val result = repository.getUsersByUidList(uidList)
-            when(result){
-                is Result.Success ->{
+            when (result) {
+                is Result.Success -> {
                     _users.value = result.data
                 }
-                is Result.Error ->{
+                is Result.Error -> {
                     Log.d("chenyjzn", "setUsersByUidList result = ${result.exception}")
                 }
-                is Result.Fail ->{
+                is Result.Fail -> {
                     Log.d("chenyjzn", "setUsersByUidList result = ${result.error}")
                 }
             }
         }
     }
 
-    fun cancelProjectToUser(user: User){
+    fun cancelProjectToUser(user: User) {
         coroutineScope.launch {
-            repository.cancelUserToMultiProject(project,user, FIELD_SEND_UID)
+            repository.cancelUserToMultiProject(project, user, FIELD_SEND_UID)
         }
     }
 
-    fun cancelUserToProject(user: User){
+    fun cancelUserToProject(user: User) {
         coroutineScope.launch {
-            repository.cancelUserToMultiProject(project,user, FIELD_RECEIVE_UID)
+            repository.cancelUserToMultiProject(project, user, FIELD_RECEIVE_UID)
         }
     }
 
-    fun acceptUserToProject(user: User){
+    fun acceptUserToProject(user: User) {
         coroutineScope.launch {
-            repository.approveUserToMultiProject(project,user, FIELD_RECEIVE_UID)
+            repository.approveUserToMultiProject(project, user, FIELD_RECEIVE_UID)
         }
     }
 

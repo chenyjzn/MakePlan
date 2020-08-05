@@ -21,26 +21,32 @@ class MultiProjectsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentMultiProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
         val adapter = MultiProjectsAdapter()
         binding.multiProjectsRecycler.adapter = adapter
-        binding.multiProjectsRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        binding.multiProjectsRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
         viewModel.projects.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
         })
-        adapter.setProjectClickListener(object : MultiProjectsAdapter.ProjectClickListener{
+
+        adapter.setProjectClickListener(object : MultiProjectsAdapter.ProjectClickListener {
             override fun onProjectClick(project: MultiProject) {
                 this@MultiProjectsFragment.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiGanttFragment(project))
             }
+
             override fun onProjectLongClick(project: MultiProject) {
                 this@MultiProjectsFragment.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(project))
             }
         })
+
         binding.multiProjectsAppBar.setOnMenuItemClickListener {
-            when(it.itemId){
+            when (it.itemId) {
                 R.id.search -> {
-                    this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToSearchProjectFragment())
+                    this.findNavController()
+                        .navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToSearchProjectFragment())
                     true
                 }
                 else -> false
@@ -50,7 +56,10 @@ class MultiProjectsFragment : Fragment() {
         binding.multiProjectsAddProject.setOnClickListener {
             this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(null))
             binding.multiProjectsAddProject.isClickable = false
-            Handler().postDelayed({ binding.multiProjectsAddProject.isClickable = true}, BUTTON_CLICK_TRAN)
+            Handler().postDelayed(
+                { binding.multiProjectsAddProject.isClickable = true },
+                BUTTON_CLICK_TRAN
+            )
         }
 
         return binding.root

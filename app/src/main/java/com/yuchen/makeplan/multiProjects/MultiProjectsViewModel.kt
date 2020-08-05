@@ -1,16 +1,13 @@
 package com.yuchen.makeplan.multiProjects
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_MEMBERS_UID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class MultiProjectsViewModel(private val repository: MakePlanRepository) : ViewModel() {
 

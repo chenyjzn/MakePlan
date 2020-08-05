@@ -1,9 +1,6 @@
 package com.yuchen.makeplan.gantt
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,27 +16,30 @@ import com.yuchen.makeplan.databinding.FragmentGanttBinding
 import com.yuchen.makeplan.ext.getVmFactory
 import com.yuchen.makeplan.view.GanttChartGroup
 
-
 class GanttFragment : Fragment() {
 
-    private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory)}
+    private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.ganttChartGroup.setColorList(resources.getStringArray(R.array.color_array_1).toList(),resources.getStringArray(R.array.color_array_2).toList())
-        binding.viewModel=viewModel
+        binding.ganttChartGroup.setColorList(
+            resources.getStringArray(R.array.color_array_1).toList(),
+            resources.getStringArray(R.array.color_array_2).toList()
+        )
+        binding.viewModel = viewModel
+
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
-                binding.ganttChartGroup.setRange(it.startTimeMillis,it.endTimeMillis)
+                binding.ganttChartGroup.setRange(it.startTimeMillis, it.endTimeMillis)
                 binding.ganttChartGroup.setTaskList(it.taskList)
                 binding.ganttChartGroup.invalidate()
             }
         })
 
-        binding.ganttChartGroup.setOnEventListener(object : GanttChartGroup.OnEventListener{
+        binding.ganttChartGroup.setOnEventListener(object : GanttChartGroup.OnEventListener {
             override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
-                viewModel.setProjectTime(startTimeMillis,endTimeMillis)
+                viewModel.setProjectTime(startTimeMillis, endTimeMillis)
             }
 
             override fun eventTaskSelect(taskPos: Int, taskValue: Task?) {
@@ -47,7 +47,7 @@ class GanttFragment : Fragment() {
             }
 
             override fun eventTaskModify(taskPos: Int, task: Task) {
-                viewModel.setNewTaskCondition(taskPos,task)
+                viewModel.setNewTaskCondition(taskPos, task)
 
             }
 
@@ -58,14 +58,14 @@ class GanttFragment : Fragment() {
 
         viewModel.navigateToTaskSetting.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.getUndoListArray(),it))
+                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.getUndoListArray(), it))
                 viewModel.goToTaskDone()
             }
         })
 
         viewModel.projectSaveSuccess.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it){
+                if (it) {
                     this.findNavController().popBackStack()
                     viewModel.saveProjectDone()
                 }
@@ -100,31 +100,31 @@ class GanttFragment : Fragment() {
         }
 
         binding.taskEdit.setOnClickListener {
-            if (viewModel.isTaskSelect() > -1){
+            if (viewModel.isTaskSelect() > -1) {
                 viewModel.goToEditTask(viewModel.isTaskSelect())
             }
         }
 
         binding.taskDelete.setOnClickListener {
-            if (viewModel.isTaskSelect() > -1){
+            if (viewModel.isTaskSelect() > -1) {
                 viewModel.taskRemove(viewModel.isTaskSelect())
             }
         }
 
         binding.taskCopy.setOnClickListener {
-            if (viewModel.isTaskSelect() > -1){
+            if (viewModel.isTaskSelect() > -1) {
                 viewModel.copyTask()
             }
         }
 
         binding.taskUp.setOnClickListener {
-            if (viewModel.isTaskSelect() > -1 && viewModel.isTaskSelect()!=0){
+            if (viewModel.isTaskSelect() > -1 && viewModel.isTaskSelect() != 0) {
                 viewModel.swapTaskUp()
             }
         }
 
         binding.taskDown.setOnClickListener {
-            if (viewModel.isTaskSelect() > -1 && viewModel.isTaskSelect() != viewModel.projectRep[viewModel.projectPos].taskList.lastIndex){
+            if (viewModel.isTaskSelect() > -1 && viewModel.isTaskSelect() != viewModel.projectRep[viewModel.projectPos].taskList.lastIndex) {
                 viewModel.swapTaskDown()
             }
         }
@@ -157,5 +157,4 @@ class GanttFragment : Fragment() {
 
         return binding.root
     }
-
 }

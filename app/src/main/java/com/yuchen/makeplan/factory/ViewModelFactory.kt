@@ -11,7 +11,6 @@ import com.yuchen.makeplan.serachproject.SearchProjectViewModel
 class ViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository
 ) : ViewModelProvider.NewInstanceFactory() {
-
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {

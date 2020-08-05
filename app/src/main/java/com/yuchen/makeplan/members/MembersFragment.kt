@@ -12,9 +12,9 @@ import com.yuchen.makeplan.databinding.FragmentMembersBinding
 class MembersFragment : Fragment() {
     private lateinit var membersPagerAdapter: MembersPagerAdapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding= FragmentMembersBinding.inflate(inflater, container, false)
-        val pagerStringList = listOf("Members","Send","Receive")
-        this.membersPagerAdapter = MembersPagerAdapter(childFragmentManager,pagerStringList, MembersFragmentArgs.fromBundle(requireArguments()).project)
+        val binding = FragmentMembersBinding.inflate(inflater, container, false)
+        val pagerStringList = listOf("Members", "Send", "Receive")
+        this.membersPagerAdapter = MembersPagerAdapter(childFragmentManager, pagerStringList, MembersFragmentArgs.fromBundle(requireArguments()).project)
         binding.membersTab.setupWithViewPager(binding.membersPager)
         binding.membersPager.adapter = membersPagerAdapter
 

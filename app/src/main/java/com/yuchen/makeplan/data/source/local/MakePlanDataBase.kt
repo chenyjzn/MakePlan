@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.yuchen.makeplan.data.Project
 
-
 @Database(entities = [Project::class], version = 3, exportSchema = false)
 abstract class MakePlanDataBase : RoomDatabase() {
     abstract val makePlanDataBaseDao: MakePlanDataBaseDao
@@ -21,7 +20,8 @@ abstract class MakePlanDataBase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         MakePlanDataBase::class.java,
-                        "make_plan_database")
+                        "make_plan_database"
+                    )
                         .fallbackToDestructiveMigration()
                         .build()
                     INSTANCE = instance

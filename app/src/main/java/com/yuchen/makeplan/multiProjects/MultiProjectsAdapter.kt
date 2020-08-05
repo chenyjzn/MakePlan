@@ -3,23 +3,14 @@ package com.yuchen.makeplan.multiProjects
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.RecyclerView
-import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
-import com.yuchen.makeplan.ext.toPx
-import com.yuchen.makeplan.task.TaskColorAdapter
-import com.yuchen.makeplan.util.TimeUtil.StampToDate
-import com.yuchen.makeplan.util.UserManager
+import com.yuchen.makeplan.util.TimeUtil.stampToDate
 
 class MultiProjectsAdapter : RecyclerView.Adapter<MultiProjectsAdapter.MultiProjectHolder>() {
 
-    private var projectList: List<MultiProject>? =null
+    private var projectList: List<MultiProject>? = null
 
     fun submitList(projectList: List<MultiProject>) {
         this.projectList = projectList
@@ -36,7 +27,8 @@ class MultiProjectsAdapter : RecyclerView.Adapter<MultiProjectsAdapter.MultiProj
         fun onProjectLongClick(project: MultiProject)
     }
 
-    inner class MultiProjectHolder(var binding: ItemMultiProjectBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class MultiProjectHolder(var binding: ItemMultiProjectBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(project: MultiProject) {
             binding.project = project
             binding.itemMultiProjectCard.setOnClickListener {
@@ -46,12 +38,12 @@ class MultiProjectsAdapter : RecyclerView.Adapter<MultiProjectsAdapter.MultiProj
                 projectClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemMultiProjectEditTime.text = StampToDate(project.updateTime)
-            if ( project.receiveUid.size == 0 ){
+            binding.itemMultiProjectEditTime.text = stampToDate(project.updateTime)
+            if (project.receiveUid.size == 0) {
                 binding.itemMultiNotify.visibility = View.INVISIBLE
-            }else{
+            } else {
                 binding.itemMultiNotify.visibility = View.VISIBLE
-                if (project.receiveUid.size <=999)
+                if (project.receiveUid.size <= 999)
                     binding.itemMultiNotify.text = project.receiveUid.size.toString()
                 else
                     binding.itemMultiNotify.text = "999+"
@@ -72,6 +64,6 @@ class MultiProjectsAdapter : RecyclerView.Adapter<MultiProjectsAdapter.MultiProj
     }
 
     override fun getItemCount(): Int {
-        return projectList?.let {it.size} ?: 0
+        return projectList?.let { it.size } ?: 0
     }
 }

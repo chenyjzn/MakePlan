@@ -2,7 +2,6 @@ package com.yuchen.makeplan.data.source.local
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
 import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.*
@@ -59,14 +58,6 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-//    override fun getMyMultiProjects(): LiveData<List<MultiProject>> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override fun getMyMultiProjectsMutable(field: String): MutableLiveData<List<MultiProject>> {
-//        TODO("Not yet implemented")
-//    }
-
     override fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>> {
         TODO("Not yet implemented")
     }
@@ -104,20 +95,9 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-//    override fun getMultiProjectUsers1(project: MultiProject): LiveData<List<User>> {
-//        TODO("Not yet implemented")
-//    }
-
     override fun getAllUsers(): LiveData<List<User>> {
         TODO("Not yet implemented")
     }
-
-//    override suspend fun updateMultiProjectUsers(
-//        project: MultiProject,
-//        users: List<User>
-//    ): Result<Boolean> {
-//        TODO("Not yet implemented")
-//    }
 
     override suspend fun addMultiProject(project: MultiProject): Result<Boolean> {
         TODO("Not yet implemented")
@@ -131,50 +111,9 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getMyMultiProjects(collection: String): LiveData<List<MultiProject>> {
+    override fun getMyMultiProjects(field: String): LiveData<List<MultiProject>> {
         TODO("Not yet implemented")
     }
-//
-//    override fun getMultiProjectUsers1(
-//        project: MultiProject,
-//        collection: String
-//    ): LiveData<List<User>> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun approveUserToMultiProject(
-//        project: MultiProject,
-//        user: User,
-//        projectCollection: String,
-//        userCollection: String
-//    ): Result<Boolean> {
-//        TODO("Not yet implemented")
-//    }
-
-//    override suspend fun cancelUserToMultiProject(
-//        project: MultiProject,
-//        user: User,
-//        projectCollection: String,
-//        userCollection: String
-//    ): Result<Boolean> {
-//        TODO("Not yet implemented")
-//    }
-
-//    override suspend fun requestUserToMultiProject(
-//        project: MultiProject,
-//        user: User,
-//        projectCollection: String,
-//        userCollection: String
-//    ): Result<Boolean> {
-//        TODO("Not yet implemented")
-//    }
-
-//    override suspend fun removeMultiProjectUser(
-//        project: MultiProject,
-//        user: User
-//    ): Result<Boolean> {
-//        TODO("Not yet implemented")
-//    }
 
     override suspend fun requestUserToMultiProject(
         project: MultiProject,
@@ -207,7 +146,10 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectUsersUid(project: MultiProject, field: String): LiveData<List<String>> {
+    override fun getMultiProjectUsersUid(
+        project: MultiProject,
+        field: String
+    ): LiveData<List<String>> {
         TODO("Not yet implemented")
     }
 

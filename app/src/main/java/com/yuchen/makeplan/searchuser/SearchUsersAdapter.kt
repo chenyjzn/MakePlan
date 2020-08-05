@@ -11,7 +11,7 @@ import com.yuchen.makeplan.databinding.ItemUserBinding
 class SearchUsersAdapter() : RecyclerView.Adapter<SearchUsersAdapter.UserHolder>(), Filterable {
 
     private var userSourceList: List<User>? = null
-    private var userFilteredList: List<User>? =null
+    private var userFilteredList: List<User>? = null
 
     fun appendList(userList: List<User>) {
         this.userSourceList = userList
@@ -19,14 +19,16 @@ class SearchUsersAdapter() : RecyclerView.Adapter<SearchUsersAdapter.UserHolder>
     }
 
     private var onSelectListener: OnSelectListener? = null
-    interface OnSelectListener{
+
+    interface OnSelectListener {
         fun userSelect(user: User)
     }
-    fun setOnSelectListener(onSelectListener: OnSelectListener){
+
+    fun setOnSelectListener(onSelectListener: OnSelectListener) {
         this.onSelectListener = onSelectListener
     }
 
-    inner class UserHolder(var binding: ItemUserBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class UserHolder(var binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             binding.user = user
             binding.itemUserCard.setOnClickListener {
@@ -47,19 +49,21 @@ class SearchUsersAdapter() : RecyclerView.Adapter<SearchUsersAdapter.UserHolder>
     }
 
     override fun getItemCount(): Int {
-        return userFilteredList?.let {it.size} ?: 0
+        return userFilteredList?.let { it.size } ?: 0
     }
 
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
-                var filteredList : List<User>?
+                var filteredList: List<User>?
                 val charString: String = constraint.toString()
                 if (charString.isEmpty()) {
                     filteredList = userSourceList
                 } else {
                     filteredList = userSourceList?.filter {
-                        it.displayName.toUpperCase().contains(charString.toUpperCase()) || it.email.toUpperCase().contains(charString.toUpperCase())
+                        it.displayName.toUpperCase()
+                            .contains(charString.toUpperCase()) || it.email.toUpperCase()
+                            .contains(charString.toUpperCase())
                     }
                 }
                 val filterResults: FilterResults = FilterResults()

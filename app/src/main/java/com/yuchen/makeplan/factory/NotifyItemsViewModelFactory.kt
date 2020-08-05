@@ -9,12 +9,11 @@ class NotifyItemsViewModelFactory constructor(
     private val makePlanRepository: MakePlanRepository,
     private val pagerPos: Int
 ) : ViewModelProvider.NewInstanceFactory() {
-
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {
                 isAssignableFrom(NotifyItemsViewModel::class.java) ->
-                    NotifyItemsViewModel(makePlanRepository,pagerPos)
+                    NotifyItemsViewModel(makePlanRepository, pagerPos)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
 

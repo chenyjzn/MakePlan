@@ -97,11 +97,11 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
             val result = repository.downloadPersonalProjectsFromFirebase()
             when (result) {
                 is Result.Success -> {
-                    var notExist : List<Project>? =null
+                    var notExist: List<Project>? = null
                     result.data.forEach {
-                        if (repository.searchProject(it.id)!= null){
+                        if (repository.searchProject(it.id) != null) {
                             repository.updateProject(it)
-                        }else{
+                        } else {
                             notExist = notExist.orEmpty() + listOf(it)
                         }
                     }
@@ -124,9 +124,9 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
             val result = repository.downloadPersonalProjectsFromFirebase()
             when (result) {
                 is Result.Success -> {
-                    var notExist : List<Project> = listOf()
+                    var notExist: List<Project> = listOf()
                     result.data.forEach {
-                        if (repository.searchProject(it.id)== null){
+                        if (repository.searchProject(it.id) == null) {
                             notExist = notExist + listOf(it)
                         }
                     }
@@ -143,11 +143,11 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
         }
     }
 
-    fun resetProjects(projects: List<Project>, needRemove : BooleanArray){
+    fun resetProjects(projects: List<Project>, needRemove: BooleanArray) {
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
-            for (i in 0..projects.lastIndex){
-                if (needRemove[i]){
+            for (i in 0..projects.lastIndex) {
+                if (needRemove[i]) {
                     repository.removeProjectFromFirebase(projects[i].id)
                 }
             }
@@ -155,11 +155,11 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
         }
     }
 
-    fun downloadProjects(projects: List<Project>, needSave : BooleanArray){
+    fun downloadProjects(projects: List<Project>, needSave: BooleanArray) {
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
-            for (i in 0..projects.lastIndex){
-                if (needSave[i]){
+            for (i in 0..projects.lastIndex) {
+                if (needSave[i]) {
                     repository.insertProject(projects[i])
                 }
             }

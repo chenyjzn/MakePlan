@@ -11,14 +11,16 @@ class MembersItemsAdapter() : RecyclerView.Adapter<MembersItemsAdapter.UserHolde
     private var memberList: List<User>? = null
 
     private var userClickListener: UserClickListener? = null
-    interface UserClickListener{
+
+    interface UserClickListener {
         fun userSelect(user: User)
     }
-    fun setUserClickListener(userClickListener: UserClickListener){
+
+    fun setUserClickListener(userClickListener: UserClickListener) {
         this.userClickListener = userClickListener
     }
 
-    inner class UserHolder(var binding: ItemUserBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class UserHolder(var binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             binding.user = user
             binding.itemUserCard.setOnClickListener {
@@ -39,7 +41,7 @@ class MembersItemsAdapter() : RecyclerView.Adapter<MembersItemsAdapter.UserHolde
     }
 
     override fun getItemCount(): Int {
-        return memberList?.let {it.size} ?: 0
+        return memberList?.let { it.size } ?: 0
     }
 
     fun submitList(memberList: List<User>) {
