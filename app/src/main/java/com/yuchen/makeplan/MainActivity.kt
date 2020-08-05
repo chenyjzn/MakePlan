@@ -116,60 +116,18 @@ class MainActivity : AppCompatActivity() {
         badge.horizontalOffset = 3.toPx()
         badge.isVisible = false
 
-        UserManager.loginUser.observe(this, Observer {
+        viewModel.notifyCount.observe(this, Observer {
             if (it == null)
                 badge.isVisible = false
-            it?.let {user ->
-                viewModel.allProject.value?.let {list ->
-                    var count = 0
-                    for (i in list){
-                        for ( j in i.sendUid){
-                            if(j == user.uid){
-                                count ++
-                                break
-                            }
-                        }
-                    }
-                    if (count == 0){
-                        badge.isVisible = false
-                    }else{
-                        badge.isVisible = true
-                        badge.number = count
-                    }
+            it?.let {
+                if (it.isEmpty()){
+                    badge.isVisible = false
+                }else{
+                    badge.isVisible = true
+                    badge.number = it.size
                 }
             }
         })
-
-        viewModel.allProject.observe(this, Observer {
-            if (it == null)
-                badge.isVisible = false
-            it?.let {list ->
-                UserManager.loginUser.value?.let {user ->
-                    var count = 0
-                    for (i in list){
-                        for ( j in i.sendUid){
-                            if(j == user.uid){
-                                count ++
-                                break
-                            }
-                        }
-                    }
-                    if (count == 0){
-                        badge.isVisible = false
-                    }else{
-                        badge.isVisible = true
-                        badge.number = count
-                    }
-                }
-            }
-        })
-
-        binding.signInButton.setOnClickListener {
-            if (UserManager.isLogInFun()) {
-                signOut()
-            } else
-                signIn()
-        }
     }
 
     override fun onStart() {
@@ -191,17 +149,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     fun signIn() {
         if (viewModel.loadingStatus.value != LoadingStatus.LOADING) {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
-        }
-    }
-
-    private fun signOut() {
-        auth.signOut()
-        googleSignInClient.signOut().addOnCompleteListener(this) {
-            UserManager.loginUser.value = null
         }
     }
 

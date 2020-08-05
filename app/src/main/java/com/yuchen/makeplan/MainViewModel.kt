@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.data.source.remote.MakePlanRemoteDataSource.FIELD_SEND_UID
 import com.yuchen.makeplan.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +21,7 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
     val loadingStatus: LiveData<LoadingStatus>
         get() = _loadingStatus
 
-    val allProject = repository.getAllMultiProjectsWithoutAuth()
+    val notifyCount = repository.getMyMultiProjects(FIELD_SEND_UID)
 
     fun getUser(){
         coroutineScope.launch {
@@ -28,9 +29,7 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
             val userResult = repository.updateUserInfoToFirebase()
             when(userResult){
                 is Result.Success ->{
-                    Log.d("chenyjzn", "getFireBaseUser OK")
                     UserManager.user = userResult.data
-                    UserManager.loginUser.value = userResult.data
                 }
                 is Result.Error ->{
                     Log.d("chenyjzn", "getFireBaseUser result = ${userResult.exception}")
@@ -53,9 +52,7 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
                     val userResult = repository.updateUserInfoToFirebase()
                     when(userResult){
                         is Result.Success ->{
-                            Log.d("chenyjzn", "getFireBaseUser OK")
                             UserManager.user = userResult.data
-                            UserManager.loginUser.value = userResult.data
                         }
                         is Result.Error ->{
                             Log.d("chenyjzn", "getFireBaseUser result = ${userResult.exception}")

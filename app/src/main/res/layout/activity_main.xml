@@ -37,18 +37,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/menu_bottom_navigation" />
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
-            app:layout_constraintStart_toStartOf="parent">
-
-        </com.google.android.gms.common.SignInButton>
-
         <ProgressBar
             android:id="@+id/main_login_progress"
             style="?android:attr/progressBarStyle"

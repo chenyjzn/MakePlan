@@ -80,6 +80,7 @@ fun bindBatchImageCircle(imgView: ImageView, users: List<User>?, pos: Int) {
                     .error(R.drawable.ic_account_circle_black_24dp)
             )
             .into(imgView)
+        imgView.visibility = View.VISIBLE
     } else {
         imgView.visibility = View.GONE
     }

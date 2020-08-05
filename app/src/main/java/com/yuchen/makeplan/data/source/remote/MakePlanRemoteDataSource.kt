@@ -521,24 +521,6 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
         return liveData
     }
 
-    override fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>> {
-        val liveData = MutableLiveData<List<MultiProject>>()
-        FirebaseFirestore.getInstance()
-            .collection(COLLECTION_MULTI_PROJECTS)
-            .addSnapshotListener { snapshot, exception ->
-                exception?.let {
-                    Log.d("chenyjzn", "[${this::class.simpleName}] Error getting documents. ${it.message}")
-                }
-                val list = mutableListOf<MultiProject>()
-                for (document in snapshot!!) {
-                    val project = document.toObject(MultiProject::class.java)
-                    list.add(project)
-                }
-                liveData.value = list
-            }
-        return liveData
-    }
-
     @Suppress("LABEL_NAME_CLASH")
     override suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> = suspendCoroutine { continuation ->
         FirebaseFirestore.getInstance()

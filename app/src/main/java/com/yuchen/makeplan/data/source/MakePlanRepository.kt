@@ -48,8 +48,6 @@ interface MakePlanRepository {
 
     fun getMyMultiProjects(field: String): LiveData<List<MultiProject>>
 
-    fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>>
-
     suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean>
 
     suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean>

@@ -51,7 +51,7 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = false
                         binding.multiTaskHour.isClickable = false
                         binding.multiGanttChartGroup.isTouchAble = false
-//                        binding.multiGanttProgress.visibility = View.VISIBLE
+                        binding.multiGanttProgress.visibility = View.VISIBLE
                     }
                     LoadingStatus.DONE -> {
                         binding.multiGanttMembers.isClickable = true
@@ -64,7 +64,7 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = true
                         binding.multiTaskHour.isClickable = true
                         binding.multiGanttChartGroup.isTouchAble = true
-//                        binding.multiGanttProgress.visibility = View.INVISIBLE
+                        binding.multiGanttProgress.visibility = View.INVISIBLE
                     }
                     LoadingStatus.ERROR -> {
                         binding.multiGanttMembers.isClickable = true
@@ -77,7 +77,7 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = true
                         binding.multiTaskHour.isClickable = true
                         binding.multiGanttChartGroup.isTouchAble = true
-//                        binding.multiGanttProgress.visibility = View.INVISIBLE
+                        binding.multiGanttProgress.visibility = View.INVISIBLE
                     }
                 }
             }

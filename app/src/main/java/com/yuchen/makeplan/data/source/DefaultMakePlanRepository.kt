@@ -90,10 +90,6 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource: MakePlanD
         return makePlanRemoteDataSource.getMyMultiProjects(field)
     }
 
-    override fun getAllMultiProjectsWithoutAuth(): LiveData<List<MultiProject>> {
-        return makePlanRemoteDataSource.getAllMultiProjectsWithoutAuth()
-    }
-
     override suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> {
         return makePlanRemoteDataSource.requestUserToMultiProject(project, user, projectField)
     }
