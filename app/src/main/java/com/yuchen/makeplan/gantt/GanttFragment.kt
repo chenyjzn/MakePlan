@@ -23,19 +23,12 @@ class GanttFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+
         binding.ganttChartGroup.setColorList(
             resources.getStringArray(R.array.color_array_1).toList(),
             resources.getStringArray(R.array.color_array_2).toList()
         )
-        binding.viewModel = viewModel
-
-        viewModel.project.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                binding.ganttChartGroup.setRange(it.startTimeMillis, it.endTimeMillis)
-                binding.ganttChartGroup.setTaskList(it.taskList)
-                binding.ganttChartGroup.invalidate()
-            }
-        })
 
         binding.ganttChartGroup.setOnEventListener(object : GanttChartGroup.OnEventListener {
             override fun eventChartTime(startTimeMillis: Long, endTimeMillis: Long) {
@@ -53,29 +46,6 @@ class GanttFragment : Fragment() {
 
             override fun eventTaskSwap(task: MutableList<Task>) {
                 viewModel.setTasksSwap(task)
-            }
-        })
-
-        viewModel.navigateToTaskSetting.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.getUndoListArray(), it))
-                viewModel.goToTaskDone()
-            }
-        })
-
-        viewModel.projectSaveSuccess.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                if (it) {
-                    this.findNavController().popBackStack()
-                    viewModel.saveProjectDone()
-                }
-            }
-        })
-
-        viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                binding.ganttChartGroup.setTaskPosSelect(it)
-                binding.ganttChartGroup.invalidate()
             }
         })
 
@@ -128,6 +98,37 @@ class GanttFragment : Fragment() {
                 viewModel.swapTaskDown()
             }
         }
+
+        viewModel.project.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                binding.ganttChartGroup.setRange(it.startTimeMillis, it.endTimeMillis)
+                binding.ganttChartGroup.setTaskList(it.taskList)
+                binding.ganttChartGroup.invalidate()
+            }
+        })
+
+        viewModel.navigateToTaskSetting.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.getUndoListArray(), it))
+                viewModel.goToTaskDone()
+            }
+        })
+
+        viewModel.projectSaveSuccess.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                if (it) {
+                    this.findNavController().popBackStack()
+                    viewModel.saveProjectDone()
+                }
+            }
+        })
+
+        viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                binding.ganttChartGroup.setTaskPosSelect(it)
+                binding.ganttChartGroup.invalidate()
+            }
+        })
 
         viewModel.taskTimeScale.observe(viewLifecycleOwner, Observer {
             it?.let {

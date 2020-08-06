@@ -148,7 +148,7 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
             _loadingStatus.value = LoadingStatus.LOADING
             for (i in 0..projects.lastIndex) {
                 if (needRemove[i]) {
-                    repository.removeProjectFromFirebase(projects[i].id)
+                    repository.removePersonalProjectFromFirebase(projects[i].id)
                 }
             }
             _loadingStatus.value = LoadingStatus.DONE

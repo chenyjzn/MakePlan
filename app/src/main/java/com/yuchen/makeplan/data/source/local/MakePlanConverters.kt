@@ -28,24 +28,6 @@ class MakePlanConverters {
     }
 
     @TypeConverter
-    fun convertToDoListToJson(listToDo: MutableList<ToDo>?): String? {
-        listToDo?.let {
-            return Moshi.Builder().build().adapter<MutableList<ToDo>>(MutableList::class.java).toJson(listToDo)
-        }
-        return null
-    }
-
-    @TypeConverter
-    fun convertJsonToToDoList(json: String?): MutableList<ToDo>? {
-        json?.let {
-            val type = Types.newParameterizedType(MutableList::class.java, ToDo::class.java)
-            val adapter: JsonAdapter<MutableList<ToDo>> = Moshi.Builder().build().adapter(type)
-            return adapter.fromJson(it)
-        }
-        return null
-    }
-
-    @TypeConverter
     fun convertUserListToJson(listUser: MutableList<User>?): String? {
         listUser?.let {
             return Moshi.Builder().build().adapter<MutableList<User>>(MutableList::class.java).toJson(listUser)

@@ -16,13 +16,17 @@ interface MakePlanRepository {
 
     fun getAllProjects(): LiveData<List<Project>>
 
-    suspend fun removeProjectFromFirebase(id: Long): Result<Long>
+    suspend fun removePersonalProjectFromFirebase(id: Long): Result<Boolean>
 
-    suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>): Result<Int>
+    suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>): Result<Boolean>
 
     suspend fun downloadPersonalProjectsFromFirebase(): Result<List<Project>>
 
-    suspend fun updateUserInfoToFirebase(): Result<User>
+    suspend fun checkUserExistInFirebase(): Result<Int>
+
+    suspend fun updateUserInfoToUsers(): Result<Boolean>
+
+    suspend fun updateUserInfoToMultiProjects(): Result<Boolean>
 
     suspend fun firebaseAuthWithGoogle(idToken: String): Result<FirebaseUser?>
 
@@ -42,7 +46,7 @@ interface MakePlanRepository {
 
     suspend fun addMultiProject(project: MultiProject): Result<Boolean>
 
-    suspend fun updateMultiProject(project: MultiProject): Result<String>
+    suspend fun updateMultiProject(project: MultiProject): Result<Boolean>
 
     suspend fun removeMultiProject(project: MultiProject): Result<Boolean>
 

@@ -117,8 +117,7 @@ class MainActivity : AppCompatActivity() {
         badge.isVisible = false
 
         viewModel.notifyCount.observe(this, Observer {
-            if (it == null)
-                badge.isVisible = false
+            if (it == null) badge.isVisible = false
             it?.let {
                 if (it.isEmpty()){
                     badge.isVisible = false
@@ -128,12 +127,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        binding.signInButton.setOnClickListener {
+            if (UserManager.isLogInFun()) {
+                signOut()
+            } else
+                signIn()
+        }
     }
 
     override fun onStart() {
         super.onStart()
         auth.currentUser?.let {
-            viewModel.getUser()
+            viewModel.getUser(it)
         }
     }
 
@@ -154,6 +160,13 @@ class MainActivity : AppCompatActivity() {
         if (viewModel.loadingStatus.value != LoadingStatus.LOADING) {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
+    }
+
+    private fun signOut() {
+        auth.signOut()
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+
         }
     }
 

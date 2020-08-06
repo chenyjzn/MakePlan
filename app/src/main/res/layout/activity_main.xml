@@ -48,5 +48,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/main_layout" />
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/nav_fragment"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </com.google.android.gms.common.SignInButton>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

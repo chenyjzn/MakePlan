@@ -38,11 +38,11 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         return MakePlanDataBase.getInstance(context).makePlanDataBaseDao.getAllProjects()
     }
 
-    override suspend fun removeProjectFromFirebase(id: Long): Result<Long> {
+    override suspend fun removePersonalProjectFromFirebase(id: Long): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>): Result<Int> {
+    override suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -50,7 +50,15 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateUserInfoToFirebase(): Result<User> {
+    override suspend fun checkUserExistInFirebase(): Result<Int> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateUserInfoToUsers(): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateUserInfoToMultiProjects(): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -70,24 +78,15 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateMultiProjectTask(
-        project: MultiProject,
-        task: MultiTask
-    ): Result<Boolean> {
+    override suspend fun updateMultiProjectTask(project: MultiProject, task: MultiTask): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeMultiProjectTask(
-        project: MultiProject,
-        task: MultiTask
-    ): Result<Boolean> {
+    override suspend fun removeMultiProjectTask(project: MultiProject, task: MultiTask): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateMultiProjectCompleteRate(
-        project: MultiProject,
-        completeRate: Int
-    ): Result<Boolean> {
+    override suspend fun updateMultiProjectCompleteRate(project: MultiProject, completeRate: Int): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -99,7 +98,7 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateMultiProject(project: MultiProject): Result<String> {
+    override suspend fun updateMultiProject(project: MultiProject): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -111,41 +110,23 @@ class MakePlanLocalDataSource(val context: Context) : MakePlanDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun requestUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectField: String
-    ): Result<Boolean> {
+    override suspend fun requestUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun approveUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectField: String
-    ): Result<Boolean> {
+    override suspend fun approveUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun cancelUserToMultiProject(
-        project: MultiProject,
-        user: User,
-        projectField: String
-    ): Result<Boolean> {
+    override suspend fun cancelUserToMultiProject(project: MultiProject, user: User, projectField: String): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeUserToMultiProject(
-        project: MultiProject,
-        user: User
-    ): Result<Boolean> {
+    override suspend fun removeUserToMultiProject(project: MultiProject, user: User): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override fun getMultiProjectUsersUid(
-        project: MultiProject,
-        field: String
-    ): LiveData<List<String>> {
+    override fun getMultiProjectUsersUid(project: MultiProject, field: String): LiveData<List<String>> {
         TODO("Not yet implemented")
     }
 

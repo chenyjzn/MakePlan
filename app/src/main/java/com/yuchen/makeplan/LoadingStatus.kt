@@ -5,3 +5,9 @@ enum class LoadingStatus {
     ERROR,
     DONE
 }
+
+//sealed class LoadingStatus {
+//    data class ERROR(val message: String) : LoadingStatus()
+//    object LOADING : LoadingStatus()
+//    object DONE : LoadingStatus()
+//}

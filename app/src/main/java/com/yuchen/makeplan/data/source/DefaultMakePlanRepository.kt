@@ -26,11 +26,11 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource: MakePlanD
         return makePlanLocalDataSource.getAllProjects()
     }
 
-    override suspend fun removeProjectFromFirebase(id: Long): Result<Long> {
-        return makePlanRemoteDataSource.removeProjectFromFirebase(id)
+    override suspend fun removePersonalProjectFromFirebase(id: Long): Result<Boolean> {
+        return makePlanRemoteDataSource.removePersonalProjectFromFirebase(id)
     }
 
-    override suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>) : Result<Int> {
+    override suspend fun uploadPersonalProjectsToFirebase(projects: List<Project>) : Result<Boolean> {
         return makePlanRemoteDataSource.uploadPersonalProjectsToFirebase(projects)
     }
 
@@ -38,8 +38,16 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource: MakePlanD
         return makePlanRemoteDataSource.downloadPersonalProjectsFromFirebase()
     }
 
-    override suspend fun updateUserInfoToFirebase(): Result<User>{
-        return makePlanRemoteDataSource.updateUserInfoToFirebase()
+    override suspend fun checkUserExistInFirebase(): Result<Int> {
+        return makePlanRemoteDataSource.checkUserExistInFirebase()
+    }
+
+    override suspend fun updateUserInfoToUsers(): Result<Boolean> {
+        return makePlanRemoteDataSource.updateUserInfoToUsers()
+    }
+
+    override suspend fun updateUserInfoToMultiProjects(): Result<Boolean> {
+        return makePlanRemoteDataSource.updateUserInfoToMultiProjects()
     }
 
     override suspend fun firebaseAuthWithGoogle(idToken: String): Result<FirebaseUser?> {
@@ -78,7 +86,7 @@ class DefaultMakePlanRepository (private val makePlanRemoteDataSource: MakePlanD
         return makePlanRemoteDataSource.addMultiProject(project)
     }
 
-    override suspend fun updateMultiProject(project: MultiProject): Result<String> {
+    override suspend fun updateMultiProject(project: MultiProject): Result<Boolean> {
         return makePlanRemoteDataSource.updateMultiProject(project)
     }
 
