@@ -79,10 +79,10 @@ class ProjectsViewModel(private val repository: MakePlanRepository) : ViewModel(
 
                         }
                         is Result.Error -> {
-                            Log.d("chenyjzn", "uploadProjects result = ${result.exception}")
+                            _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
                         }
                         is Result.Fail -> {
-                            Log.d("chenyjzn", "uploadProjects result = ${result.error}")
+                            _loadingStatus.value = LoadingStatus.ERROR(result.error)
                         }
                     }
                     _loadingStatus.value = LoadingStatus.DONE

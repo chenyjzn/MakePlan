@@ -213,8 +213,7 @@ class TaskViewModel(
 
     fun setEndByDurationMinute(minute: Int) {
         val oldDuration = calendarEnd.timeInMillis - calendarStart.timeInMillis
-        val newDuration =
-            oldDuration - ((((oldDuration) % DAY_MILLIS) % HOUR_MILLIS) / MINUTE_MILLIS) * MINUTE_MILLIS + minute * MINUTE_MILLIS
+        val newDuration = oldDuration - ((((oldDuration) % DAY_MILLIS) % HOUR_MILLIS) / MINUTE_MILLIS) * MINUTE_MILLIS + minute * MINUTE_MILLIS
         newStartTimeMillis.value?.let {
             newEndTimeMillis.value = it + newDuration
             calendarEnd.timeInMillis = it + newDuration

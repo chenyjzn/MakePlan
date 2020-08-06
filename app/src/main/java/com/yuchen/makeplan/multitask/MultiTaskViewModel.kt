@@ -101,7 +101,18 @@ class MultiTaskViewModel(
         }
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
-            repository.updateMultiProjectTask(projectInput, newTask)
+            val result = repository.updateMultiProjectTask(projectInput, newTask)
+            when (result) {
+                is Result.Success -> {
+
+                }
+                is Result.Error -> {
+                    _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                }
+                is Result.Fail -> {
+                    _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                }
+            }
             _loadingStatus.value = LoadingStatus.DONE
             _saveTask.value = true
         }

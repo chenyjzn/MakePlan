@@ -1,16 +1,23 @@
 package com.yuchen.makeplan.serachproject
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
 import com.yuchen.makeplan.util.TimeUtil.stampToDate
 import com.yuchen.makeplan.util.UserManager
 
-class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProjectHolder>(),
+class SearchProjectAdapter (private val viewModel: SearchProjectViewModel) : RecyclerView.Adapter<SearchProjectAdapter.MultiProjectHolder>(),
     Filterable {
 
     private var projectSourceList: List<MultiProject>? = null
@@ -58,8 +65,22 @@ class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProj
     }
 
     inner class MultiProjectHolder(var binding: ItemMultiProjectBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root), LifecycleOwner {
         fun bind(project: MultiProject) {
+            viewModel.loadingStatus.observe(this, Observer {
+                when (it) {
+                    is LoadingStatus.LOADING -> {
+                        binding.itemMultiProjectCard.isEnabled = false
+                    }
+                    is LoadingStatus.DONE -> {
+                        binding.itemMultiProjectCard.isEnabled = true
+                    }
+                    is LoadingStatus.ERROR -> {
+
+                    }
+                }
+            })
+
             binding.project = project
             binding.itemMultiProjectCard.setOnClickListener {
                 onClickListener?.onProjectClick(project)
@@ -70,6 +91,24 @@ class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProj
             }
             binding.itemMultiProjectEditTime.text = stampToDate(project.updateTime)
             binding.executePendingBindings()
+        }
+
+        private val lifecycleRegistry = LifecycleRegistry(this)
+
+        init {
+            lifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+        }
+
+        fun onAttach() {
+            lifecycleRegistry.currentState = Lifecycle.State.STARTED
+        }
+
+        fun onDetach() {
+            lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        }
+
+        override fun getLifecycle(): Lifecycle {
+            return lifecycleRegistry
         }
     }
 
@@ -122,5 +161,15 @@ class SearchProjectAdapter : RecyclerView.Adapter<SearchProjectAdapter.MultiProj
                 notifyDataSetChanged()
             }
         }
+    }
+
+    override fun onViewAttachedToWindow(holder: MultiProjectHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onAttach()
+    }
+
+    override fun onViewDetachedFromWindow(holder: MultiProjectHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDetach()
     }
 }

@@ -1,7 +1,10 @@
 package com.yuchen.makeplan.searchuser
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.data.source.MakePlanRepository
@@ -24,9 +27,24 @@ class SearchUserViewModel(
 
     var filterString = ""
 
+    private val _loadingStatus = MutableLiveData<LoadingStatus>()
+    val loadingStatus: LiveData<LoadingStatus>
+        get() = _loadingStatus
+
     fun requestProjectToUser(user: User) {
         coroutineScope.launch {
-            repository.requestUserToMultiProject(project, user, FIELD_SEND_UID)
+            val result = repository.requestUserToMultiProject(project, user, FIELD_SEND_UID)
+            when(result){
+                is Result.Success -> {
+
+                }
+                is Result.Error -> {
+                    _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                }
+                is Result.Fail -> {
+                    _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                }
+            }
         }
     }
 

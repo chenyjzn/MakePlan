@@ -9,6 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemNotifyBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -19,7 +21,7 @@ class NotifyItems : Fragment() {
         val binding = ItemNotifyBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = NotifyItemsAdapter()
+        val adapter = NotifyItemsAdapter(viewModel)
         binding.itemNotifyRecycler.adapter = adapter
         binding.itemNotifyRecycler.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
 
@@ -60,6 +62,22 @@ class NotifyItems : Fragment() {
                 when(viewModel.pagerPos){
                     PAGER_SENDS -> {}
                     PAGER_RECEIVE -> {}
+                }
+            }
+        })
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is LoadingStatus.LOADING -> {
+                        binding.itemNotifyProgress.visibility = View.VISIBLE
+                    }
+                    is LoadingStatus.DONE -> {
+                        binding.itemNotifyProgress.visibility = View.INVISIBLE
+                    }
+                    is LoadingStatus.ERROR -> {
+                        (activity as MainActivity).showErrorMessage(it.message)
+                    }
                 }
             }
         })

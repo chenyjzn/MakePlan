@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.yuchen.makeplan.DAY_MILLIS
 import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.databinding.FragmentMultiGanttBinding
@@ -40,7 +41,8 @@ class MultiGanttFragment : Fragment() {
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
-                    LoadingStatus.LOADING -> {
+                    is LoadingStatus.LOADING -> {
+                        binding.multiGanttProgress.visibility = View.VISIBLE
                         binding.multiGanttMembers.isClickable = false
                         binding.multiTaskCopy.isClickable = false
                         binding.multiTaskDelete.isClickable = false
@@ -51,9 +53,9 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = false
                         binding.multiTaskHour.isClickable = false
                         binding.multiGanttChartGroup.isTouchAble = false
-                        binding.multiGanttProgress.visibility = View.VISIBLE
                     }
-                    LoadingStatus.DONE -> {
+                    is LoadingStatus.DONE -> {
+                        binding.multiGanttProgress.visibility = View.INVISIBLE
                         binding.multiGanttMembers.isClickable = true
                         binding.multiTaskCopy.isClickable = true
                         binding.multiTaskDelete.isClickable = true
@@ -64,20 +66,9 @@ class MultiGanttFragment : Fragment() {
                         binding.multiTask5m.isClickable = true
                         binding.multiTaskHour.isClickable = true
                         binding.multiGanttChartGroup.isTouchAble = true
-                        binding.multiGanttProgress.visibility = View.INVISIBLE
                     }
-                    LoadingStatus.ERROR -> {
-                        binding.multiGanttMembers.isClickable = true
-                        binding.multiTaskCopy.isClickable = true
-                        binding.multiTaskDelete.isClickable = true
-                        binding.multiTaskEdit.isClickable = true
-                        binding.multiGanttAddTask.isClickable = true
-                        binding.multiTaskDay.isClickable = true
-                        binding.multiTask15m.isClickable = true
-                        binding.multiTask5m.isClickable = true
-                        binding.multiTaskHour.isClickable = true
-                        binding.multiGanttChartGroup.isTouchAble = true
-                        binding.multiGanttProgress.visibility = View.INVISIBLE
+                    is LoadingStatus.ERROR -> {
+                        (activity as MainActivity).showErrorMessage(it.message)
                     }
                 }
             }

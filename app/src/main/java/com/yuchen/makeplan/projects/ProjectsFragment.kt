@@ -8,10 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.yuchen.makeplan.BUTTON_CLICK_TRAN
-import com.yuchen.makeplan.LoadingStatus
-import com.yuchen.makeplan.NavigationDirections
-import com.yuchen.makeplan.R
+import com.yuchen.makeplan.*
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.FragmentProjectsBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -118,26 +115,22 @@ class ProjectsFragment : Fragment() {
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
-                    LoadingStatus.LOADING -> {
+                    is LoadingStatus.LOADING -> {
                         binding.projectsProgress.visibility = View.VISIBLE
                         binding.projectsAddProject.isClickable = false
                         binding.projectsAppBar.menu.findItem(R.id.cloud_download).isEnabled = false
                         binding.projectsAppBar.menu.findItem(R.id.cloud_manage).isEnabled = false
                         binding.projectsAppBar.menu.findItem(R.id.cloud_upload).isEnabled = false
                     }
-                    LoadingStatus.DONE -> {
+                    is LoadingStatus.DONE -> {
                         binding.projectsProgress.visibility = View.INVISIBLE
                         binding.projectsAddProject.isClickable = true
                         binding.projectsAppBar.menu.findItem(R.id.cloud_download).isEnabled = true
                         binding.projectsAppBar.menu.findItem(R.id.cloud_manage).isEnabled = true
                         binding.projectsAppBar.menu.findItem(R.id.cloud_upload).isEnabled = true
                     }
-                    LoadingStatus.ERROR -> {
-                        binding.projectsProgress.visibility = View.INVISIBLE
-                        binding.projectsAddProject.isClickable = true
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_download).isEnabled = true
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_manage).isEnabled = true
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_upload).isEnabled = true
+                    is LoadingStatus.ERROR -> {
+                        (activity as MainActivity).showErrorMessage(it.message)
                     }
                 }
             }

@@ -13,10 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.yuchen.makeplan.DAY_MILLIS
-import com.yuchen.makeplan.LoadingStatus
-import com.yuchen.makeplan.MINUTE_MILLIS
-import com.yuchen.makeplan.R
+import com.yuchen.makeplan.*
 import com.yuchen.makeplan.databinding.FragmentMultiTaskBinding
 import com.yuchen.makeplan.ext.getVmFactory
 import java.util.*
@@ -50,17 +47,18 @@ class MultiTaskFragment : Fragment() {
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
-                LoadingStatus.LOADING -> {
+                is LoadingStatus.LOADING -> {
+                    binding.multiTaskProgress.visibility = View.VISIBLE
                     binding.multiTaskCancel.isClickable = false
                     binding.multiTaskSave.isClickable = false
                 }
-                LoadingStatus.DONE -> {
+                is LoadingStatus.DONE -> {
+                    binding.multiTaskProgress.visibility = View.INVISIBLE
                     binding.multiTaskCancel.isClickable = true
                     binding.multiTaskSave.isClickable = true
                 }
-                LoadingStatus.ERROR -> {
-                    binding.multiTaskCancel.isClickable = true
-                    binding.multiTaskSave.isClickable = true
+                is LoadingStatus.ERROR -> {
+                    (activity as MainActivity).showErrorMessage(it.message)
                 }
             }
         })
@@ -107,8 +105,10 @@ class MultiTaskFragment : Fragment() {
 
         viewModel.saveTask.observe(viewLifecycleOwner, Observer {
             it?.let {
-                if (it)
+                if (it) {
                     this.findNavController().popBackStack()
+                    viewModel.saveTaskDone()
+                }
             }
         })
 

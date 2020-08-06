@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import com.yuchen.makeplan.util.UserManager
@@ -48,14 +49,14 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
                 _loadingStatus.value = LoadingStatus.LOADING
                 val result = repository.addMultiProject(newProject)
                 when (result) {
-                    is com.yuchen.makeplan.Result.Success -> {
+                    is Result.Success -> {
 
                     }
-                    is com.yuchen.makeplan.Result.Error -> {
-                        Log.d("chenyjzn", "getFireBaseUser result = ${result.exception}")
+                    is Result.Error -> {
+                        _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
                     }
-                    is com.yuchen.makeplan.Result.Fail -> {
-                        Log.d("chenyjzn", "getFireBaseUser result = ${result.error}")
+                    is Result.Fail -> {
+                        _loadingStatus.value = LoadingStatus.ERROR(result.error)
                     }
                 }
                 _loadingStatus.value = LoadingStatus.DONE
@@ -66,7 +67,18 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
             project.updateTime = System.currentTimeMillis()
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
-                repository.updateMultiProject(project)
+                val result = repository.updateMultiProject(project)
+                when (result) {
+                    is Result.Success -> {
+
+                    }
+                    is Result.Error -> {
+                        _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                    }
+                    is Result.Fail -> {
+                        _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                    }
+                }
                 _loadingStatus.value = LoadingStatus.DONE
                 _runDismiss.value = true
             }
@@ -78,7 +90,18 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
         project?.let { project ->
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
-                repository.removeUserToMultiProject(project, UserManager.user)
+                val result = repository.removeUserToMultiProject(project, UserManager.user)
+                when (result) {
+                    is Result.Success -> {
+
+                    }
+                    is Result.Error -> {
+                        _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                    }
+                    is Result.Fail -> {
+                        _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                    }
+                }
                 _loadingStatus.value = LoadingStatus.DONE
                 _runDismiss.value = true
             }
@@ -89,7 +112,18 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
         project?.let { project ->
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
-                repository.removeMultiProject(project)
+                val result = repository.removeMultiProject(project)
+                when (result) {
+                    is Result.Success -> {
+
+                    }
+                    is Result.Error -> {
+                        _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                    }
+                    is Result.Fail -> {
+                        _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                    }
+                }
                 _loadingStatus.value = LoadingStatus.DONE
                 _runDismiss.value = true
             }

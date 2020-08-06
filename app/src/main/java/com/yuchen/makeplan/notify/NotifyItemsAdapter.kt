@@ -2,12 +2,17 @@ package com.yuchen.makeplan.notify
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
 import com.yuchen.makeplan.util.TimeUtil.stampToDate
 
-class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjectHolder>() {
+class NotifyItemsAdapter(private val viewModel: NotifyItemsViewModel) : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjectHolder>() {
 
     private var projectList: List<MultiProject>? = null
 
@@ -27,9 +32,24 @@ class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjec
     }
 
     inner class MultiProjectHolder(var binding: ItemMultiProjectBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root), LifecycleOwner {
         fun bind(project: MultiProject) {
             binding.project = project
+            viewModel.loadingStatus.observe(this, Observer {
+                it?.let {
+                    when (it) {
+                        is LoadingStatus.LOADING -> {
+                            binding.itemMultiProjectCard.isEnabled = false
+                        }
+                        is LoadingStatus.DONE -> {
+                            binding.itemMultiProjectCard.isEnabled = true
+                        }
+                        is LoadingStatus.ERROR -> {
+
+                        }
+                    }
+                }
+            })
             binding.itemMultiProjectCard.setOnClickListener {
                 projectClickListener?.onProjectClick(project)
             }
@@ -39,6 +59,24 @@ class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjec
             }
             binding.itemMultiProjectEditTime.text = stampToDate(project.updateTime)
             binding.executePendingBindings()
+        }
+
+        private val lifecycleRegistry = LifecycleRegistry(this)
+
+        init {
+            lifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+        }
+
+        fun onAttach() {
+            lifecycleRegistry.currentState = Lifecycle.State.STARTED
+        }
+
+        fun onDetach() {
+            lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        }
+
+        override fun getLifecycle(): Lifecycle {
+            return lifecycleRegistry
         }
     }
 
@@ -60,5 +98,15 @@ class NotifyItemsAdapter() : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjec
 
     override fun getItemCount(): Int {
         return projectList?.let { it.size } ?: 0
+    }
+
+    override fun onViewAttachedToWindow(holder: MultiProjectHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onAttach()
+    }
+
+    override fun onViewDetachedFromWindow(holder: MultiProjectHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDetach()
     }
 }

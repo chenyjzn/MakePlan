@@ -19,6 +19,8 @@
         <item name="colorOnError">@color/white</item>
         <item name="buttonStyle">@style/ButtonStyleNoAllCaps</item>
         <item name="bottomSheetDialogTheme">@style/EditDialogTheme</item>
+        <item name="snackbarStyle">@style/Widget.MaterialComponents.Snackbar</item>
+        <item name="snackbarButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Snackbar</item>
     </style>
 
     <!--To fix rendering in preview -->

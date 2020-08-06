@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.databinding.ItemMembersBinding
@@ -22,7 +24,7 @@ class MembersItems : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ItemMembersBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        val adapter = MembersItemsAdapter()
+        val adapter = MembersItemsAdapter(viewModel)
         binding.membersRecycler.adapter = adapter
         binding.membersRecycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -70,6 +72,20 @@ class MembersItems : Fragment() {
                                 viewModel.acceptUserToProject(user)
                             }.show()
                     }
+                }
+            }
+        })
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is LoadingStatus.LOADING -> {
+                    binding.membersProgress.visibility = View.VISIBLE
+                }
+                is LoadingStatus.DONE -> {
+                    binding.membersProgress.visibility = View.INVISIBLE
+                }
+                is LoadingStatus.ERROR -> {
+                    (activity as MainActivity).showErrorMessage(it.message)
                 }
             }
         })

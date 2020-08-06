@@ -30,23 +30,20 @@ class EditDialog : BottomSheetDialogFragment() {
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
-                LoadingStatus.LOADING -> {
+                is LoadingStatus.LOADING -> {
                     (activity as MainActivity).showProgress()
                     binding.projectRemoveButton.isClickable = false
                     binding.projectSaveButton.isClickable = false
                     this.isCancelable = false
                 }
-                LoadingStatus.DONE -> {
+                is LoadingStatus.DONE -> {
                     (activity as MainActivity).hideProgress()
                     binding.projectRemoveButton.isClickable = false
                     binding.projectSaveButton.isClickable = false
                     this.isCancelable = true
                 }
-                LoadingStatus.ERROR -> {
-                    (activity as MainActivity).hideProgress()
-                    binding.projectRemoveButton.isClickable = false
-                    binding.projectSaveButton.isClickable = false
-                    this.isCancelable = true
+                is LoadingStatus.ERROR -> {
+                    (activity as MainActivity).showErrorMessage(it.message)
                 }
             }
         })

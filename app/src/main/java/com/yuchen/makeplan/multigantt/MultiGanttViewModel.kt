@@ -1,9 +1,11 @@
 package com.yuchen.makeplan.multigantt
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.Result
 import com.yuchen.makeplan.data.*
 import com.yuchen.makeplan.data.source.MakePlanRepository
 import kotlinx.coroutines.CoroutineScope
@@ -47,7 +49,18 @@ class MultiGanttViewModel(private val repository: MakePlanRepository, private va
     fun updateTaskToFirebase(task: MultiTask) {
         coroutineScope.launch {
             _loadingStatus.value = LoadingStatus.LOADING
-            repository.updateMultiProjectTask(projectInput, task)
+            val result = repository.updateMultiProjectTask(projectInput, task)
+            when (result) {
+                is Result.Success -> {
+
+                }
+                is Result.Error -> {
+                    _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                }
+                is Result.Fail -> {
+                    _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                }
+            }
             _loadingStatus.value = LoadingStatus.DONE
         }
     }
@@ -60,7 +73,18 @@ class MultiGanttViewModel(private val repository: MakePlanRepository, private va
         _taskSelect.value?.let { task ->
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
-                repository.removeMultiProjectTask(projectInput, task)
+                val result = repository.removeMultiProjectTask(projectInput, task)
+                when (result) {
+                    is Result.Success -> {
+
+                    }
+                    is Result.Error -> {
+                        _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                    }
+                    is Result.Fail -> {
+                        _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                    }
+                }
                 _taskSelect.value = null
                 _loadingStatus.value = LoadingStatus.DONE
             }
@@ -71,7 +95,18 @@ class MultiGanttViewModel(private val repository: MakePlanRepository, private va
         project.value?.let { project ->
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
-                repository.updateMultiProjectCompleteRate(project, completeRate)
+                val result = repository.updateMultiProjectCompleteRate(project, completeRate)
+                when (result) {
+                    is Result.Success -> {
+
+                    }
+                    is Result.Error -> {
+                        _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                    }
+                    is Result.Fail -> {
+                        _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                    }
+                }
                 _loadingStatus.value = LoadingStatus.DONE
             }
         }
@@ -83,7 +118,18 @@ class MultiGanttViewModel(private val repository: MakePlanRepository, private va
             newTask.firebaseId = ""
             coroutineScope.launch {
                 _loadingStatus.value = LoadingStatus.LOADING
-                repository.updateMultiProjectTask(projectInput, newTask)
+                val result = repository.updateMultiProjectTask(projectInput, newTask)
+                when (result) {
+                    is Result.Success -> {
+
+                    }
+                    is Result.Error -> {
+                        _loadingStatus.value = LoadingStatus.ERROR("${result.exception}")
+                    }
+                    is Result.Fail -> {
+                        _loadingStatus.value = LoadingStatus.ERROR(result.error)
+                    }
+                }
                 _loadingStatus.value = LoadingStatus.DONE
             }
         }

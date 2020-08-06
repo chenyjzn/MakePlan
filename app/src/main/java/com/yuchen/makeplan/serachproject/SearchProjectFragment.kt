@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SearchView
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.FragmentSearchProjectBinding
@@ -22,7 +25,7 @@ class SearchProjectFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentSearchProjectBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        val adapter = SearchProjectAdapter()
+        val adapter = SearchProjectAdapter(viewModel)
         adapter.setItemClickListener(object : SearchProjectAdapter.OnClickListener {
             override fun onProjectClick(project: MultiProject) {
                 MaterialAlertDialogBuilder(requireNotNull(context))
@@ -55,7 +58,6 @@ class SearchProjectFragment : Fragment() {
 
         val searchView = binding.searchProjectToolbar.menu.findItem(R.id.fun_search).actionView as SearchView
         searchView.queryHint = "Project or Members Info"
-        val editText = searchView.findViewById<EditText>(R.id.search_src_text)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -65,6 +67,20 @@ class SearchProjectFragment : Fragment() {
                 viewModel.filterString = newText ?: ""
                 adapter.filter.filter(viewModel.filterString)
                 return true
+            }
+        })
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is LoadingStatus.LOADING -> {
+                    binding.searchProjectProgress.visibility = View.VISIBLE
+                }
+                is LoadingStatus.DONE -> {
+                    binding.searchProjectProgress.visibility = View.INVISIBLE
+                }
+                is LoadingStatus.ERROR -> {
+                    (activity as MainActivity).showErrorMessage(it.message)
+                }
             }
         })
 

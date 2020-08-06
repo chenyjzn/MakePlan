@@ -1,6 +1,5 @@
 package com.yuchen.makeplan
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,7 +26,7 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
 
     val notifyCount = repository.getMyMultiProjects(FIELD_SEND_UID)
 
-    fun getUser(firebaseUser: FirebaseUser){
+    fun checkAndUpdateUser(firebaseUser: FirebaseUser){
         UserManager.user = User(
             firebaseUser.displayName ?: "",
             firebaseUser.email ?: "",
@@ -46,29 +45,29 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
                                         is Result.Success ->{
 
                                         }
-                                        is Result.Error ->{
-                                            Log.d("chenyjzn", "getFireBaseUser result = ${updateProjectsResult.exception}")
+                                        is Result.Error -> {
+                                            _loadingStatus.value = LoadingStatus.ERROR("${updateProjectsResult.exception}")
                                         }
-                                        is Result.Fail ->{
-                                            Log.d("chenyjzn", "getFireBaseUser result = ${updateProjectsResult.error}")
+                                        is Result.Fail -> {
+                                            _loadingStatus.value = LoadingStatus.ERROR(updateProjectsResult.error)
                                         }
                                     }
                                 }
                             }
-                            is Result.Error ->{
-                                Log.d("chenyjzn", "getFireBaseUser result = ${updateUserResult.exception}")
+                            is Result.Error -> {
+                                _loadingStatus.value = LoadingStatus.ERROR("${updateUserResult.exception}")
                             }
-                            is Result.Fail ->{
-                                Log.d("chenyjzn", "getFireBaseUser result = ${updateUserResult.error}")
+                            is Result.Fail -> {
+                                _loadingStatus.value = LoadingStatus.ERROR(updateUserResult.error)
                             }
                         }
                     }
                 }
-                is Result.Error ->{
-                    Log.d("chenyjzn", "getFireBaseUser result = ${checkUserResult.exception}")
+                is Result.Error -> {
+                    _loadingStatus.value = LoadingStatus.ERROR("${checkUserResult.exception}")
                 }
-                is Result.Fail ->{
-                    Log.d("chenyjzn", "getFireBaseUser result = ${checkUserResult.error}")
+                is Result.Fail -> {
+                    _loadingStatus.value = LoadingStatus.ERROR(checkUserResult.error)
                 }
             }
             _loadingStatus.value = LoadingStatus.DONE
@@ -101,37 +100,37 @@ class MainViewModel(private val repository: MakePlanRepository) : ViewModel() {
 
                                                     }
                                                     is Result.Error -> {
-                                                        Log.d("chenyjzn", "getFireBaseUser result = ${updateProjectsResult.exception}")
+                                                        _loadingStatus.value = LoadingStatus.ERROR("${updateProjectsResult.exception}")
                                                     }
                                                     is Result.Fail -> {
-                                                        Log.d("chenyjzn", "getFireBaseUser result = ${updateProjectsResult.error}")
+                                                        _loadingStatus.value = LoadingStatus.ERROR(updateProjectsResult.error)
                                                     }
                                                 }
                                             }
                                         }
                                         is Result.Error -> {
-                                            Log.d("chenyjzn", "getFireBaseUser result = ${updateUserResult.exception}")
+                                            _loadingStatus.value = LoadingStatus.ERROR("${updateUserResult.exception}")
                                         }
                                         is Result.Fail -> {
-                                            Log.d("chenyjzn", "getFireBaseUser result = ${updateUserResult.error}")
+                                            _loadingStatus.value = LoadingStatus.ERROR(updateUserResult.error)
                                         }
                                     }
                                 }
                             }
                             is Result.Error -> {
-                                Log.d("chenyjzn", "getFireBaseUser result = ${checkUserResult.exception}")
+                                _loadingStatus.value = LoadingStatus.ERROR("${checkUserResult.exception}")
                             }
                             is Result.Fail -> {
-                                Log.d("chenyjzn", "getFireBaseUser result = ${checkUserResult.error}")
+                                _loadingStatus.value = LoadingStatus.ERROR(checkUserResult.error)
                             }
                         }
                     }
                 }
                 is Result.Error -> {
-                    Log.d("chenyjzn", "signInFirebaseWithGoogle result = ${firebaseAuthResult.exception}")
+                    _loadingStatus.value = LoadingStatus.ERROR("${firebaseAuthResult.exception}")
                 }
                 is Result.Fail -> {
-                    Log.d("chenyjzn", "signInFirebaseWithGoogle result = ${firebaseAuthResult.error}")
+                    _loadingStatus.value = LoadingStatus.ERROR(firebaseAuthResult.error)
                 }
             }
             _loadingStatus.value = LoadingStatus.DONE

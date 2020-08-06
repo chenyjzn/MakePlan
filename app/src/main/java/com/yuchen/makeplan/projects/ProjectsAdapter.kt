@@ -36,14 +36,14 @@ class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<P
             viewModel.loadingStatus.observe(this, Observer {
                 it?.let {
                     when (it) {
-                        LoadingStatus.LOADING -> {
+                        is LoadingStatus.LOADING -> {
                             binding.itemProjectCard.isEnabled = false
                         }
-                        LoadingStatus.DONE -> {
+                        is LoadingStatus.DONE -> {
                             binding.itemProjectCard.isEnabled = true
                         }
-                        LoadingStatus.ERROR -> {
-                            binding.itemProjectCard.isEnabled = true
+                        is LoadingStatus.ERROR -> {
+
                         }
                     }
                 }

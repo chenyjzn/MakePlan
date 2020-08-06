@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.databinding.FragmentGanttBinding
@@ -142,6 +144,22 @@ class GanttFragment : Fragment() {
                 binding.taskHour.isSelected = it == 1
                 binding.task15m.isSelected = it == 2
                 binding.task5m.isSelected = it == 3
+            }
+        })
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is LoadingStatus.LOADING -> {
+                    binding.ganttSave.isClickable = false
+                    binding.ganttChartProgress.visibility = View.VISIBLE
+                }
+                is LoadingStatus.DONE -> {
+                    binding.ganttSave.isClickable = true
+                    binding.ganttChartProgress.visibility = View.INVISIBLE
+                }
+                is LoadingStatus.ERROR -> {
+                    (activity as MainActivity).showErrorMessage(it.message)
+                }
             }
         })
 

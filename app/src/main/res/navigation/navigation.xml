@@ -59,7 +59,11 @@
             app:argType="com.yuchen.makeplan.data.Project"
             app:nullable="true" />
     </dialog>
-    <action android:id="@+id/action_global_projectsFragment" app:destination="@id/projectsFragment"/>
+    <action
+        android:id="@+id/action_global_projectsFragment"
+        app:destination="@id/projectsFragment"
+        app:popUpTo="@id/navigation"
+        app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/multiGanttFragment"
         android:name="com.yuchen.makeplan.multigantt.MultiGanttFragment"
@@ -107,7 +111,10 @@
         android:name="com.yuchen.makeplan.notify.NotifyFragment"
         android:label="fragment_notify"
         tools:layout="@layout/fragment_notify" />
-    <action android:id="@+id/action_global_notifyFragment" app:destination="@id/notifyFragment" />
+    <action
+        android:id="@+id/action_global_notifyFragment"
+        app:destination="@id/notifyFragment"
+        app:popUpTo="@id/navigation" />
     <fragment
         android:id="@+id/multiProjectsFragment"
         android:name="com.yuchen.makeplan.multiProjects.MultiProjectsFragment"
@@ -123,7 +130,11 @@
             android:id="@+id/action_multiProjectsFragment_to_searchProjectFragment"
             app:destination="@id/searchProjectFragment" />
     </fragment>
-    <action android:id="@+id/action_global_multiProjectsFragment" app:destination="@id/multiProjectsFragment" />
+    <action
+        android:id="@+id/action_global_multiProjectsFragment"
+        app:destination="@id/multiProjectsFragment"
+        app:popUpTo="@id/navigation"
+        app:popUpToInclusive="true" />
     <dialog
         android:id="@+id/multiEditDialog"
         android:name="com.yuchen.makeplan.multiedit.MultiEditDialog"

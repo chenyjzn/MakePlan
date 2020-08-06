@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.databinding.FragmentSearchUserBinding
@@ -23,10 +25,10 @@ class SearchUserFragment : Fragment() {
         val binding = FragmentSearchUserBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = SearchUsersAdapter()
+        val adapter = SearchUserAdapter(viewModel)
         binding.searchUserRecycler.adapter = adapter
         binding.searchUserRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        adapter.setOnSelectListener(object : SearchUsersAdapter.OnSelectListener {
+        adapter.setOnSelectListener(object : SearchUserAdapter.OnSelectListener {
             override fun userSelect(user: User) {
                 MaterialAlertDialogBuilder(requireNotNull(context))
                     .setTitle("Do you want to invite ${user.displayName} to project?")
@@ -124,6 +126,20 @@ class SearchUserFragment : Fragment() {
                 viewModel.filterString = newText ?: ""
                 adapter.filter.filter(viewModel.filterString)
                 return true
+            }
+        })
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is LoadingStatus.LOADING -> {
+                    binding.searchUserProgress.visibility = View.VISIBLE
+                }
+                is LoadingStatus.DONE -> {
+                    binding.searchUserProgress.visibility = View.INVISIBLE
+                }
+                is LoadingStatus.ERROR -> {
+                    (activity as MainActivity).showErrorMessage(it.message)
+                }
             }
         })
 

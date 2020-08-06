@@ -2,8 +2,8 @@ package com.yuchen.makeplan
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.yuchen.makeplan.databinding.ActivityMainBinding
 import com.yuchen.makeplan.ext.getVmFactory
@@ -128,18 +129,35 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.loadingStatus.observe(this, Observer {
+            when (it) {
+                is LoadingStatus.LOADING -> {
+                    showProgress()
+                    disableTouch()
+                }
+                is LoadingStatus.DONE -> {
+                    enableTouch()
+                    hideProgress()
+                }
+                is LoadingStatus.ERROR -> {
+                    showErrorMessage(it.message)
+                }
+            }
+        })
+
         binding.signInButton.setOnClickListener {
             if (UserManager.isLogInFun()) {
                 signOut()
             } else
                 signIn()
         }
+
     }
 
     override fun onStart() {
         super.onStart()
         auth.currentUser?.let {
-            viewModel.getUser(it)
+            viewModel.checkAndUpdateUser(it)
         }
     }
 
@@ -151,13 +169,31 @@ class MainActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)!!
                 viewModel.signInFirebaseWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
-                Log.w("chenyjzn", "Google sign in failed", e)
+                showErrorMessage(e.toString())
             }
         }
     }
 
+    private fun disableTouch(){
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    private fun enableTouch(){
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    fun showErrorMessage(message: String){
+        Snackbar
+            .make(binding.mainLayout, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(resources.getColor(R.color.yellow_400))
+            .setTextColor(resources.getColor(R.color.blue_gray_900))
+            .show()
+    }
+
     fun signIn() {
-        if (viewModel.loadingStatus.value != LoadingStatus.LOADING) {
+        if (viewModel.loadingStatus.value !is LoadingStatus.LOADING && viewModel.loadingStatus.value !is LoadingStatus.ERROR) {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
