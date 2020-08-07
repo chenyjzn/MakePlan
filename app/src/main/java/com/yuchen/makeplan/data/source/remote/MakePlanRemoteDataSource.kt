@@ -71,7 +71,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("removeProjectFromFirebase fail"))
+                        continuation.resume(Result.Fail("removePersonalProjectFromFirebase fail"))
                     }
                 }
         }
@@ -99,7 +99,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                                 continuation.resume(Result.Error(it))
                                 return@addOnCompleteListener
                             }
-                            continuation.resume(Result.Fail("uploadProjectsToFirebase fail"))
+                            continuation.resume(Result.Fail("uploadPersonalProjectsToFirebase fail"))
                         }
                     }
             }
@@ -127,7 +127,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("uploadProjectsToFirebase fail"))
+                        continuation.resume(Result.Fail("downloadPersonalProjectsFromFirebase fail"))
                     }
                 }
         }
@@ -229,7 +229,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                                                         continuation.resume(Result.Error(it))
                                                         return@addOnCompleteListener
                                                     }
-                                                    continuation.resume(Result.Fail("firebaseAuthWithGoogle fail"))
+                                                    continuation.resume(Result.Fail("updateUserInfoToMultiProjects fail"))
                                                 }
                                             }
                                     }
@@ -241,7 +241,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("getUserFromFireBase fail"))
+                        continuation.resume(Result.Fail("updateUserInfoToMultiProjects fail"))
                     }
                 }
         }
@@ -279,7 +279,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
                     }
-                    continuation.resume(Result.Fail("addMultiProjectToFirebase fail"))
+                    continuation.resume(Result.Fail("addMultiProject fail"))
                 }
             }
         }
@@ -300,7 +300,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
                     }
-                    continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                    continuation.resume(Result.Fail("updateMultiProject fail"))
                 }
             }
         }
@@ -321,7 +321,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                        continuation.resume(Result.Fail("removeMultiProject fail"))
                     }
                 }
         }
@@ -408,7 +408,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                        continuation.resume(Result.Fail("updateMultiProjectTask fail"))
                     }
                 }
             } else {
@@ -421,7 +421,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                        continuation.resume(Result.Fail("updateMultiProjectTask fail"))
                     }
                 }
             }
@@ -446,7 +446,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                        continuation.resume(Result.Fail("removeMultiProjectTask fail"))
                     }
                 }
         }
@@ -469,7 +469,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                        continuation.resume(Result.Fail("updateMultiProjectCompleteRate fail"))
                     }
                 }
         }
@@ -552,7 +552,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                                     continuation.resume(Result.Error(it))
                                     return@addOnCompleteListener
                                 }
-                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                                continuation.resume(Result.Fail("requestUserToMultiProject fail"))
                             }
                         }
                 } else {
@@ -560,7 +560,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
                     }
-                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                    continuation.resume(Result.Fail("requestUserToMultiProject fail"))
                 }
             }
         if (auth.currentUser == null)
@@ -609,7 +609,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                                     continuation.resume(Result.Error(it))
                                     return@addOnCompleteListener
                                 }
-                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                                continuation.resume(Result.Fail("approveUserToMultiProject fail"))
                             }
                         }
                 } else {
@@ -617,7 +617,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
                     }
-                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                    continuation.resume(Result.Fail("approveUserToMultiProject fail"))
                 }
             }
     }
@@ -658,7 +658,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                                     continuation.resume(Result.Error(it))
                                     return@addOnCompleteListener
                                 }
-                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                                continuation.resume(Result.Fail("cancelUserToMultiProject fail"))
                             }
                         }
                 } else {
@@ -666,7 +666,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
                     }
-                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                    continuation.resume(Result.Fail("cancelUserToMultiProject fail"))
                 }
             }
     }
@@ -702,7 +702,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                                     continuation.resume(Result.Error(it))
                                     return@addOnCompleteListener
                                 }
-                                continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                                continuation.resume(Result.Fail("removeUserToMultiProject fail"))
                             }
                         }
                 } else {
@@ -710,7 +710,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
                     }
-                    continuation.resume(Result.Fail("requestUserAndMultiProject fail"))
+                    continuation.resume(Result.Fail("removeUserToMultiProject fail"))
                 }
             }
     }
@@ -770,7 +770,7 @@ object MakePlanRemoteDataSource : MakePlanDataSource {
                                 continuation.resume(Result.Error(it))
                                 return@addOnCompleteListener
                             }
-                            continuation.resume(Result.Fail("updateMultiProjectToFirebase fail"))
+                            continuation.resume(Result.Fail("getUsersByUidList fail"))
                         }
                     }
             }
