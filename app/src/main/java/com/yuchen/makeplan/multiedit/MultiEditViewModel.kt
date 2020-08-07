@@ -1,6 +1,5 @@
 package com.yuchen.makeplan.multiedit
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,7 +21,7 @@ class MultiEditViewModel(private val repository: MakePlanRepository, val project
     var liveProject: LiveData<MultiProject> = if (project != null) {
         repository.getMultiProject(project)
     } else {
-        MutableLiveData<MultiProject>()
+        MutableLiveData()
     }
 
     val projectName = MutableLiveData<String>().apply {

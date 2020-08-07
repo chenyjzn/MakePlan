@@ -16,7 +16,7 @@ import com.yuchen.makeplan.databinding.ItemNotifyBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 class NotifyItems : Fragment() {
-    private val viewModel: NotifyItemsViewModel by viewModels<NotifyItemsViewModel> { getVmFactory(arguments?.getInt("object")?:0) }
+    private val viewModel: NotifyItemsViewModel by viewModels { getVmFactory(arguments?.getInt("object") ?: 0) }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = ItemNotifyBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner

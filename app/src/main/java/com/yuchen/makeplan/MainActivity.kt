@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.yuchen.makeplan.databinding.ActivityMainBinding
@@ -31,7 +32,7 @@ const val DAY_MILLIS = 86400000L
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    val viewModel by viewModels<MainViewModel> { getVmFactory() }
+    val viewModel: MainViewModel by viewModels { getVmFactory() }
 
     fun showProgress(){
         binding.mainLoginProgress.visibility = View.VISIBLE
@@ -50,30 +51,17 @@ class MainActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
 
-        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
         findNavController(R.id.nav_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
-                R.id.projectsFragment -> {
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.VISIBLE
-                }
-                R.id.multiProjectsFragment -> {
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.VISIBLE
-                }
-                R.id.notifyFragment -> {
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.VISIBLE
-                }
-                R.id.multiEditDialog -> {
-                    this.actionBar?.hide()
-                    binding.bottomNavigationView.visibility = View.VISIBLE
-                }
+                R.id.projectsFragment,
+                R.id.multiProjectsFragment,
+                R.id.notifyFragment,
+                R.id.multiEditDialog,
                 R.id.editDialog -> {
-                    this.actionBar?.hide()
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
                 else -> {
@@ -110,12 +98,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_notify)
-        badge.backgroundColor = resources.getColor(R.color.yellow_400)
-        badge.badgeTextColor = resources.getColor(R.color.blue_gray_900)
-        badge.verticalOffset = 3.toPx()
-        badge.horizontalOffset = 3.toPx()
-        badge.isVisible = false
+        val badge = setNotifyBadge()
 
         viewModel.notifyCount.observe(this, Observer {
             if (it == null) badge.isVisible = false
@@ -152,6 +135,16 @@ class MainActivity : AppCompatActivity() {
                 signIn()
         }
 
+    }
+
+    private fun setNotifyBadge(): BadgeDrawable {
+        val badge = binding.bottomNavigationView.getOrCreateBadge(R.id.nav_notify)
+        badge.backgroundColor = resources.getColor(R.color.yellow_400)
+        badge.badgeTextColor = resources.getColor(R.color.blue_gray_900)
+        badge.verticalOffset = 3.toPx()
+        badge.horizontalOffset = 3.toPx()
+        badge.isVisible = false
+        return badge
     }
 
     override fun onStart() {

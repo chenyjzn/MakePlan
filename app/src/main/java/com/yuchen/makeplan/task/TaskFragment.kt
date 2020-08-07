@@ -23,7 +23,7 @@ import java.util.*
 class TaskFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentTaskBinding.inflate(inflater, container, false)
-        val viewModel: TaskViewModel by viewModels<TaskViewModel> {
+        val viewModel: TaskViewModel by viewModels {
             getVmFactory(
                 TaskFragmentArgs.fromBundle(requireArguments()).projectHistory,
                 TaskFragmentArgs.fromBundle(requireArguments()).projectHistoryPos,

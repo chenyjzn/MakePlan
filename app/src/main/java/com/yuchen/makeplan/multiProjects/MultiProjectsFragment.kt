@@ -17,7 +17,7 @@ import com.yuchen.makeplan.databinding.FragmentMultiProjectsBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 class MultiProjectsFragment : Fragment() {
-    private val viewModel: MultiProjectsViewModel by viewModels<MultiProjectsViewModel> { getVmFactory() }
+    private val viewModel: MultiProjectsViewModel by viewModels { getVmFactory() }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentMultiProjectsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -56,10 +56,7 @@ class MultiProjectsFragment : Fragment() {
         binding.multiProjectsAddProject.setOnClickListener {
             this.findNavController().navigate(MultiProjectsFragmentDirections.actionMultiProjectsFragmentToMultiEditDialog(null))
             binding.multiProjectsAddProject.isClickable = false
-            Handler().postDelayed(
-                { binding.multiProjectsAddProject.isClickable = true },
-                BUTTON_CLICK_TRAN
-            )
+            Handler().postDelayed({ binding.multiProjectsAddProject.isClickable = true }, BUTTON_CLICK_TRAN)
         }
 
         return binding.root

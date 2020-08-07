@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.SearchView
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -21,7 +19,7 @@ import com.yuchen.makeplan.databinding.FragmentSearchProjectBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 class SearchProjectFragment : Fragment() {
-    private val viewModel: SearchProjectViewModel by viewModels<SearchProjectViewModel> { getVmFactory() }
+    private val viewModel: SearchProjectViewModel by viewModels { getVmFactory() }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentSearchProjectBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner

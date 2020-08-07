@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
-import com.yuchen.makeplan.util.TimeUtil.stampToDate
+import com.yuchen.makeplan.util.TimeUtil.millisToDate
 
 class MultiProjectsAdapter : RecyclerView.Adapter<MultiProjectsAdapter.MultiProjectHolder>() {
 
@@ -38,7 +38,7 @@ class MultiProjectsAdapter : RecyclerView.Adapter<MultiProjectsAdapter.MultiProj
                 projectClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemMultiProjectEditTime.text = stampToDate(project.updateTime)
+            binding.itemMultiProjectEditTime.text = millisToDate(project.updateTime)
             if (project.receiveUid.size == 0) {
                 binding.itemMultiNotify.visibility = View.INVISIBLE
             } else {
@@ -64,6 +64,6 @@ class MultiProjectsAdapter : RecyclerView.Adapter<MultiProjectsAdapter.MultiProj
     }
 
     override fun getItemCount(): Int {
-        return projectList?.let { it.size } ?: 0
+        return projectList?.size ?: 0
     }
 }

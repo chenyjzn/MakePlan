@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.databinding.ItemMultiProjectBinding
-import com.yuchen.makeplan.util.TimeUtil.stampToDate
+import com.yuchen.makeplan.util.TimeUtil.millisToDate
 
 class NotifyItemsAdapter(private val viewModel: NotifyItemsViewModel) : RecyclerView.Adapter<NotifyItemsAdapter.MultiProjectHolder>() {
 
@@ -57,7 +57,7 @@ class NotifyItemsAdapter(private val viewModel: NotifyItemsViewModel) : Recycler
                 projectClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemMultiProjectEditTime.text = stampToDate(project.updateTime)
+            binding.itemMultiProjectEditTime.text = millisToDate(project.updateTime)
             binding.executePendingBindings()
         }
 
@@ -81,13 +81,7 @@ class NotifyItemsAdapter(private val viewModel: NotifyItemsViewModel) : Recycler
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiProjectHolder {
-        return MultiProjectHolder(
-            ItemMultiProjectBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+        return MultiProjectHolder(ItemMultiProjectBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: MultiProjectHolder, position: Int) {
@@ -97,7 +91,7 @@ class NotifyItemsAdapter(private val viewModel: NotifyItemsViewModel) : Recycler
     }
 
     override fun getItemCount(): Int {
-        return projectList?.let { it.size } ?: 0
+        return projectList?.size ?: 0
     }
 
     override fun onViewAttachedToWindow(holder: MultiProjectHolder) {

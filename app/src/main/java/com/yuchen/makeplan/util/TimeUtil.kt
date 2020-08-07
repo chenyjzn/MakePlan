@@ -7,46 +7,44 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object TimeUtil {
-    fun taskDate(time: Long): String {
-        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm")
-        return simpleDateFormat.format(Date(time))
-    }
 
-    fun timeDurationToString(start: Long, end: Long): String {
+    fun durationToToolBarString(start: Long, end: Long): String {
         var duration = end - start
-        var days: Int = (duration / DAY_MILLIS).toInt()
+        val day: Int = (duration / DAY_MILLIS).toInt()
         duration %= DAY_MILLIS
-        var hours: Int = (duration / HOUR_MILLIS).toInt()
+        val hour: Int = (duration / HOUR_MILLIS).toInt()
         duration %= HOUR_MILLIS
-        var mins: Int = (duration / MINUTE_MILLIS).toInt()
+        val min: Int = (duration / MINUTE_MILLIS).toInt()
 
-        return "$days D $hours H $mins M"
+        return "$day D $hour H $min M"
     }
 
-    fun millisToGanttToolBarTime(time: Long): String {
+    fun millisToToolBarString(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("EEE MM/dd HH:mm")
         return simpleDateFormat.format(Date(time))
     }
 
-
-    @JvmStatic
-    fun stampToDate(time: Long): String {
+    fun millisToDate(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         return simpleDateFormat.format(Date(time))
     }
 
-    @JvmStatic
-    fun dateToStamp(date: String): Long {
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        return simpleDateFormat.parse(date).time
+    fun millisToYearMonth2Day(time: Long): String {
+        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
+        return simpleDateFormat.format(Date(time))
     }
 
-    fun millisToYearMonthDay(time: Long): String {
+    fun millisToHourMinutes(time: Long): String {
+        val simpleDateFormat = SimpleDateFormat("HH:mm")
+        return simpleDateFormat.format(Date(time))
+    }
+
+    fun millisToYearMonth3Day(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("yyyy/MMM/dd")
         return simpleDateFormat.format(Date(time))
     }
 
-    fun millisToYearMonth(time: Long): String {
+    fun millisToYearMonth3(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("yyyy/MMM")
         return simpleDateFormat.format(Date(time))
     }
@@ -61,7 +59,7 @@ object TimeUtil {
         return simpleDateFormat.format(Date(time))
     }
 
-    fun millisToMonth(time: Long): String {
+    fun millisToMonth3(time: Long): String {
         val simpleDateFormat = SimpleDateFormat("MMM")
         return simpleDateFormat.format(Date(time))
     }

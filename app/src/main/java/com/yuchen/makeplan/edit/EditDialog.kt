@@ -13,10 +13,12 @@ import com.yuchen.makeplan.databinding.DialogEditBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 class EditDialog : BottomSheetDialogFragment() {
-    private val viewModel: EditViewModel by viewModels<EditViewModel> { getVmFactory(EditDialogArgs.fromBundle(requireArguments()).project) }
+
+    private val viewModel: EditViewModel by viewModels { getVmFactory(EditDialogArgs.fromBundle(requireArguments()).project) }
+    lateinit var binding: DialogEditBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DialogEditBinding.inflate(inflater, container, false)
+        binding = DialogEditBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
@@ -32,15 +34,11 @@ class EditDialog : BottomSheetDialogFragment() {
             when (it) {
                 is LoadingStatus.LOADING -> {
                     (activity as MainActivity).showProgress()
-                    binding.projectRemoveButton.isClickable = false
-                    binding.projectSaveButton.isClickable = false
-                    this.isCancelable = false
+                    isTouchable(false)
                 }
                 is LoadingStatus.DONE -> {
                     (activity as MainActivity).hideProgress()
-                    binding.projectRemoveButton.isClickable = false
-                    binding.projectSaveButton.isClickable = false
-                    this.isCancelable = true
+                    isTouchable(true)
                 }
                 is LoadingStatus.ERROR -> {
                     (activity as MainActivity).showErrorMessage(it.message)
@@ -56,5 +54,11 @@ class EditDialog : BottomSheetDialogFragment() {
         })
 
         return binding.root
+    }
+
+    private fun isTouchable(canTouch: Boolean) {
+        binding.projectRemoveButton.isClickable = canTouch
+        binding.projectSaveButton.isClickable = canTouch
+        this.isCancelable = canTouch
     }
 }

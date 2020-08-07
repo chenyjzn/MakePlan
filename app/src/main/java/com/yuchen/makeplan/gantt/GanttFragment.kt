@@ -20,7 +20,7 @@ import com.yuchen.makeplan.view.GanttChartGroup
 
 class GanttFragment : Fragment() {
 
-    private val viewModel: GanttViewModel by viewModels<GanttViewModel> { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory) }
+    private val viewModel: GanttViewModel by viewModels { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)

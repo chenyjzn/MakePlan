@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.yuchen.makeplan.data.Task
-import com.yuchen.makeplan.data.ToDo
 import com.yuchen.makeplan.data.User
 
 class MakePlanConverters {

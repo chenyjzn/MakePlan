@@ -14,10 +14,11 @@ import com.yuchen.makeplan.ext.getVmFactory
 
 class MultiEditDialog : BottomSheetDialogFragment() {
 
-    private val viewModel: MultiEditViewModel by viewModels<MultiEditViewModel> { getVmFactory(MultiEditDialogArgs.fromBundle(requireArguments()).project) }
+    private val viewModel: MultiEditViewModel by viewModels { getVmFactory(MultiEditDialogArgs.fromBundle(requireArguments()).project) }
+    lateinit var binding: DialogMultiEditBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = DialogMultiEditBinding.inflate(inflater, container, false)
+        binding = DialogMultiEditBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
@@ -39,15 +40,11 @@ class MultiEditDialog : BottomSheetDialogFragment() {
             when (it) {
                 is LoadingStatus.LOADING -> {
                     (activity as MainActivity).showProgress()
-                    binding.multiProjectRemoveButton.isClickable = false
-                    binding.multiProjectSaveButton.isClickable = false
-                    this.isCancelable = false
+                    isTouchable(false)
                 }
                 is LoadingStatus.DONE -> {
                     (activity as MainActivity).hideProgress()
-                    binding.multiProjectRemoveButton.isClickable = true
-                    binding.multiProjectSaveButton.isClickable = true
-                    this.isCancelable = true
+                    isTouchable(true)
                 }
                 is LoadingStatus.ERROR -> {
                     (activity as MainActivity).showErrorMessage(it.message)
@@ -62,5 +59,11 @@ class MultiEditDialog : BottomSheetDialogFragment() {
             }
         })
         return binding.root
+    }
+
+    private fun isTouchable(canTouch: Boolean) {
+        binding.multiProjectRemoveButton.isClickable = canTouch
+        binding.multiProjectSaveButton.isClickable = canTouch
+        this.isCancelable = canTouch
     }
 }

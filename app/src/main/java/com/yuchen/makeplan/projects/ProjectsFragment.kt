@@ -16,7 +16,7 @@ import com.yuchen.makeplan.util.UserManager
 
 class ProjectsFragment : Fragment() {
 
-    private val viewModel: ProjectsViewModel by viewModels<ProjectsViewModel> { getVmFactory() }
+    private val viewModel: ProjectsViewModel by viewModels { getVmFactory() }
     lateinit var binding: FragmentProjectsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,20 +44,14 @@ class ProjectsFragment : Fragment() {
         })
         viewModel.navToGantt.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(
-                    ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(
-                        arrayOf(it),
-                        0
-                    )
-                )
+                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToGanttFragment(arrayOf(it), 0))
                 viewModel.navToGanttDone()
             }
         })
 
         viewModel.navToSetProject.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController()
-                    .navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(it))
+                this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(it))
                 viewModel.navToSetProjectDone()
             }
         })
@@ -117,17 +111,11 @@ class ProjectsFragment : Fragment() {
                 when (it) {
                     is LoadingStatus.LOADING -> {
                         binding.projectsProgress.visibility = View.VISIBLE
-                        binding.projectsAddProject.isClickable = false
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_download).isEnabled = false
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_manage).isEnabled = false
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_upload).isEnabled = false
+                        isTouchable(false)
                     }
                     is LoadingStatus.DONE -> {
                         binding.projectsProgress.visibility = View.INVISIBLE
-                        binding.projectsAddProject.isClickable = true
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_download).isEnabled = true
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_manage).isEnabled = true
-                        binding.projectsAppBar.menu.findItem(R.id.cloud_upload).isEnabled = true
+                        isTouchable(true)
                     }
                     is LoadingStatus.ERROR -> {
                         (activity as MainActivity).showErrorMessage(it.message)
@@ -175,12 +163,16 @@ class ProjectsFragment : Fragment() {
         binding.projectsAddProject.setOnClickListener {
             this.findNavController().navigate(ProjectsFragmentDirections.actionProjectsFragmentToEditDialog(null))
             binding.projectsAddProject.isClickable = false
-            Handler().postDelayed(
-                { binding.projectsAddProject.isClickable = true },
-                BUTTON_CLICK_TRAN
-            )
+            Handler().postDelayed({ binding.projectsAddProject.isClickable = true }, BUTTON_CLICK_TRAN)
         }
 
         return binding.root
+    }
+
+    private fun isTouchable(canTouch: Boolean) {
+        binding.projectsAddProject.isClickable = canTouch
+        binding.projectsAppBar.menu.findItem(R.id.cloud_download).isEnabled = canTouch
+        binding.projectsAppBar.menu.findItem(R.id.cloud_manage).isEnabled = canTouch
+        binding.projectsAppBar.menu.findItem(R.id.cloud_upload).isEnabled = canTouch
     }
 }

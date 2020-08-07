@@ -14,12 +14,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.MainActivity
 import com.yuchen.makeplan.R
+import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.databinding.FragmentSearchUserBinding
 import com.yuchen.makeplan.ext.getVmFactory
 
 class SearchUserFragment : Fragment() {
-    private val viewModel: SearchUserViewModel by viewModels<SearchUserViewModel> { getVmFactory(SearchUserFragmentArgs.fromBundle(requireArguments()).project) }
+    private val viewModel: SearchUserViewModel by viewModels { getVmFactory(SearchUserFragmentArgs.fromBundle(requireArguments()).project) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentSearchUserBinding.inflate(inflater, container, false)
@@ -44,32 +45,7 @@ class SearchUserFragment : Fragment() {
         viewModel.users.observe(viewLifecycleOwner, Observer {
             it?.let { list ->
                 viewModel.myProject.value?.let { project ->
-                    val newList = list.filter {
-                        var isNotMember = true
-                        for (i in project.receiveUid) {
-                            if (i == it.uid) {
-                                isNotMember = false
-                                break
-                            }
-                        }
-                        if (isNotMember) {
-                            for (i in project.membersUid) {
-                                if (i == it.uid) {
-                                    isNotMember = false
-                                    break
-                                }
-                            }
-                        }
-                        if (isNotMember) {
-                            for (i in project.sendUid) {
-                                if (i == it.uid) {
-                                    isNotMember = false
-                                    break
-                                }
-                            }
-                        }
-                        isNotMember
-                    }
+                    val newList = getExcludeUserList(list, project)
                     adapter.appendList(newList)
                     adapter.filter.filter(viewModel.filterString)
                 }
@@ -79,32 +55,7 @@ class SearchUserFragment : Fragment() {
         viewModel.myProject.observe(viewLifecycleOwner, Observer {
             it?.let { project ->
                 viewModel.users.value?.let { list ->
-                    val newList = list.filter {
-                        var isNotMember = true
-                        for (i in project.receiveUid) {
-                            if (i == it.uid) {
-                                isNotMember = false
-                                break
-                            }
-                        }
-                        if (isNotMember) {
-                            for (i in project.membersUid) {
-                                if (i == it.uid) {
-                                    isNotMember = false
-                                    break
-                                }
-                            }
-                        }
-                        if (isNotMember) {
-                            for (i in project.sendUid) {
-                                if (i == it.uid) {
-                                    isNotMember = false
-                                    break
-                                }
-                            }
-                        }
-                        isNotMember
-                    }
+                    val newList = getExcludeUserList(list, project)
                     adapter.appendList(newList)
                     adapter.filter.filter(viewModel.filterString)
                 }
@@ -144,5 +95,34 @@ class SearchUserFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    private fun getExcludeUserList(list: List<User>, project: MultiProject): List<User> {
+        return list.filter {
+            var isNotMember = true
+            for (i in project.receiveUid) {
+                if (i == it.uid) {
+                    isNotMember = false
+                    break
+                }
+            }
+            if (isNotMember) {
+                for (i in project.membersUid) {
+                    if (i == it.uid) {
+                        isNotMember = false
+                        break
+                    }
+                }
+            }
+            if (isNotMember) {
+                for (i in project.sendUid) {
+                    if (i == it.uid) {
+                        isNotMember = false
+                        break
+                    }
+                }
+            }
+            isNotMember
+        }
     }
 }

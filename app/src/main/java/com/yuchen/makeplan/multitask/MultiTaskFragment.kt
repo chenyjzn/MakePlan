@@ -19,9 +19,12 @@ import com.yuchen.makeplan.ext.getVmFactory
 import java.util.*
 
 class MultiTaskFragment : Fragment() {
+
+    lateinit var binding: FragmentMultiTaskBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentMultiTaskBinding.inflate(inflater, container, false)
-        val viewModel: MultiTaskViewModel by viewModels<MultiTaskViewModel> {
+        binding = FragmentMultiTaskBinding.inflate(inflater, container, false)
+        val viewModel: MultiTaskViewModel by viewModels {
             getVmFactory(
                 MultiTaskFragmentArgs.fromBundle(requireArguments()).project,
                 MultiTaskFragmentArgs.fromBundle(requireArguments()).task
@@ -49,13 +52,11 @@ class MultiTaskFragment : Fragment() {
             when (it) {
                 is LoadingStatus.LOADING -> {
                     binding.multiTaskProgress.visibility = View.VISIBLE
-                    binding.multiTaskCancel.isClickable = false
-                    binding.multiTaskSave.isClickable = false
+                    isTouchable(false)
                 }
                 is LoadingStatus.DONE -> {
                     binding.multiTaskProgress.visibility = View.INVISIBLE
-                    binding.multiTaskCancel.isClickable = true
-                    binding.multiTaskSave.isClickable = true
+                    isTouchable(true)
                 }
                 is LoadingStatus.ERROR -> {
                     (activity as MainActivity).showErrorMessage(it.message)
@@ -221,4 +222,8 @@ class MultiTaskFragment : Fragment() {
         return binding.root
     }
 
+    private fun isTouchable(canTouch: Boolean) {
+        binding.multiTaskCancel.isClickable = canTouch
+        binding.multiTaskSave.isClickable = canTouch
+    }
 }

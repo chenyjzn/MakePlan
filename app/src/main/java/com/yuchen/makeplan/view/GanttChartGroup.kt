@@ -283,7 +283,7 @@ class GanttChartGroup : View {
         canvas.drawLine(prePos, 0.0f, prePos, timeLineHeight.toFloat() * 0.5f, timeLineAxisPaint)
 
         while (actualTime <= extendEndTime) {
-            val text = TimeUtil.millisToYearMonthDay(actualTime)
+            val text = TimeUtil.millisToYearMonth3Day(actualTime)
 
             actualTime += DAY_MILLIS
             curPos = interpolation(startDate, endDate, actualTime) * width.toFloat()
@@ -336,7 +336,7 @@ class GanttChartGroup : View {
         canvas.drawLine(prePos, 0.0f, prePos, timeLineHeight.toFloat() * 0.5f, timeLineAxisPaint)
 
         while (actualTime <= extendEndTime) {
-            val text = TimeUtil.millisToYearMonth(actualTime)
+            val text = TimeUtil.millisToYearMonth3(actualTime)
 
             calendar.timeInMillis = actualTime
             val days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -569,7 +569,7 @@ class GanttChartGroup : View {
             val days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
             canvas.drawText(
-                TimeUtil.millisToMonth(actualTime),
+                TimeUtil.millisToMonth3(actualTime),
                 interpolation(startDate, endDate, actualTime + ((days.toFloat() / 2.0f) * DAY_MILLIS.toFloat()).toLong()) * width.toFloat(),
                 timeLineHeight.toFloat() * 0.75f + fontTimeLineOffsetY,
                 timeLine2TextPaint
@@ -789,13 +789,13 @@ class GanttChartGroup : View {
         if (taskSelectPos != -1) {
             taskList?.let {
                 toolBarTextPaint.textAlign = Paint.Align.LEFT
-                var text = TimeUtil.millisToGanttToolBarTime(it[taskSelectPos].startTimeMillis)
+                var text = TimeUtil.millisToToolBarString(it[taskSelectPos].startTimeMillis)
                 canvas.drawText(text, 0f + toolBarTextPadding, timeLineHeight + toolBarHeight.toFloat() / 2f + fontToolBarOffsetY, toolBarTextPaint)
                 toolBarTextPaint.textAlign = Paint.Align.CENTER
-                text = TimeUtil.timeDurationToString(it[taskSelectPos].startTimeMillis, it[taskSelectPos].endTimeMillis)
+                text = TimeUtil.durationToToolBarString(it[taskSelectPos].startTimeMillis, it[taskSelectPos].endTimeMillis)
                 canvas.drawText(text, width.toFloat() / 2f, timeLineHeight + toolBarHeight.toFloat() / 2f + fontToolBarOffsetY, toolBarTextPaint)
                 toolBarTextPaint.textAlign = Paint.Align.RIGHT
-                text = TimeUtil.millisToGanttToolBarTime(it[taskSelectPos].endTimeMillis)
+                text = TimeUtil.millisToToolBarString(it[taskSelectPos].endTimeMillis)
                 canvas.drawText(text, width.toFloat() - toolBarTextPadding, timeLineHeight + toolBarHeight.toFloat() / 2f + fontToolBarOffsetY, toolBarTextPaint)
             }
         }

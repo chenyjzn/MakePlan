@@ -23,9 +23,10 @@ import kotlin.math.roundToInt
 class MultiGanttFragment : Fragment() {
 
     private val viewModel: MultiGanttViewModel by viewModels<MultiGanttViewModel> { getVmFactory(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject) }
+    lateinit var binding: FragmentMultiGanttBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding = FragmentMultiGanttBinding.inflate(inflater, container, false)
+        binding = FragmentMultiGanttBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.multiGanttChartGroup.setColorList(
             resources.getStringArray(R.array.color_array_1).toList(),
@@ -43,29 +44,11 @@ class MultiGanttFragment : Fragment() {
                 when (it) {
                     is LoadingStatus.LOADING -> {
                         binding.multiGanttProgress.visibility = View.VISIBLE
-                        binding.multiGanttMembers.isClickable = false
-                        binding.multiTaskCopy.isClickable = false
-                        binding.multiTaskDelete.isClickable = false
-                        binding.multiTaskEdit.isClickable = false
-                        binding.multiGanttAddTask.isClickable = false
-                        binding.multiTaskDay.isClickable = false
-                        binding.multiTask15m.isClickable = false
-                        binding.multiTask5m.isClickable = false
-                        binding.multiTaskHour.isClickable = false
-                        binding.multiGanttChartGroup.isTouchAble = false
+                        isTouchable(false)
                     }
                     is LoadingStatus.DONE -> {
                         binding.multiGanttProgress.visibility = View.INVISIBLE
-                        binding.multiGanttMembers.isClickable = true
-                        binding.multiTaskCopy.isClickable = true
-                        binding.multiTaskDelete.isClickable = true
-                        binding.multiTaskEdit.isClickable = true
-                        binding.multiGanttAddTask.isClickable = true
-                        binding.multiTaskDay.isClickable = true
-                        binding.multiTask15m.isClickable = true
-                        binding.multiTask5m.isClickable = true
-                        binding.multiTaskHour.isClickable = true
-                        binding.multiGanttChartGroup.isTouchAble = true
+                        isTouchable(true)
                     }
                     is LoadingStatus.ERROR -> {
                         (activity as MainActivity).showErrorMessage(it.message)
@@ -141,14 +124,19 @@ class MultiGanttFragment : Fragment() {
         })
 
         binding.multiGanttAddTask.setOnClickListener {
-            if (viewModel.taskSelect.value == null && viewModel.project.value != null)
-                this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!, null))
+            viewModel.project.value?.let { project ->
+                if (viewModel.taskSelect.value == null) {
+                    this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(project, null))
+                }
+            }
         }
 
         binding.multiTaskEdit.setOnClickListener {
-            if (viewModel.taskSelect.value != null && viewModel.project.value != null) {
-                this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(viewModel.project.value!!, viewModel.taskSelect.value!!))
-                viewModel.taskSelectClear()
+            viewModel.project.value?.let { project ->
+                viewModel.taskSelect.value?.let { task ->
+                    this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(project, task))
+                    viewModel.taskSelectClear()
+                }
             }
         }
 
@@ -182,5 +170,18 @@ class MultiGanttFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun isTouchable(canTouch: Boolean) {
+        binding.multiGanttMembers.isClickable = canTouch
+        binding.multiTaskCopy.isClickable = canTouch
+        binding.multiTaskDelete.isClickable = canTouch
+        binding.multiTaskEdit.isClickable = canTouch
+        binding.multiGanttAddTask.isClickable = canTouch
+        binding.multiTaskDay.isClickable = canTouch
+        binding.multiTask15m.isClickable = canTouch
+        binding.multiTask5m.isClickable = canTouch
+        binding.multiTaskHour.isClickable = canTouch
+        binding.multiGanttChartGroup.isTouchAble = canTouch
     }
 }

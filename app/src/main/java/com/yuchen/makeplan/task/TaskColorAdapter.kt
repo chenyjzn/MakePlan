@@ -40,13 +40,7 @@ class TaskColorAdapter(private val viewModel: TaskViewModel) : RecyclerView.Adap
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskColorHolder {
-        return TaskColorHolder(
-            ItemTaskColorBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+        return TaskColorHolder(ItemTaskColorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: TaskColorHolder, position: Int) {

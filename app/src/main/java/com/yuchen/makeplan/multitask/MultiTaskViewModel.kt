@@ -8,11 +8,12 @@ import com.yuchen.makeplan.*
 import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.data.source.MakePlanRepository
+import com.yuchen.makeplan.util.TimeUtil.millisToHourMinutes
+import com.yuchen.makeplan.util.TimeUtil.millisToYearMonth2Day
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MultiTaskViewModel(
@@ -166,25 +167,23 @@ class MultiTaskViewModel(
         newEndTimeMillis.value = calendarEnd.timeInMillis
     }
 
-    fun setEndTimeByTimeMillis(timeMillis: Long) {
+    private fun setEndTimeByTimeMillis(timeMillis: Long) {
         newEndTimeMillis.value = timeMillis
         calendarEnd.timeInMillis = timeMillis
     }
 
     fun convertTimeMilliToDateString(value: Long?): String {
-        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
         return if (value == null)
             value.toString()
         else
-            simpleDateFormat.format(value)
+            millisToYearMonth2Day(value)
     }
 
     fun convertTimeMilliToTimeString(value: Long?): String {
-        val simpleDateFormat = SimpleDateFormat("HH:mm")
-        if (value == null)
-            return value.toString()
+        return if (value == null)
+            value.toString()
         else
-            return simpleDateFormat.format(value)
+            millisToHourMinutes(value)
     }
 
     fun setEndByDurationDay(day: Int) {

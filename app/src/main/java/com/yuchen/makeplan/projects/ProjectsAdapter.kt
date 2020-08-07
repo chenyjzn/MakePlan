@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.LoadingStatus
 import com.yuchen.makeplan.data.Project
 import com.yuchen.makeplan.databinding.ItemProjectBinding
-import com.yuchen.makeplan.util.TimeUtil.stampToDate
+import com.yuchen.makeplan.util.TimeUtil.millisToDate
 
 class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<ProjectsAdapter.ProjectHolder>() {
 
@@ -62,7 +62,7 @@ class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<P
                 onClickListener?.onProjectLongClick(project)
                 true
             }
-            binding.itemProjectEditTime.text = stampToDate(project.updateTime)
+            binding.itemProjectEditTime.text = millisToDate(project.updateTime)
             binding.executePendingBindings()
         }
 
@@ -96,7 +96,7 @@ class ProjectsAdapter(val viewModel: ProjectsViewModel) : RecyclerView.Adapter<P
     }
 
     override fun getItemCount(): Int {
-        return projectList?.let { it.size } ?: 0
+        return projectList?.size ?: 0
     }
 
     override fun onViewAttachedToWindow(holder: ProjectHolder) {
