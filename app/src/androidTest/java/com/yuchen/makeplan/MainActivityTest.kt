@@ -12,9 +12,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.*
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
@@ -31,23 +29,24 @@ class MainActivityTest {
     @Test
     fun mainActivityTest() {
 
+        Thread.sleep(5000)
+
         onView(withText("Personal Projects")).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.projects_add_project),isDisplayed())).perform(click())
 
         onView(withText("Save")).check(matches(isDisplayed()))
+        onView(withText("Remove")).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.project_name_edit)).perform(replaceText("ProjectUITest"))
         onView(withId(R.id.project_name_edit)).perform(closeSoftKeyboard())
         onView(withId(R.id.project_save_button)).perform(click())
 
-//        onView(withText("ProjectUITest")).check(ViewAssertions.matches(isDisplayed()))
-
         onView(childAtPosition(withId(R.id.projects_recycler), 0)).perform(click())
         onView(withId(R.id.gantt_add_task)).perform(scrollTo(),click())
         onView(withId(R.id.task_name_edit)).perform(scrollTo(), replaceText("TaskUITest"))
 
-        onView(withId(R.id.task_duration_warning)).check(matches(Matchers.not(isDisplayed())))
+        onView(withId(R.id.task_duration_warning)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.task_duration_day_edit)).perform(scrollTo(), replaceText(""))
         onView(allOf(withId(R.id.task_duration_day_edit),withText("0"))).check(matches(isDisplayed()))
@@ -63,85 +62,63 @@ class MainActivityTest {
 
         onView(withId(R.id.task_duration_day_edit)).perform(scrollTo(), replaceText("9999"))
         onView(allOf(withId(R.id.task_duration_day_edit),withText("999"))).check(matches(isDisplayed()))
-        onView(withId(R.id.task_duration_warning)).check(matches(Matchers.not(isDisplayed())))
+        onView(withId(R.id.task_duration_warning)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.task_duration_hour_edit)).perform(scrollTo(), replaceText("9999"))
         onView(allOf(withId(R.id.task_duration_hour_edit),withText("23"))).check(matches(isDisplayed()))
-        onView(withId(R.id.task_duration_warning)).check(matches(Matchers.not(isDisplayed())))
+        onView(withId(R.id.task_duration_warning)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.task_duration_minute_edit)).perform(scrollTo(), replaceText("9999"))
         onView(allOf(withId(R.id.task_duration_minute_edit),withText("59"))).check(matches(isDisplayed()))
-        onView(withId(R.id.task_duration_warning)).check(matches(Matchers.not(isDisplayed())))
+        onView(withId(R.id.task_duration_warning)).check(matches(not(isDisplayed())))
 
-        val view = onView(
-            allOf(
-                withId(R.id.task_color),
-                childAtPosition(childAtPosition(withId(R.id.task_color_recycler), 5), 0)
-            )
-        )
-        view.perform(scrollTo(), click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 0)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 1)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 2)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 3)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 4)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 5)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 6)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 7)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 8)).perform(click())
+        onView(childAtPosition(withId(R.id.task_color_recycler), 9)).perform(click())
 
-        val appCompatButton2 = onView(
-            allOf(
-                withId(R.id.task_save), withText("Save"),
-                childAtPosition(
-                    childAtPosition(
-                        withClassName(`is`("android.widget.ScrollView")),
-                        0
-                    ),
-                    21
-                )
-            )
-        )
-        appCompatButton2.perform(scrollTo(), click())
+        onView(withId(R.id.task_start_date_edit)).perform(scrollTo(), click())
+        onView(withText("CANCEL")).check(matches(isDisplayed()))
+        onView(withText("OK")).check(matches(isDisplayed()))
+        onView(allOf(withId(android.R.id.button2), withText("Cancel"))).perform(scrollTo(), click())
+
+        onView(withId(R.id.task_start_time_edit)).perform(scrollTo(), click())
+        onView(withText("CANCEL")).check(matches(isDisplayed()))
+        onView(withText("OK")).check(matches(isDisplayed()))
+        onView(allOf(withId(android.R.id.button2), withText("Cancel"))).perform(scrollTo(), click())
+
+        onView(withId(R.id.task_end_date_edit)).perform(scrollTo(), click())
+        onView(withText("CANCEL")).check(matches(isDisplayed()))
+        onView(withText("OK")).check(matches(isDisplayed()))
+        onView(allOf(withId(android.R.id.button2), withText("Cancel"))).perform(scrollTo(), click())
+
+        onView(withId(R.id.task_end_time_edit)).perform(scrollTo(), click())
+        onView(withText("CANCEL")).check(matches(isDisplayed()))
+        onView(withText("OK")).check(matches(isDisplayed()))
+        onView(allOf(withId(android.R.id.button2), withText("Cancel"))).perform(scrollTo(), click())
+
+        onView(withId(R.id.task_save)).perform(scrollTo(), click())
 
         Espresso.pressBack()
 
-        val appCompatButton3 = onView(
-            allOf(
-                withId(android.R.id.button1), withText("Leave"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.buttonPanel),
-                        0
-                    ),
-                    3
-                )
-            )
-        )
-        appCompatButton3.perform(scrollTo(), click())
+        onView(withText("Cancel")).check(matches(isDisplayed()))
+        onView(withText("Leave")).check(matches(isDisplayed()))
+        onView(withId(android.R.id.button2)).perform(scrollTo(), click())
 
-        val materialCardView2 = onView(
-            allOf(
-                withId(R.id.item_project_card),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.item_project_background),
-                        childAtPosition(
-                            withId(R.id.projects_recycler),
-                            0
-                        )
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        materialCardView2.perform(longClick())
+        onView(withId(R.id.gantt_save)).perform(scrollTo(), click())
 
-        val appCompatButton4 = onView(
-            allOf(
-                withId(R.id.project_remove_button), withText("Remove"),
-                childAtPosition(childAtPosition(
-                    withId(R.id.design_bottom_sheet),
-                    0
-                ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatButton4.perform(click())
+        onView(childAtPosition(withId(R.id.projects_recycler), 0)).perform(longClick())
+
+        onView(withText("Save")).check(matches(isDisplayed()))
+        onView(withText("Remove")).check(matches(isDisplayed()))
+
+        onView(withId(R.id.project_remove_button)).perform(click())
     }
 
     private fun childAtPosition(
