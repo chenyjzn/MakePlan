@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.yuchen.makeplan.LoadingStatus
+import com.yuchen.makeplan.data.MultiProject
 import com.yuchen.makeplan.data.User
 import com.yuchen.makeplan.databinding.ItemUserBinding
 
@@ -18,9 +19,38 @@ class SearchUserAdapter(private val viewModel: SearchUserViewModel) : RecyclerVi
     private var userSourceList: List<User>? = null
     private var userFilteredList: List<User>? = null
 
-    fun appendList(userList: List<User>) {
-        this.userSourceList = userList
-        this.userFilteredList = userList
+    fun appendList(list: List<User>, project: MultiProject) {
+        this.userSourceList = getExcludeUserList(list, project)
+        this.userFilteredList = userSourceList
+    }
+
+    private fun getExcludeUserList(list: List<User>, project: MultiProject): List<User> {
+        return list.filter {
+            var isNotMember = true
+            for (i in project.receiveUid) {
+                if (i == it.uid) {
+                    isNotMember = false
+                    break
+                }
+            }
+            if (isNotMember) {
+                for (i in project.membersUid) {
+                    if (i == it.uid) {
+                        isNotMember = false
+                        break
+                    }
+                }
+            }
+            if (isNotMember) {
+                for (i in project.sendUid) {
+                    if (i == it.uid) {
+                        isNotMember = false
+                        break
+                    }
+                }
+            }
+            isNotMember
+        }
     }
 
     private var onSelectListener: OnSelectListener? = null

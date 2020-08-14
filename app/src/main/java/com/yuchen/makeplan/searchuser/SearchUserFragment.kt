@@ -45,8 +45,7 @@ class SearchUserFragment : Fragment() {
         viewModel.users.observe(viewLifecycleOwner, Observer {
             it?.let { list ->
                 viewModel.myProject.value?.let { project ->
-                    val newList = getExcludeUserList(list, project)
-                    adapter.appendList(newList)
+                    adapter.appendList(list, project)
                     adapter.filter.filter(viewModel.filterString)
                 }
             }
@@ -55,8 +54,7 @@ class SearchUserFragment : Fragment() {
         viewModel.myProject.observe(viewLifecycleOwner, Observer {
             it?.let { project ->
                 viewModel.users.value?.let { list ->
-                    val newList = getExcludeUserList(list, project)
-                    adapter.appendList(newList)
+                    adapter.appendList(list, project)
                     adapter.filter.filter(viewModel.filterString)
                 }
             }
@@ -95,34 +93,5 @@ class SearchUserFragment : Fragment() {
         })
 
         return binding.root
-    }
-
-    private fun getExcludeUserList(list: List<User>, project: MultiProject): List<User> {
-        return list.filter {
-            var isNotMember = true
-            for (i in project.receiveUid) {
-                if (i == it.uid) {
-                    isNotMember = false
-                    break
-                }
-            }
-            if (isNotMember) {
-                for (i in project.membersUid) {
-                    if (i == it.uid) {
-                        isNotMember = false
-                        break
-                    }
-                }
-            }
-            if (isNotMember) {
-                for (i in project.sendUid) {
-                    if (i == it.uid) {
-                        isNotMember = false
-                        break
-                    }
-                }
-            }
-            isNotMember
-        }
     }
 }
