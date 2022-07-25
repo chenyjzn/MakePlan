@@ -16,7 +16,8 @@
         android:theme="@style/AppTheme"
         android:name=".MakePlanApplication">
         <activity android:name=".MainActivity"
-            android:windowSoftInputMode="stateHidden|adjustPan|stateAlwaysHidden">
+            android:windowSoftInputMode="stateHidden|adjustPan|stateAlwaysHidden"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
