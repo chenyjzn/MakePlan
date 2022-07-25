@@ -51,9 +51,8 @@ class MainActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         findNavController(R.id.nav_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
