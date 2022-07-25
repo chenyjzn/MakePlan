@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -14,13 +15,27 @@ import com.yuchen.makeplan.ext.getVmFactory
 
 class EditDialog : BottomSheetDialogFragment() {
 
-    private val viewModel: EditViewModel by viewModels { getVmFactory(EditDialogArgs.fromBundle(requireArguments()).project) }
+    private val viewModel: EditViewModel by viewModels {
+        getVmFactory(
+            EditDialogArgs.fromBundle(
+                requireArguments()
+            ).project
+        )
+    }
     lateinit var binding: DialogEditBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogEditBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+
+        binding.projectRemoveButton.visibility = if (viewModel.project == null) {
+            View.INVISIBLE
+        } else {
+            View.VISIBLE
+        }
 
         binding.projectRemoveButton.setOnClickListener {
             viewModel.removeProject()
@@ -29,6 +44,13 @@ class EditDialog : BottomSheetDialogFragment() {
         binding.projectSaveButton.setOnClickListener {
             viewModel.saveProject()
         }
+
+        binding.projectNameEdit.setText(viewModel.projectName.value)
+        binding.projectNameEdit.addTextChangedListener(
+            onTextChanged = { text: CharSequence?, start: Int, before: Int, count: Int ->
+                viewModel.projectName.value = text.toString()
+            }
+        )
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
