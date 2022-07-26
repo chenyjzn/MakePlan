@@ -1,45 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/members_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/menu_search"
+        app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
+        app:title="Team Members" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/members_app_bar"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/members_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/members_app_bar">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/members_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/menu_search"
-            app:navigationIcon="@drawable/ic_arrow_back_black_24dp"
-            app:title="Team Members" />
+            app:tabIndicatorColor="@color/yellow_400"
+            app:tabSelectedTextColor="@color/yellow_400"
+            app:tabTextColor="@color/my_gray_220" />
+    </androidx.viewpager.widget.ViewPager>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/members_pager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/members_app_bar">
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/members_tab"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabIndicatorColor="@color/yellow_400"
-                app:tabSelectedTextColor="@color/yellow_400"
-                app:tabTextColor="@color/my_gray_220" />
-        </androidx.viewpager.widget.ViewPager>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>
