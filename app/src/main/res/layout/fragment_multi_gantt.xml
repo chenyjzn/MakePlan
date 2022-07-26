@@ -1,180 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/multi_gantt_chart_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-        <import type="android.view.View"/>
-        <variable
-            name="viewModel"
-            type="com.yuchen.makeplan.multigantt.MultiGanttViewModel" />
-    </data>
+    <HorizontalScrollView
+        android:id="@+id/multi_horizontalScrollView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/my_gray_75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/multi_gantt_chart_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/multi_gantt_tool_constrain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <HorizontalScrollView
-            android:id="@+id/multi_horizontalScrollView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/my_gray_75"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            <ImageButton
+                android:id="@+id/multi_gantt_add_task"
+                style="@style/GanttToolImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/ic_add_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/multi_gantt_tool_constrain"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/multi_gantt_members"
+                style="@style/GanttToolImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_group_black_24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/multi_gantt_add_task"
+                app:layout_constraintStart_toEndOf="@+id/multi_gantt_add_task"
+                app:layout_constraintTop_toTopOf="@+id/multi_gantt_add_task" />
 
-                <ImageButton
-                    android:id="@+id/multi_gantt_add_task"
-                    style="@style/GanttToolImageButton"
+            <ImageButton
+                android:id="@+id/multi_task_edit"
+                style="@style/GanttToolImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/ic_mode_edit_black_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/multi_gantt_members"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/multi_task_copy"
+                style="@style/GanttToolImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_content_copy_black_24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/multi_task_edit"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_edit"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_edit" />
+
+            <ImageButton
+                android:id="@+id/multi_task_delete"
+                style="@style/GanttToolImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_delete_black_24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/multi_task_copy"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_copy"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_copy" />
+
+            <TextView
+                android:id="@+id/multi_gantt_notify"
+                style="@style/badge_text_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="999"
+                android:translationZ="2dp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/multi_gantt_members"
+                app:layout_constraintStart_toEndOf="@+id/multi_gantt_members"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/multi_task_toggle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:translationZ="2dp"
+                app:layout_constraintBottom_toBottomOf="@+id/multi_task_delete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/multi_task_delete"
+                app:layout_constraintTop_toTopOf="@+id/multi_task_delete">
+
+                <Button
+                    android:id="@+id/multi_task_day"
+                    style="@style/GanttToolToggleButtonLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:src="@drawable/ic_add_black_24dp"
-                    android:visibility="@{viewModel.taskSelect == null? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:text="Day" />
 
-                <ImageButton
-                    android:id="@+id/multi_gantt_members"
-                    style="@style/GanttToolImageButton"
+                <Button
+                    android:id="@+id/multi_task_hour"
+                    style="@style/GanttToolToggleButtonCenter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_group_black_24dp"
-                    android:visibility="@{viewModel.taskSelect == null? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/multi_gantt_add_task"
-                    app:layout_constraintStart_toEndOf="@+id/multi_gantt_add_task"
-                    app:layout_constraintTop_toTopOf="@+id/multi_gantt_add_task" />
+                    android:text="Hour" />
 
-                <ImageButton
-                    android:id="@+id/multi_task_edit"
-                    style="@style/GanttToolImageButton"
+                <Button
+                    android:id="@+id/multi_task_15m"
+                    style="@style/GanttToolToggleButtonCenter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:src="@drawable/ic_mode_edit_black_24dp"
-                    android:visibility="@{viewModel.taskSelect == null? View.GONE : View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/multi_gantt_members"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:text="15m" />
 
-                <ImageButton
-                    android:id="@+id/multi_task_copy"
-                    style="@style/GanttToolImageButton"
+                <Button
+                    android:id="@+id/multi_task_5m"
+                    style="@style/GanttToolToggleButtonRight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_content_copy_black_24dp"
-                    android:visibility="@{viewModel.taskSelect == null? View.GONE : View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/multi_task_edit"
-                    app:layout_constraintStart_toEndOf="@+id/multi_task_edit"
-                    app:layout_constraintTop_toTopOf="@+id/multi_task_edit" />
+                    android:text="5m" />
+            </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/multi_task_delete"
-                    style="@style/GanttToolImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_delete_black_24dp"
-                    android:visibility="@{viewModel.taskSelect == null? View.GONE : View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/multi_task_copy"
-                    app:layout_constraintStart_toEndOf="@+id/multi_task_copy"
-                    app:layout_constraintTop_toTopOf="@+id/multi_task_copy" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </HorizontalScrollView>
 
-                <TextView
-                    android:id="@+id/multi_gantt_notify"
-                    style="@style/badge_text_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="999"
-                    android:visibility="invisible"
-                    android:translationZ="2dp"
-                    app:layout_constraintEnd_toEndOf="@+id/multi_gantt_members"
-                    app:layout_constraintStart_toEndOf="@+id/multi_gantt_members"
-                    app:layout_constraintTop_toTopOf="parent" />
+    <com.yuchen.makeplan.view.MultiGanttChartGroup
+        android:id="@+id/multi_gantt_chart_group"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/multi_horizontalScrollView" />
 
-                <LinearLayout
-                    android:id="@+id/multi_task_toggle_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:translationZ="2dp"
-                    android:visibility="@{viewModel.taskSelect == null? View.GONE : View.VISIBLE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/multi_task_delete"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/multi_task_delete"
-                    app:layout_constraintTop_toTopOf="@+id/multi_task_delete">
-
-                    <Button
-                        android:id="@+id/multi_task_day"
-                        style="@style/GanttToolToggleButtonLeft"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.setTaskTimeScale(0)}"
-                        android:text="Day" />
-
-                    <Button
-                        android:id="@+id/multi_task_hour"
-                        style="@style/GanttToolToggleButtonCenter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.setTaskTimeScale(1)}"
-                        android:text="Hour" />
-
-                    <Button
-                        android:id="@+id/multi_task_15m"
-                        style="@style/GanttToolToggleButtonCenter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.setTaskTimeScale(2)}"
-                        android:text="15m" />
-
-                    <Button
-                        android:id="@+id/multi_task_5m"
-                        style="@style/GanttToolToggleButtonRight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.setTaskTimeScale(3)}"
-                        android:text="5m" />
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </HorizontalScrollView>
-
-        <com.yuchen.makeplan.view.MultiGanttChartGroup
-            android:id="@+id/multi_gantt_chart_group"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/multi_horizontalScrollView" />
-
-        <ProgressBar
-            android:id="@+id/multi_gantt_progress"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/multi_gantt_chart_group"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/multi_horizontalScrollView" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+    <ProgressBar
+        android:id="@+id/multi_gantt_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/multi_gantt_chart_group"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/multi_horizontalScrollView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

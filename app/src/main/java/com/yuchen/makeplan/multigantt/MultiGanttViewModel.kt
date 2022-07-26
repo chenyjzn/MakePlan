@@ -13,7 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MultiGanttViewModel(private val repository: MakePlanRepository, private val projectInput: MultiProject) : ViewModel() {
+class MultiGanttViewModel(
+    private val repository: MakePlanRepository,
+    private val projectInput: MultiProject
+) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -21,8 +24,8 @@ class MultiGanttViewModel(private val repository: MakePlanRepository, private va
     val project: LiveData<MultiProject> = repository.getMultiProject(projectInput)
     val tasks: LiveData<List<MultiTask>> = repository.getMultiProjectTasks(projectInput)
 
-    private val _taskSelect = MutableLiveData<MultiTask>()
-    val taskSelect: LiveData<MultiTask>
+    private val _taskSelect = MutableLiveData<MultiTask?>(null)
+    val taskSelect: LiveData<MultiTask?>
         get() = _taskSelect
 
     private val _loadingStatus = MutableLiveData<LoadingStatus>()

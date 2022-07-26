@@ -15,6 +15,7 @@ import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.MultiTask
 import com.yuchen.makeplan.databinding.FragmentMultiGanttBinding
 import com.yuchen.makeplan.ext.getVmFactory
+import com.yuchen.makeplan.ext.visible
 import com.yuchen.makeplan.view.MultiGanttChartGroup
 import kotlin.math.max
 import kotlin.math.min
@@ -22,17 +23,23 @@ import kotlin.math.roundToInt
 
 class MultiGanttFragment : Fragment() {
 
-    private val viewModel: MultiGanttViewModel by viewModels<MultiGanttViewModel> { getVmFactory(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject) }
+    private val viewModel: MultiGanttViewModel by viewModels<MultiGanttViewModel> {
+        getVmFactory(
+            MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject
+        )
+    }
     lateinit var binding: FragmentMultiGanttBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentMultiGanttBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
         binding.multiGanttChartGroup.setColorList(
             resources.getStringArray(R.array.color_array_1).toList(),
             resources.getStringArray(R.array.color_array_2).toList()
         )
-        binding.viewModel = viewModel
 
         var startTime = System.currentTimeMillis()
         var endTime = startTime + 7 * DAY_MILLIS
@@ -109,7 +116,31 @@ class MultiGanttFragment : Fragment() {
         viewModel.taskSelect.observe(viewLifecycleOwner, Observer {
             binding.multiGanttChartGroup.setTaskValueSelect(it)
             binding.multiGanttChartGroup.invalidate()
+
+            val isTaskSelect = it != null
+            binding.multiGanttAddTask.visible = !isTaskSelect
+            binding.multiGanttMembers.visible = !isTaskSelect
+            binding.multiTaskEdit.visible = isTaskSelect
+            binding.multiTaskCopy.visible = isTaskSelect
+            binding.multiTaskDelete.visible = isTaskSelect
+            binding.multiTaskToggleButton.visible = isTaskSelect
         })
+
+        binding.multiTaskDay.setOnClickListener {
+            viewModel.setTaskTimeScale(0)
+        }
+
+        binding.multiTaskHour.setOnClickListener {
+            viewModel.setTaskTimeScale(1)
+        }
+
+        binding.multiTask15m.setOnClickListener {
+            viewModel.setTaskTimeScale(2)
+        }
+
+        binding.multiTask5m.setOnClickListener {
+            viewModel.setTaskTimeScale(3)
+        }
 
         binding.multiGanttChartGroup.setOnEventListener(object :
             MultiGanttChartGroup.OnEventListener {
@@ -126,7 +157,12 @@ class MultiGanttFragment : Fragment() {
         binding.multiGanttAddTask.setOnClickListener {
             viewModel.project.value?.let { project ->
                 if (viewModel.taskSelect.value == null) {
-                    this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(project, null))
+                    this.findNavController().navigate(
+                        MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(
+                            project,
+                            null
+                        )
+                    )
                 }
             }
         }
@@ -134,7 +170,12 @@ class MultiGanttFragment : Fragment() {
         binding.multiTaskEdit.setOnClickListener {
             viewModel.project.value?.let { project ->
                 viewModel.taskSelect.value?.let { task ->
-                    this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(project, task))
+                    this.findNavController().navigate(
+                        MultiGanttFragmentDirections.actionMultiGanttFragmentToMultiTaskFragment(
+                            project,
+                            task
+                        )
+                    )
                     viewModel.taskSelectClear()
                 }
             }
@@ -166,7 +207,11 @@ class MultiGanttFragment : Fragment() {
         }
 
         binding.multiGanttMembers.setOnClickListener {
-            this.findNavController().navigate(MultiGanttFragmentDirections.actionMultiGanttFragmentToMembersFragment(MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject))
+            this.findNavController().navigate(
+                MultiGanttFragmentDirections.actionMultiGanttFragmentToMembersFragment(
+                    MultiGanttFragmentArgs.fromBundle(requireArguments()).multiProject
+                )
+            )
         }
 
         return binding.root
