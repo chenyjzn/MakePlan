@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -19,8 +20,12 @@ class MultiEditDialog : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogMultiEditBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+
+        binding.multiProjectRemoveButton.visibility = if (viewModel.project == null) {
+            View.INVISIBLE
+        } else {
+            View.VISIBLE
+        }
 
         binding.multiProjectRemoveButton.setOnClickListener {
             viewModel.liveProject.value?.let {
@@ -35,6 +40,13 @@ class MultiEditDialog : BottomSheetDialogFragment() {
         binding.multiProjectSaveButton.setOnClickListener {
             viewModel.saveProject()
         }
+
+        binding.multiProjectNameEdit.setText(viewModel.projectName.value)
+        binding.multiProjectNameEdit.addTextChangedListener(
+            onTextChanged = { text: CharSequence?, start: Int, before: Int, count: Int ->
+                viewModel.projectName.value = text.toString()
+            }
+        )
 
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             when (it) {
