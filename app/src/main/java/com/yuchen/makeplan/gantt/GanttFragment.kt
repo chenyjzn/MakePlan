@@ -16,16 +16,25 @@ import com.yuchen.makeplan.R
 import com.yuchen.makeplan.data.Task
 import com.yuchen.makeplan.databinding.FragmentGanttBinding
 import com.yuchen.makeplan.ext.getVmFactory
+import com.yuchen.makeplan.ext.visible
 import com.yuchen.makeplan.view.GanttChartGroup
 
 class GanttFragment : Fragment() {
 
-    private val viewModel: GanttViewModel by viewModels { getVmFactory(GanttFragmentArgs.fromBundle(requireArguments()).projectHistory) }
+    private val viewModel: GanttViewModel by viewModels {
+        getVmFactory(
+            GanttFragmentArgs.fromBundle(
+                requireArguments()
+            ).projectHistory
+        )
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentGanttBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
 
         binding.ganttChartGroup.setColorList(
             resources.getStringArray(R.array.color_array_1).toList(),
@@ -101,6 +110,36 @@ class GanttFragment : Fragment() {
             }
         }
 
+        binding.taskDay.setOnClickListener {
+            viewModel.setTaskTimeScale(0)
+        }
+
+        binding.taskHour.setOnClickListener {
+            viewModel.setTaskTimeScale(1)
+        }
+
+        binding.task15m.setOnClickListener {
+            viewModel.setTaskTimeScale(2)
+        }
+
+        binding.task5m.setOnClickListener {
+            viewModel.setTaskTimeScale(3)
+        }
+
+        viewModel.taskSelect.observe(viewLifecycleOwner) {
+            val isTaskSelect = it != -1
+            binding.ganttAddTask.visible = !isTaskSelect
+            binding.ganttUndo.visible = !isTaskSelect
+            binding.ganttRedo.visible = !isTaskSelect
+            binding.ganttSave.visible = !isTaskSelect
+            binding.taskEdit.visible = isTaskSelect
+            binding.taskCopy.visible = isTaskSelect
+            binding.taskDelete.visible = isTaskSelect
+            binding.taskUp.visible = isTaskSelect
+            binding.taskDown.visible = isTaskSelect
+            binding.taskToggleButton.visible = isTaskSelect
+        }
+
         viewModel.project.observe(viewLifecycleOwner, Observer {
             it?.let {
                 binding.ganttChartGroup.setRange(it.startTimeMillis, it.endTimeMillis)
@@ -111,7 +150,12 @@ class GanttFragment : Fragment() {
 
         viewModel.navigateToTaskSetting.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(GanttFragmentDirections.actionGanttFragmentToTaskFragment(viewModel.getUndoListArray(), it))
+                this.findNavController().navigate(
+                    GanttFragmentDirections.actionGanttFragmentToTaskFragment(
+                        viewModel.getUndoListArray(),
+                        it
+                    )
+                )
                 viewModel.goToTaskDone()
             }
         })
